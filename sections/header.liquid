@@ -1,0 +1,316 @@
+{% if section.settings.message %}
+    <style>
+        .notification-bar {
+            background-color: {{ section.settings.color_bg }};
+        }
+
+        .notification-bar__message {
+            color: {{ section.settings.color_text }};
+        }
+    </style>
+{% endif %}
+
+<header class="site-header fixed-header bold{% if section.settings.align_logo == 'left' %} border-bottom logo--left{% else %} logo--center{% endif %}"
+        role="banner">
+    <div class="small-width">
+        <div class="grid grid--no-gutters grid--table">
+            <div class="grid__item one-third">
+                <nav class="desktop-nav" id="AccessibleNav" role="navigation">
+                    <button type="button"
+                            class="padding-right-0 btn--link  js-mobile-nav-toggle mobile-nav--open hamburger-nav-11">
+                        {% include 'icon-hamburger' %}
+                        {% include 'icon-close' %}
+                        <span class="icon__fallback-text">{{ 'layout.navigation.toggle' | t }}</span>
+                    </button>
+                    <div class="navigation11 nav-closed padding-vertical-lg">
+                        <ul class="mobile-nav small-width">
+                            <li class="mobile-nav__item mobile-nav__account">
+                                <a href="/account" class="mobile-nav__link h2 bold">
+                                    {% if customer %}
+                                        <span>{{- 'layout.customer.greeting' | t: name: customer.first_name -}}</span>
+                                        {{- 'layout.customer.account' | t -}}
+                                    {% else %}
+                                        {{- 'layout.customer.account_login' | t -}}
+                                    {% endif %}
+                                </a>
+                            </li>
+
+                            {% for link in linklists[section.settings.main_linklist].links %}
+                                {%- assign child_list_handle = link.title | handleize -%}
+
+                                <li class="mobile-nav__item{% if section.settings.button_label != blank %} {% else %}{% unless forloop.last %} {% endunless %}{% endif %}">
+                                    {% if linklists[child_list_handle].links != blank %}
+                                        <button type="button"
+                                                class="btn--link js-toggle-submenu mobile-nav__link h2 bold"
+                                                data-target="{{ child_list_handle }}" data-level="1">
+                                            {{ link.title }}
+                                            <div class="mobile-nav__icon">
+                                                {% include 'icon-triangle' %}
+                                                <span class="icon__fallback-text">{{ 'layout.navigation.expand' | t }}</span>
+                                            </div>
+                                        </button>
+                                        <ul class="padding-left-md mobile-nav__dropdown"
+                                            data-parent="{{ child_list_handle }}" data-level="2">
+                                            <li class="mobile-nav__item ">
+                                                <div class="mobile-nav__table">
+                                                    <div class="mobile-nav__table-cell mobile-nav__return">
+                                                        <button class="btn--link js-toggle-submenu mobile-nav__return-btn h2 bold"
+                                                                type="button">
+                                                            {% include 'icon-triangle' %}
+                                                            <span class="icon__fallback-text">{{ 'layout.navigation.collapse' | t }}</span>
+                                                        </button>
+                                                    </div>
+                                                    <a href="{{ link.url }}"
+                                                       class="mobile-nav__sublist-link mobile-nav__sublist-header h3 bold">
+                                                        {{ link.title }}
+                                                    </a>
+                                                </div>
+                                            </li>
+
+                                            {% for childlink in linklists[child_list_handle].links %}
+                                                <li class="mobile-nav__item">
+                                                    <a href="{{ childlink.url }}"
+                                                       class="mobile-nav__sublist-link h3 bold">
+                                                        {{ childlink.title | escape }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+
+                                        </ul>
+                                    {% else %}
+                                        <a href="{{ link.url }}" class="mobile-nav__link h2 bold ">
+                                            {{- link.title -}}
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+
+                            {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+                                <li class="mobile-nav__item {% if section.settings.button_label2 != blank and section.settings.button_link2 != blank %}
+                           {% endif %}">
+                                    <a href="{{ section.settings.button_link }}" class="mobile-nav__link h2 bold">
+                                        {{ section.settings.button_label }}
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% if section.settings.button_label2 != blank and section.settings.button_link2 != blank %}
+                                <li class="mobile-nav__item">
+                                    <a href="{{ section.settings.button_link2 }}" class="mobile-nav__link h2 bold">
+                                        {{ section.settings.button_label2 }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <ul class="mobile-nav-2 small-width hide">
+                            {% for link in linklists[section.settings.expand_linklist].links %}
+                                {%- assign child_list_handle = link.title | handleize -%}
+
+                                <li class="mobile-nav__item{% if section.settings.button_label != blank %} {% else %}{% unless forloop.last %} {% endunless %}{% endif %}">
+                                    {% if linklists[child_list_handle].links != blank %}
+                                        <button type="button"
+                                                class="btn--link js-toggle-submenu mobile-nav__link h2 bold"
+                                                data-target="{{ child_list_handle }}" data-level="1">
+                                            {{ link.title }}
+                                            <div class="mobile-nav__icon">
+                                                {% include 'icon-triangle' %}
+                                                <span class="icon__fallback-text">{{ 'layout.navigation.expand' | t }}</span>
+                                            </div>
+                                        </button>
+                                        <ul class="padding-left-md mobile-nav__dropdown"
+                                            data-parent="{{ child_list_handle }}" data-level="2">
+                                            <li class="mobile-nav__item ">
+                                                <div class="mobile-nav__table">
+                                                    <div class="mobile-nav__table-cell mobile-nav__return">
+                                                        <button class="btn--link js-toggle-submenu mobile-nav__return-btn h2 bold"
+                                                                type="button">
+                                                            {% include 'icon-triangle' %}
+                                                            <span class="icon__fallback-text">{{ 'layout.navigation.collapse' | t }}</span>
+                                                        </button>
+                                                    </div>
+                                                    <a href="{{ link.url }}"
+                                                       class="mobile-nav__sublist-link mobile-nav__sublist-header h3 bold">
+                                                        {{- link.title -}}
+                                                    </a>
+                                                </div>
+                                            </li>
+
+                                            {% for childlink in linklists[child_list_handle].links %}
+                                                <li class="mobile-nav__item">
+                                                    <a href="{{ childlink.url }}"
+                                                       class="mobile-nav__sublist-link h3 bold">
+                                                        {{ childlink.title | escape }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+
+                                        </ul>
+                                    {% else %}
+                                        <a href="{{ link.url }}" class="mobile-nav__link h2 bold ">
+                                            {{- link.title -}}
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            {% if section.settings.align_logo == 'center' %}
+                {%- assign logo_classes = 'medium--one-third large-up--one-quarter logo-align--center' -%}
+            {% else %}
+                {%- assign logo_classes = 'medium-up--one-third logo-align--left' -%}
+            {% endif %}
+
+            <div class="grid__item small--one-third {{ logo_classes }}{% if template contains 'landing-page-samples' or template contains 'adult' %} small--push-one-half medium-up--push-one-half "
+                 style="transform: translateX(-50%);{% endif %}">
+                {% if template.name == 'index' %}
+                <h2 class="h2 site-header__logo" itemscope itemtype="http://schema.org/Organization">
+                    {% else %}
+                    <div class="h2 site-header__logo" itemscope itemtype="http://schema.org/Organization">
+                        {% endif %}
+                        {% if settings.logo %}
+                            <a href="/" itemprop="url"
+                               class="site-header__logo-image{% if section.settings.align_logo == 'center' or template contains 'landing-page-samples' or template contains 'adult' %} margin-auto{% endif %}">
+                                {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
+                                <img src="{{ settings.logo | img_url: image_size }}"
+                                     srcset="{{ settings.logo | img_url: image_size }} 1x, {{ settings.logo | img_url: image_size, scale: 2 }} 2x"
+                                     alt="{{ settings.logo.alt | default: shop.name }}"
+                                     itemprop="logo">
+                            </a>
+                        {% else %}
+                            <a class="site-header__logo-link" href="/" itemprop="url">{{ shop.name }}</a>
+                        {% endif %}
+                        {% if template.name == 'index' %}
+                </h2>
+                {% else %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="grid__item small--one-third medium-up--one-third text-right">
+            <div class="link-item relative inline-block">
+                <a href="/account" class="account-link not-underlined">
+                    {% if customer %}
+                        <span>{{- 'layout.customer.greeting' | t: name: customer.first_name -}}</span>
+                        {{- 'layout.customer.account' | t -}}
+                    {% else %}
+                        {{- 'layout.customer.account_login' | t -}}
+                    {% endif %}
+                </a>
+
+                {% include 'header-dropdown' %}
+            </div>
+
+            <a href="/checkout" id="cartDrawer" class="padding-left-sm relative not-underlined">
+                <div class="cart-number  {% if cart.item_count == 0 %} hide {% endif %}">{{ cart.item_count }}</div>
+
+                {% include 'icon-cart' %}
+            </a>
+        </div>
+    </div>
+    </div>
+</header>
+
+{% schema %}
+  {
+    "name":"Header",
+    "settings":[
+      {
+        "type":"radio",
+        "id":"align_logo",
+        "label":"Logo alignment",
+        "default":"left",
+        "options":[
+          {
+            "value":"left",
+            "label":"Left"
+          },
+          {
+            "value":"center",
+            "label":"Centered"
+          }
+        ]
+      },
+      {
+        "type":"text",
+        "id":"logo_max_width",
+        "label":"Custom logo width (in pixels)",
+        "default":"100"
+      },
+      {
+        "type":"link_list",
+        "id":"main_linklist",
+        "label":"Menu",
+        "default":"main-menu"
+      },
+      {
+        "type":"link_list",
+        "id":"expand_linklist",
+        "label":"Expand Link List",
+        "default":"main-menu"
+      },
+      {
+        "type":"checkbox",
+        "id":"message",
+        "label":"Show announcement",
+        "default":false
+      },
+      {
+        "type":"text",
+        "id":"message_text",
+        "label":"Announcement text",
+        "default":"Announce something here"
+      },
+      {
+        "type":"url",
+        "id":"message_link",
+        "label":"Announcement link",
+        "info":"Optional"
+      },
+      {
+        "type":"color",
+        "id":"color_bg",
+        "label":"Announcement color",
+        "default":"#7796A8"
+      },
+      {
+        "type":"color",
+        "id":"color_text",
+        "label":"Announcement text color",
+        "default":"#fff"
+      },
+      {
+        "type":"text",
+        "id":"button_label",
+        "label":"Button label"
+      },
+      {
+        "type":"url",
+        "id":"button_link",
+        "label":"Button link"
+      },
+      {
+        "type":"text",
+        "id":"button_label2",
+        "label":"Button label"
+      },
+      {
+        "type":"url",
+        "id":"button_link2",
+        "label":"Button link"
+      },
+      {
+        "type":"text",
+        "id":"mobile_label",
+        "label":"Mobile label",
+        "default":"CALL"
+      },
+      {
+        "type":"text",
+        "id":"mobile_number",
+        "label":"Mobile number"
+      }
+    ]
+  }
+{% endschema %}

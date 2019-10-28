@@ -1,0 +1,31 @@
+<div id="direct" class="text-center prophy-richtext" style="background-color: {{ section.settings.background_color }};"> 
+  <div class="wrappercontent">
+    <h2 class="h1" style="color: {{ section.settings.color }};">{{ section.settings.text }}</h2>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Text",
+    "class": "no-spaces old-content",
+    "settings": [
+      {
+         "type": "color",
+         "id": "background_color",
+         "label": "Background color",
+         "default": "#000"
+      },
+      {
+         "type": "color",
+         "id": "color",
+         "label": "Color",
+         "default": "#fff"
+      },
+      {
+        "type": "html",
+        "id": "text",
+        "label": "Text"
+      }
+    ]
+  }
+{% endschema %}

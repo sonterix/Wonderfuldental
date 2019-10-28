@@ -1,0 +1,61 @@
+<div class="text-center" style="background-color: {{ section.settings.background_color }};">
+  <div class="wrappercontent padding-vertical-xlg"> 
+    {% if section.settings.order %}
+      <div class="custom-o-s-form text-center">
+        <h2 class="h2 bold margin-bottom-lg margin-bottom-xlg">Start saving thousands ordering direct </h2>
+        <div class="form-wrapper margin-top-xlg">
+          <a href="/cart">
+            <button class="btn btn-new">Order Now </button>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+    
+    {% if section.settings.sample %}
+      <div class="custom-o-s-form text-center">
+        <h2 class="h2 bold margin-bottom-lg margin-bottom-xlg">Start saving thousands ordering direct </h2>
+        <div class="form-wrapper margin-top-xlg">
+          <a href="/pages/final">
+            <button class="btn btn-new">Request Samples</button>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Button",
+    "settings": [
+    {
+         "type": "color",
+         "id": "background_color",
+         "label": "Background color",
+         "default": "#ffffff"
+      },
+      {
+         "type": "checkbox",
+         "id": "order",
+         "default": true,
+         "label": "Enable button 1"
+      },
+      {
+        "type": "url",
+        "id": "order_url",
+        "label": "Button 1 link"
+      },
+      {
+         "type": "checkbox",
+         "id": "sample",
+         "default": true,
+         "label": "Enable button 2"
+      },
+      {
+        "type": "url",
+        "id": "sample_url",
+        "label": "Button 2 link"
+      }
+	]
+  }
+{% endschema %}

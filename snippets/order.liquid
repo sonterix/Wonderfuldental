@@ -1,0 +1,136 @@
+{% assign order_date = order.created_at | date: "%m, %y" | split: ", " %}
+
+{% assign current_date = "now" | date: "%m, %y" | split: ", " %}
+
+{% capture month_result %}
+    {% for i in (i..1) %}
+        {{ current_date[i] | minus: order_date[i] }}
+
+        {% if forloop.last == false %}::{% endif %}
+    {% endfor %}
+{% endcapture %}
+
+{% assign month_result = month_result | split: '::' %}
+
+{% assign monthes = month_result[0] %}
+{% assign year = month_result[1] | plus: 0 %}
+
+{% unless year == 0 %}
+{% assign month_in_year = year | times: 12 %}
+{% assign monthes = monthes | plus: month_in_year %}
+{% endunless %}
+
+<div class="order" data-element='["{{- monthes | strip -}}","{{ order.shipping_address.street }}"]'>
+    <div class="order__header">
+        <div class="order__number">
+            <a href="{{ order.customer_url }}">
+                {{- 'customer.order.title' | t: name: order.name  -}}
+            </a>
+        </div>
+
+        <div class="order__fulfilment_status">
+            {{- 'customer.order.status' | t -}}:
+
+            <span>
+                {{- order.fulfillment_status_label -}}
+            </span>
+        </div>
+
+        <div class="order__tracking">
+            {% if order.fulfillment_status == 'fulfilled' %}
+                {{- 'customer.order.tracking' -}}
+                {% for line in order.line_items %}
+                    {% if line.fulfillment.tracking_number %}
+                        <a class="order__tracking-number" href="{{ line.fulfillment.tracking_url }}">
+                            {{- line.fulfillment.tracking_number -}}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="order__body">
+        <div class="order__line-items">
+            {% for line in order.line_items %}
+                <div class="order__item">
+                    <div class="order__image-wrapper">
+                        <img class="order__image"
+                             src="{{ line.image.src | img_url: '150x' }}"
+                             alt="{{ line.image.alt }}">
+                    </div>
+
+                    <div class="order__item-info">
+                        <p>{{ line.quantity }} Units</p>
+                        <p class="color--blue">{{ line.title }}</p>
+                        <p class="color--blue">
+                            {% if line.title contains "Varnish" %}
+                                    {{- 'products.product.package' | t: count: '100', name: 'doses' -}}
+                                {% elsif line.title contains "Paste" %}
+                                {% if line.title contains "Rings" %}
+                                    {{- 'products.product.package' | t: count: '10', name: 'rings' -}}
+                                {% else %}
+                                    {{- 'products.product.package' | t: count: '200', name: 'cups' -}}
+                                {% endif %}
+                                {% elsif line.title contains 'Angles' %}
+                                     {{- 'products.product.counts' | t: count: '100', name: 'unit' -}}
+                                {% elsif line.title contains 'Microbrushes' %}
+                                     {{- 'products.product.counts' | t: count: '50', name: 'package' -}}
+                            {% endif %}
+                        </p>
+                        <p class="color--red">{{ 'customer.order.subtotal' | t }}: {{ line.line_price | money }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="order__prices">
+            <p class="order__subtotal">
+                {{- 'customer.order.subtotal' | t -}}:
+
+                {{- order.subtotal_price | money -}}
+            </p>
+
+            <p class="order__shipping-price">
+                {{- 'customer.order.shipping' | t: ': ' -}}:
+
+                {{- order.shipping_price | money -}}
+            </p>
+
+            <div class="order__taxes">
+                {% for tax_line in order.tax_lines %}
+                    <p class="order__tax-line">
+                        {{- 'customer.order.tax' | t -}}:
+                        ({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%):
+                        {{ tax_line.price | money -}}
+                    </p>
+                {% endfor %}
+            </div>
+
+            <p class="order__total-price">
+                {{- 'customer.orders.total' | t }}: {{ order.total_price | money -}}
+            </p>
+
+        </div>
+
+        <div class="order__aside">
+            <div data-id="{{ order.id }}" class="text-center identixweb_advance_reorder margin-bottom-sm"></div>
+
+            <a class="btn margin-bottom-sm" href="{{ order.customer_url }}">
+                {{- 'customer.order.order_details' | t  -}}
+            </a>
+
+            <a class="btn text--bold order__review btn__write-review margin-bottom-sm" href="#">
+                {{- 'customer.order.write_review' | t -}}
+            </a>
+
+            <a class="btn order__print-invoice text--bold" target="_blank" href="https://app.invoicefalcon.com/pdfs/{{ order.id }}.pdf?shopify_domain=wonderfuldental.myshopify.com">
+                {{- 'customer.order.print_invoice' | t -}}
+            </a>
+        </div>
+    </div>
+
+    {% include 'order-history-write-review-popup' %}
+</div>
+
+

@@ -1,0 +1,72 @@
+<div class="page-width">
+  {% if section.settings.show_cta %} 
+  <div class="">
+{% include 'heading-snippet', settings: 'mega-big h1 section-title small-text-center bold color-white' %}
+    </div>
+    {% else %}
+     <div class="">
+{% include 'heading-snippet', settings: 'mega-big h1 section-title text-center bold color-white' %}
+    </div>
+    
+    {% endif %}
+  <div class="grid grid--no-gutters text-center small--break-table grid--table landing-sensational-taste">
+    {% for block in section.blocks %}
+    <div class="grid__item medium-up--one-fifth{% if forloop.first or forloop.last %} vert-top{% endif %} small--two-thirds small--push-one-sixth">
+      <div class="content-holder medium-up--padding-horizontal-md forloop-{{ forloop.index }}{% if forloop.index == 3 %}{% unless forloop.last%} medium-up--padding-top-50{% endunless %}{% endif %}">
+      {% if block.settings.image %}
+      <img class="small--three-quarters" src="{{ block.settings.image |img_url: '300x'}}"/>
+      {% endif %}
+      <h3 class="bold margin-bottom-0">{{ block.settings.title }}</h3>
+      
+      {{ block.settings.text }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Sensational Taste",
+	"class": "margin-vertical-xlg2",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section title"
+      }
+	],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Block",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Title"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

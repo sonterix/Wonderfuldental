@@ -1,0 +1,244 @@
+{% if section.settings.image != blank %}
+  <style>
+    .hero--{{ section.id }} {
+      background-position: {{ section.settings.alignment }};
+    }
+
+    @media screen and (max-width: 150px) {
+      .hero--{{ section.id }} {
+        background-image: url('{{ section.settings.image | img_url: '150x150' }}');
+      }
+    }
+
+    @media screen and (min-width: 151px) and (max-width: 300px) {
+      .hero--{{ section.id }} {
+        background-image: url('{{ section.settings.image | img_url: '300x300' }}');
+      }
+    }
+
+    @media screen and (min-width: 301px) and (max-width: 600px) {
+      .hero--{{ section.id }} {
+        background-image: url('{{ section.settings.image | img_url: '600x600' }}');
+      }
+    }
+
+    @media screen and (min-width: 601px) and (max-width: 800px) {
+      .hero--{{ section.id }} {
+        background-image: url('{{ section.settings.image | img_url: '800x800' }}');
+      }
+    }
+
+    @media screen and (min-width: 801px) and (max-width: 1000px) {
+      .hero--{{ section.id }} {
+        background-image: url('{{ section.settings.image | img_url: '1000x1000' }}');
+      }
+    }
+
+    @media screen and (min-width: 1001px) {
+      .hero--{{ section.id }} {
+        background-image: url('{{ section.settings.image | img_url: '2000x2000' }}');
+      }
+    }
+  </style>
+{% endif %}
+
+
+    <script>
+  
+ 
+      var height11 = 0;
+      var width11 = 0; 
+      
+      var height1 =  $(window).width()*(9/16) - $(window).width()*(9/16)/3;
+      var width1  =  $(window).width() - $(window).width()/3;
+      
+      var height2 =  $(window).width()*(9/16) ;
+      var width2  =  $(window).width();
+      
+      if($(window).width() < $(window).height()) {
+       height11 = height2;
+      width11 = width2;   
+      }
+        
+      else { 
+     height11 = height1;
+      width11 = width1;   
+      }
+          
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: height11,
+          width: width11,
+          videoId: 'u84FIvuzzOE',
+           playerVars: {
+            controls: 0,
+            disablekb: 1,
+             rel: 0,
+             modestbranding: 0,
+             showinfo:0
+             
+        },
+          events: {
+            'onReady': onPlayerReady,
+          }
+        });
+      }
+
+    
+      function onPlayerReady(event) {
+              //  event.target.playVideo(); // You can omit this to prevent the video starting as soon as it loads.
+        console.log("Video Ready!");
+ 
+      }
+
+
+      
+ 
+    </script>
+
+<!--
+<div id="videoContainer"><div id="player1"><div id="player"></div></div>
+  </div>
+-->
+
+<div id="hidefirsthero">
+<div id="herotohide" style="background:#efffeb" class="hero hero--{{ section.id }} hero--{{ section.settings.hero_size }} hero__overlay">
+  <div class="hero__inner">
+     
+    <div class="page-width text-center">
+<div class="hero__half heading"> 
+     {{ 'prophycup-angle.png' | asset_url | img_tag }}
+    </div>
+       <div class="hero__half heading"> <h2 class="h1 mega-title{% if section.settings.text_size == 'large' %} mega-title--large{% endif %}">Top quality prophy paste that wows</h2>      
+      <a class="btn btn-new  margin-horizontal-md small--margin-top-sm medium-up--margin-vertical-sm " href="#shopify-section-1534460110619">  Order now</a>
+      <a class=" bold   margin-horizontal-md small--margin-top-sm medium-up--margin-vertical-sm " href="https://wonderfuldental.com/pages/request-samples-survey">   or Free samples</a>
+      </div>
+      
+      {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <a href="{{ section.settings.button_link }}" class="btn hero__btn">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+   
+      </div>
+  </div>
+  </div>
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Image with text overlay",
+    "class": "index-section index-section--flush",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "select",
+        "id": "alignment",
+        "label": "Image alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "center",
+            "label": "Middle"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Image with text overlay"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story.</p>"
+      },
+      {
+        "type": "select",
+        "id": "hero_size",
+        "label": "Section height",
+        "default": "medium",
+        "options": [
+          {
+            "label": "Extra Small",
+            "value": "x-small"
+          },
+          {
+            "label": "Small",
+            "value": "small"
+          },
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          },
+          {
+            "label": "Extra Large",
+            "value": "x-large"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "text_size",
+        "label": "Text size",
+        "default": "medium",
+        "options": [
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Image with text overlay",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}

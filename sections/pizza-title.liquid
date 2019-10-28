@@ -1,0 +1,50 @@
+{% if section.settings.title_image != blank or section.settings.image_svg != blank %}
+  <div class="pizza-title__wrapper padding-vertical-xlg">
+    <div class="pizza-title__width">
+      {% if section.settings.title_image != blank %}
+        {% if section.settings.title != blank %}
+          <h1 class="text-center bold margin-bottom-0">{{ section.settings.title }}</h1>
+        {% endif %}
+        <div class="pizza-title__text">{{ section.settings.title_text }}</div>
+      {% endif %}
+      <div class="pizza-title__image text-center">
+        {% if section.settings.image_svg != blank %}
+          {{ section.settings.image_svg | img_tag }}
+        {% else %}
+          {{ section.settings.title_image | img_url: '600x600' | img_tag }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Title",
+    "class": "no-margin no-padding",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "title_image",
+        "label": "Title image"
+      },
+      {
+        "type": "html",
+        "id": "image_svg",
+        "label": "SVG image"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "default": "Some text..",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "title_text",
+        "default": "Some text..",
+        "label": "Left text"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,100 @@
+<div class="page-width">
+ <div class="grid grid--xlg2-gutter grid--table small--break-table"> 
+   <div class="grid__item medium-up--three-quarters text-left">
+  
+<div class="grid"> 
+       <div class="grid__item one-whole">
+  {% include 'heading-snippet', settings: 'text-left color-white bold' %}
+       </div>
+     <div class="grid__item fluid">
+      
+       <div class="stars-holder">{% assign stars = section.settings.reviews_rating |ceil |plus: 0 %}
+           <img src="{{ '5-stars.png' | asset_img_url: '400x'}}">
+       </div>
+     </div> 
+     <div class="grid__item fluid">
+       <h4 class="bold color-white">{{ section.settings.reviews_rating }} {{ section.settings.reviews_label }}</h4>
+     </div>
+     </div>
+   </div>
+   <div  class="grid__item medium-up--one-quarter vertical-align-top">
+      {% if section.settings.button_label != blank %}
+        <a href="javasript:void(0);" class="btn btn--large small-shadow show-reviews margin-top-0">
+          <span>{{ section.settings.button_label }}</span> {% include 'icon-arrow-right' %}
+        </a>
+      {% endif %}
+   </div>
+  
+  </div>
+  <div class="grid">
+     {% for product in collections['all'].products limit: 1 %}
+   <div class="grid__item one-whole">
+     
+       <div class="margin-auto medium-up--one-half">
+     <div id="shopify-product-reviews" style="display: none;" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+     
+       </div>
+   </div>
+   {% endfor %}
+  </div>
+</div>
+<script>
+  $(document).ready(function(){
+    $('.show-reviews').click(function(e){
+      e.preventDefault();
+    $('#shopify-product-reviews').slideDown();
+    })
+  })
+</script>
+{% include 'gradient-background' %}
+{% schema %}
+  {
+    "name": "Reviews",
+    "settings": [
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Order now"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label"
+      },
+      {
+        "type": "text",
+        "id": "reviews_label",
+        "label": "Reviews label"
+      },
+	  {
+        "type":   "range",
+    	"id":     "reviews_rating",
+	    "min":       0,
+    	"max":       5,
+   		"step":      0.1,
+    	"unit":      "st",
+    	"label":     "Reviews rating",
+    	"default":   5
+	  },
+      {
+        "type": "color",
+        "id": "prim_color",
+        "label": "Left color",
+        "default": "#248fba"
+      },
+      {
+        "type": "color",
+        "id": "sec_color",
+        "label": "Right color",
+        "default": "#0f7ca8"
+      }
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

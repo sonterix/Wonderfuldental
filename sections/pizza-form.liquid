@@ -1,0 +1,116 @@
+<div class="pizza-form__wrapper padding-vertical-xlg2"{% if section.settings.background_svg != blank %} style="background-image: url({{ section.settings.background_svg }})"{% elsif section.settings.background_image != blank %} style="background-image: url({{ section.settings.background_image | img_url: '300x300' }})"{% endif %}>
+  <div class="pizza-form__form margin-auto ">
+    {%- assign formId = 'ContactForm' -%}
+    {% form 'contact', id: formId %}
+     {% if form.posted_successfully? %}
+    <script> 
+      $(document).ready(function(){ 
+        $('#MessageSent').text('Entry successfully submitted. Good luck!!');
+        
+      })
+    </script>
+    {{ '180116card8.jpg' | asset_url | img_tag}} 
+    <style>
+      .pizza-form__form-bg { 
+        display:none; 
+      } 
+      
+      .btn-sbmt {
+        display: none; 
+      } 
+    </style> 
+    {% endif %}
+    	<div class="pizza-form__form-bg padding-md">
+          {% if section.settings.form_title != blank %}
+            <h2 class="text-center bold margin-bottom-md h3 medium-up--h2">{{ section.settings.form_title }}</h2>
+          {% endif %}
+          
+          {% if section.settings.subtitle != blank %}
+            <p class="text-center">{{ section.settings.subtitle }}</p>
+          {% endif %}
+          
+          <div class="text-center margin-bottom-md">
+            <iframe src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fwonderfuldental&width=200&layout=button_count&action=like&size=large&show_faces=true&share=false&height=21&appId=976560299149020" width="130" height="30" style="border:none;overflow:hidden;margin:0 auto;" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>
+          </div>
+
+              <input type="text" value="Pizza Party Form" name="contact[Form type]" style="position: absolute; opacity: 0; pointer-events: none;">
+          <input required type="text" value="{{ "now" | date: "%Y-%m-%d %H:%M" }}." name="contact[Date submitted]" style="position: absolute; opacity: 0; pointer-events: none;">
+          
+          <label for="{{ formId }}-name">{{ 'contact.form.name' | t }}</label>
+          <input required type="text" id="{{ formId }}-name" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}"{%- if form.errors contains 'name' -%} class="input--error"{%- endif -%}>
+
+          <label for="{{ formId }}-officeName">{{ 'contact.form.office_name' | t }}</label>
+          <input required type="text" name="contact[OfficeName]" {%- if form.errors contains 'OfficeName' -%} class="input--error"{%- endif -%}>
+          
+          <label for="{{ formId }}-phone">{{ 'contact.form.phone' | t }}</label>
+          <input required type="number" name="contact[Phone]" {%- if form.errors contains 'Phone' -%} class="input--error"{%- endif -%}>
+          
+          <label for="{{ formId }}-email">{{ 'contact.form.email' | t }}</label>
+          <input required
+                 type="email"
+                 id="{{ formId }}-email"
+                 name="contact[email]"
+                 autocorrect="off"
+                 autocapitalize="off"
+                 value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                 aria-required="true"
+                 {%- if form.errors contains 'email' -%}
+                 class="input--error"
+                 aria-invalid="true"
+                 aria-describedby="{{ formId }}-email-error"
+                 {%- endif -%}
+                 >
+
+
+          <label for="{{ formId }}-faveDelivery">{{ 'contact.form.fave_delivery' | t }}</label>
+          <input required type="text" name="contact[FaveDelivery]" {%- if form.errors contains 'FaveDelivery' -%} class="input--error"{%- endif -%}>
+          
+          {% if section.settings.additional_info != blank %}
+            <small class="text-center display-block">{{ section.settings.additional_info }}</small>
+          {% endif %}
+      </div>
+    
+      <input type="submit" class="btn btn-sbmt margin-top-md padding-sm" value="{{ 'contact.form.submit_pizza' | t }}">
+
+    {% endform %}
+  </div>
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Form",
+    "class": "no-margin no-padding",
+    "settings": [
+      {
+        "type": "text",
+        "id": "form_title",
+        "default": "Some text..",
+        "label": "Form title"
+      },
+      {
+        "type": "textarea",
+        "id": "subtitle",
+        "default": "Some text..",
+        "label": "Subtitle"
+      },
+      {
+        "type": "textarea",
+        "id": "additional_info",
+        "default": "Some text..",
+        "label": "Additional info"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Background image"
+      },
+      {
+        "type": "html",
+        "id": "background_svg",
+        "label": "SVG for background"
+      }
+    ]
+  }
+{% endschema %}

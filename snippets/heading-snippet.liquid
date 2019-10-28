@@ -1,0 +1,24 @@
+  {% if section.settings.title != blank %}
+  <div class="section-header {% if textl == blank %} text-center {% else %} textl {% endif %} {{ wrapper }}">
+    {% if headingtype == "h1" %}
+   <h1 class="h1 {{ settings }}">{{ section.settings.title }}</h1>
+    {% else %}
+     <h2 class="h1 {{ settings }}">{{ section.settings.title }}</h2>
+    {% endif %}
+      {% if section.settings.text and text != "no" %}
+      <div class="{{text}}">
+      {{ section.settings.text }}
+      </div>
+        {% endif %}
+    </div>
+  {% endif %}
+
+{% if blog.title %}
+<div class="section-header text-center {{ wrapper }}">
+      <h1 class="h1 {{ settings }}">{{ blog.title | escape }}</h1>
+      
+      {% if blog.description %}
+      {{ blog.description }}
+      {% endif %}
+    </div>
+{% endif %}
