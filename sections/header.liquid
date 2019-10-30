@@ -25,7 +25,7 @@
                     <div class="navigation11 nav-closed padding-vertical-lg">
                         <ul class="mobile-nav small-width">
                             <li class="mobile-nav__item mobile-nav__account">
-                                <a href="/account" class="mobile-nav__link h2 bold">
+                                <a href="/pages/your-account" class="mobile-nav__link h2 bold">
                                     {% if customer %}
                                         <span>{{- 'layout.customer.greeting' | t: name: customer.first_name -}}</span>
                                         {{- 'layout.customer.account' | t -}}
@@ -190,7 +190,7 @@
         </div>
         <div class="grid__item small--one-third medium-up--one-third text-right">
             <div class="link-item relative inline-block">
-                <a href="/account" class="account-link not-underlined">
+                <a href="/pages/your-account" class="account-link not-underlined">
                     {% if customer %}
                         <span>{{- 'layout.customer.greeting' | t: name: customer.first_name -}}</span>
                         {{- 'layout.customer.account' | t -}}

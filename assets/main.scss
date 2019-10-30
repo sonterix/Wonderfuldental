@@ -441,9 +441,7 @@ $color-red: #ce213d;
     @include breakpoint(medium) {
         padding-top: 20px;
 
-        .account-title{
-            text-align: center;
-        }
+     
 
         .order-history__list {
             margin-left: -12px;
@@ -596,12 +594,6 @@ $color-red: #ce213d;
 
     @include breakpoint(medium){
         width: calc(100% - 24px);
-
-        .order__global-status,
-        .reorder_product,
-        .btn{
-            pointer-events:none !important;
-        }
 
         .order__body{
             width: 100%;
