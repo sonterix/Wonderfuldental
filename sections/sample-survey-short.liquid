@@ -1,256 +1,245 @@
 <div class="contact" data-section-id="{{ section.id }}" data-section-type="contact">
-    <div class="page-width">
+
+
+  <div class="page-width">
+  <div class="grid" >
+
+  <div class="grid__item medium-up--one-half medium-up--push-one-quarter">
+ {% form 'contact' %}
+ <div  class="contact-form form-holder form-vertical styled-form">
+    <div class="small-width"><div class="grid"><div class="grid__item medium-up--one-whole ">
+      {% include 'heading-snippet', settings: 'bold' %}
+      
+      <div class="text-center">
+       <div class="successMsg notify">Please note: We only ship to dental offices and clinics.</div>
+	   <div class="successMsg notify" >Simply take our survey, and enter your office information and we will ship out free samples right away!</div>
+  </div> </div> </div></div>   
+{{ form.errors | default_errors }}
+
+        
+
         <div class="grid">
-            <div class="grid__item medium-up--one-half medium-up--push-one-quarter">
-                {% form 'contact' %}
-                    <div class="contact-form form-holder form-vertical styled-form required">
-                        <div class="small-width">
-                            <div class="grid">
-                                <div class="grid__item medium-up--one-whole ">
-                                    {% include 'heading-snippet', settings: 'bold' %}
-                                    <div class="text-center">
-                                        <div class="successMsg notify">Please note: We only ship to dental offices and
-                                            clinics.
-                                        </div>
-                                        <div class="successMsg notify">Simply take our survey, and enter your office
-                                            information and we will ship out free samples right away!
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{ form.errors | default_errors }}
-
-                        <div class="grid">
-                            <input type="text" value="Short samples form" name="contact[Form type]"
-                                   style="position: absolute; opacity: 0; pointer-events: none;">
-                            <input type="text" value="{{ "now" | date: "%Y-%m-%d %H:%M" }}."
-                                   name="contact[Date submitted]"
-                                   style="position: absolute; opacity: 0; pointer-events: none;">
-
-                            {% for block in section.blocks %}
-                                {% assign width = 'medium-up--' |append: block.settings.field_width %}
-                                <div class="grid__item {{ width }}">
-                                    {% if block.type == 'field' %}
-                                        {% if block.settings.field_type == 'textarea' %}
-                                            <div class="field-holder">
-                                                {% unless section.settings.hide_labels %}
-                                                    <label for="{{ block.settings.label | camelcase }}">{{ block.settings.label }}</label>
-                                                {% endunless %}
-                                                <textarea
-                                                        id="{{ block.settings.label | camelcase }}"{% if block.settings.required %} placeholder="{{ 'layout.page.required_placeholder' | t }}" required{% endif %} name="contact[{{ block.settings.label }}]"></textarea>
-                                            </div>
-                                        {% else %}
-                                            <div class="field-holder">
-                                                {% unless section.settings.hide_labels %}
-                                                    <label for="b-{{ block.id }}">{{ block.settings.label }}</label>
-                                                {% endunless %}
-                                                <input type="{{ block.settings.field_type }}"
-                                                       id="b-{{ block.id }}"{% if block.settings.required %} placeholder="{{ 'layout.page.required_placeholder' | t }}" required{% endif %}
-                                                       name="contact[{% if block.settings.field_type == 'email' %}{{ block.settings.label |camelcase |downcase }}{% else %}{{ block.settings.label }}{% endif %}]">
-                                            </div>
-                                        {% endif %}
-                                        {% elsif block.type == 'checkbox' %}
-                                        <div class="checkbox-holder">
-                                            <label for="b-{{ block.id }}">
-                                                <input checked type="checkbox"
-                                                       id="b-{{ block.id }}" {% if block.settings.required %} required {% endif %}
-                                                       name="contact[{{ block.settings.label }}]">
-                                                <span class="checkbox-label"> {{ block.settings.label }}</span>
-                                            </label>
-                                        </div>
-                                        {% elsif block.type == 'range' %}
-                                        <div class="range-holder">
-                                            <label for="b-{{ block.id }}">
-                                                <span>{{ block.settings.label }}</span>
-                                                <input type="range" min="{{ block.settings.min }}"
-                                                       max="{{ block.settings.max }}"
-                                                       id="b-{{ block.id }}" {% if block.settings.required %} required {% endif %}
-                                                       name="contact[{{ block.settings.label }}]">
-                                            </label>
-                                        </div>
-                                        {% elsif block.type == 'question' %}
-                                        <div class="question-holder">
-                                            <h2 class="bold normalcase">{{ block.settings.label }}</h2>
-                                        </div>
-                                        {% elsif block.type == 'select' %}
-                                        <div class="select-holder">
-                                            {% unless section.settings.hide_labels %}
-                                                <label for="b-{{ block.id }}">{{ block.settings.label }}</label>
-                                            {% endunless %}
-                                            <select name="contact[{{ block.settings.label }}]" id="b-{{ block.id }}">
-                                                {% if block.settings.value_1 != blank %}
-                                                    <option value="{{ block.settings.value_1 }}">{{ block.settings.value_1 }}</option>
-                                                {% endif %}
-                                                {% if block.settings.value_2 != blank %}
-                                                    <option value="{{ block.settings.value_2 }}">{{ block.settings.value_2 }}</option>
-                                                {% endif %}
-                                                {% if block.settings.value_3 != blank %}
-                                                    <option value="{{ block.settings.value_3 }}">{{ block.settings.value_3 }}</option>
-                                                {% endif %}
-                                                {% if block.settings.value_4 != blank %}
-                                                    <option value="{{ block.settings.value_4 }}">{{ block.settings.value_4 }}</option>
-                                                {% endif %}
-                                            </select>
-                                        </div>
-                                        {% elsif block.type == 'select-group-100' %}
-                                        <div class="select-holder">
-                                            {% unless section.settings.hide_labels %}
-                                                <label for="b-{{ block.id }}">{{ block.settings.label }}</label>
-                                            {% endunless %}
-                                            <select name="contact[{{ block.settings.label }}]" id="b-{{ block.id }}">
-                                                <option selected disabled value="1"> -</option>
-                                                {% for i in (1..20) %}
-                                                    <option value="{{ i | times: 5 }}">{{ i | times: 5 }}</option>
-                                                {% endfor %}
-                                                <option value="100">100+</option>
-                                            </select>
-                                        </div>
-                                        {% elsif block.type == 'radio' %}
-                                        {% unless section.settings.hide_labels %}
-                                            <label for="{{ block.settings.label | camelcase }}">{{ block.settings.label }}
-                                            </label>
-                                        {% endunless %}
-                                        <div class="grid">
-                                            {% if block.settings.value_1 != blank %}
-                                                <div class="grid__item medium-up--one-quarter radio-holder">
-                                                    <label for="{{ block.settings.value_1 |camelcase }}">
-                                                        <input type="radio" value="{{ block.settings.value_1 }}"
-                                                               id="{{ block.settings.value_1 |camelcase }}"
-                                                               name="contact[{{ block.settings.label }}]">
-                                                        <span class="radio-label">{{ block.settings.value_1 }}</span>
-                                                    </label>
-                                                </div>
-                                            {% endif %}
-                                            {% if block.settings.value_2 != blank %}
-                                                <div class="grid__item  medium-up--one-quarter radio-holder">
-                                                    <label for="{{ block.settings.value_2 |camelcase }}">
-                                                        <input type="radio" value="{{ block.settings.value_2 }}"
-                                                               id="{{ block.settings.value_2 |camelcase }}"
-                                                               name="contact[{{ block.settings.label }}]">
-                                                        <span class="radio-label">{{ block.settings.value_2 }}</span>
-                                                    </label>
-                                                </div>
-                                            {% endif %}
-                                            {% if block.settings.value_3 != blank %}
-                                                <div class="grid__item  medium-up--one-quarter radio-holder">
-                                                    <label for="{{ block.settings.value_3 |camelcase }}">
-                                                        <input type="radio" value="{{ block.settings.value_3 }}"
-                                                               id="{{ block.settings.value_3 |camelcase }}"
-                                                               name="contact[{{ block.settings.label }}]">
-                                                        <span class="radio-label">{{ block.settings.value_3 }}</span></label>
-                                                </div>
-                                            {% endif %}
-                                            {% if block.settings.value_4 != blank %}
-                                                <div class="grid__item  medium-up--one-quarter radio-holder"><label
-                                                            for="{{ block.settings.value_4 |camelcase }}">
-                                                        <input type="radio" value="{{ block.settings.value_4 }}"
-                                                               id="{{ block.settings.value_4 |camelcase }}"
-                                                               name="contact[{{ block.settings.label }}]">
-                                                        <span class="radio-label">{{ block.settings.value_4 }}</span></label>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        {% elsif block.type == 'select-group' %}
-                                        {% unless section.settings.hide_labels %}
-                                            <label for="{{ block.settings.label | camelcase }}">{{ block.settings.label }}
-                                            </label>
-                                        {% endunless %}
-
-                                        <select id="{{ block.settings.label | camelcase }}"{% if block.settings.required %} required {% endif %}
-                                                name="contact[{{ block.settings.label }}]">
-                                            {% if block.settings.blank_option %}
-                                                <option value="" disabled selected></option>
-                                            {% endif %}
-                                            {% if block.settings.value_1 != blank %}
-                                                <option value="{{ block.settings.value_1 }}"> {{ block.settings.value_1 }} </option>
-                                            {% endif %}
-                                            {% if block.settings.value_2 != blank %}
-                                                <option value="{{ block.settings.value_2 }}"> {{ block.settings.value_2 }} </option>
-                                            {% endif %}
-                                            {% if block.settings.value_3 != blank %}
-                                                <option value="{{ block.settings.value_3 }}"> {{ block.settings.value_3 }} </option>
-                                            {% endif %}
-                                            {% if block.settings.value_4 != blank %}
-                                                <option value="{{ block.settings.value_4 }}"> {{ block.settings.value_4 }} </option>
-                                            {% endif %}
-                                        </select>
-
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <br/>
-
-                        <label style="line-height: 25px; margin-top: -20px;">By clicking this checkbox you are verifying
-                            yourself to be a dental professional and allow us to send you tracking for your
-                            samples</label>
-                        <div class="mcwidget-checkbox" style="position:relative;left:-14px;width:fit-content;"
-                             data-widget-id="7821320"></div>
-
-                        <input type="submit" class="btn btn-submit btn--alt" value="{{ section.settings.btn_text }}">
-                        <p style="font-size: 10px; color: #aaa;">By ordering free samples you are automatically opted
-                            into our mailing list.</p>
-                    </div>
-
-                    <div id="form-success" class="form-success" style="display: none;">
-                        {% if form.posted_successfully? %}
-                            <script>fbq('track', 'Lead');</script>
-
-                            <div class="note padding-horizontal-xlg margin-bottom-0 text-center styled-form">
-                                <img src="{{ 'dentists-thankyou-1.svg' | asset_url }}"/>
-                                <h3 class="bold"> {{ section.settings.success_title }} </h3>
-                                {{ section.settings.success_text }}
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endform %}
+         
+          <input type="text" value="Short samples form" name="contact[Form type]" style="position: absolute; opacity: 0; pointer-events: none;">
+          <input type="text" value="{{ "now" | date: "%Y-%m-%d %H:%M" }}." name="contact[Date submitted]" style="position: absolute; opacity: 0; pointer-events: none;">
+        {% for block in section.blocks %}
+          {% assign width = 'medium-up--' |append: block.settings.field_width %}
+       
+          <div class="grid__item {{ width }}">
+        {% if block.type == 'field' %}
+        {% if block.settings.field_type == 'textarea' %}
+            
+        <div class="field-holder">
+          {% unless section.settings.hide_labels %}
+              <label for="{{ block.settings.label | camelcase }}">{{ block.settings.label }}</label>
+          {% endunless %}
+              <textarea  placeholder="{{ block.settings.placeholder }}"id="{{ block.settings.label | camelcase }}"{% if block.settings.required %} required {% endif %} name="contact[{{ block.settings.label }}]"></textarea>
+                </div>
+        {% else %}
+        <div class="field-holder">
+          {% unless section.settings.hide_labels %}
+              <label for="b-{{ block.id }}">{{ block.settings.label }}</label>
+          {% endunless %}
+              <input type="{{ block.settings.field_type }}" placeholder="{{ block.settings.placeholder }}"id="b-{{ block.id }}"{% if block.settings.required %} required {% endif %} name="contact[{% if block.settings.field_type == 'email' %}{{ block.settings.label |camelcase |downcase }}{% else %}{{ block.settings.label }}{% endif %}]">
             </div>
+        {% endif %}
+        {% elsif block.type == 'checkbox' %}
+        <div class="checkbox-holder">
+              <label for="b-{{ block.id }}">
+              <input checked type="checkbox" id="b-{{ block.id }}" {% if block.settings.required %} required {% endif %} name="contact[{{ block.settings.label }}]">
+                <span class="checkbox-label"> {{ block.settings.label }}</span>
+          </label>
+                </div>
+            {% elsif block.type == 'range' %}
+        <div class="range-holder">
+              <label for="b-{{ block.id }}">
+                <span>{{ block.settings.label }}</span>
+              <input type="range" min="{{ block.settings.min }}" max="{{ block.settings.max }}" id="b-{{ block.id }}" {% if block.settings.required %} required {% endif %} name="contact[{{ block.settings.label }}]">
+          </label>
+                </div>
+            {% elsif block.type == 'question' %}
+            <div class="question-holder">
+              <h2 class="bold normalcase">{{ block.settings.label }}</h2>
+            </div>
+            
+        {% elsif block.type == 'select' %}
+        <div class="select-holder">
+          {% unless section.settings.hide_labels %}
+        <label for="b-{{ block.id }}">{{ block.settings.label }}</label>
+          {% endunless %}
+        <select name="contact[{{ block.settings.label }}]" id="b-{{ block.id }}">
+        {% if block.settings.value_1 != blank %}
+          <option value="{{ block.settings.value_1}}">{{ block.settings.value_1 }}</option>
+          {% endif %}
+        {% if block.settings.value_2 != blank %}
+        <option value="{{ block.settings.value_2}}">{{ block.settings.value_2 }}</option>
+          {% endif %}
+        {% if block.settings.value_3 != blank %}
+        <option value="{{ block.settings.value_3}}">{{ block.settings.value_3 }}</option>
+          {% endif %}
+        {% if block.settings.value_4 != blank %}
+        <option value="{{ block.settings.value_4}}">{{ block.settings.value_4 }}</option>
+          {% endif %}
+        </select>
         </div>
+        {% elsif block.type == 'select-group-100' %}
+        <div class="select-holder">
+          {% unless section.settings.hide_labels %}
+        <label for="b-{{ block.id }}">{{ block.settings.label }}</label>
+          {% endunless %}
+        <select name="contact[{{ block.settings.label }}]" id="b-{{ block.id }}">
+          <option selected disabled value="1"> - </option>
+		{% for i in (1..20) %}
+          <option  value="{{ i | times: 5}}">{{ i | times: 5 }}</option>
+         {% endfor %}
+          <option  value="100">100+</option>
+        </select>
+        </div>
+        {% elsif block.type == 'radio' %}
+            {% unless section.settings.hide_labels %}
+         <label for="{{ block.settings.label | camelcase }}">{{ block.settings.label }}
+           </label>
+            {% endunless %}
+            <div class="grid">
+              {% if block.settings.value_1 != blank %}
+        <div class="grid__item medium-up--one-quarter radio-holder">
+          <label for="{{ block.settings.value_1 |camelcase }}">
+            <input type="radio" value="{{ block.settings.value_1 }}" id="{{block.settings.value_1 |camelcase }}"  name="contact[{{ block.settings.label }}]"><span class="radio-label">{{ block.settings.value_1 }}</span></label>
+        </div> 
+        {% endif %}
+        {% if block.settings.value_2 != blank %}
+        <div class="grid__item  medium-up--one-quarter radio-holder">
+          <label for="{{ block.settings.value_2 |camelcase }}">
+          <input type="radio" value="{{ block.settings.value_2 }}" id="{{block.settings.value_2 |camelcase }}" name="contact[{{ block.settings.label }}]">
+            <span class="radio-label">{{ block.settings.value_2 }}</span></label>
+          </div> 
+        {% endif %}
+        {% if block.settings.value_3 != blank %}
+        <div class="grid__item  medium-up--one-quarter radio-holder">
+          <label for="{{ block.settings.value_3 |camelcase }}">
+          <input type="radio" value="{{ block.settings.value_3 }}" id="{{block.settings.value_3 |camelcase }}" name="contact[{{ block.settings.label }}]">
+            <span class="radio-label">{{ block.settings.value_3 }}</span></label>
+          </div> 
+        {% endif %}
+        {% if block.settings.value_4 != blank %}
+        <div class="grid__item  medium-up--one-quarter radio-holder"><label for="{{ block.settings.value_4 |camelcase }}">
+          <input type="radio" value="{{block.settings.value_4 }}" id="{{block.settings.value_4 |camelcase }}"  name="contact[{{ block.settings.label }}]">
+          <span class="radio-label">{{ block.settings.value_4 }}</span></label>
+          </div> 
+        {% endif %}
+          </div>
+            {% elsif block.type == 'select-group' %}
+            {% unless section.settings.hide_labels %}
+         <label for="{{ block.settings.label | camelcase }}">{{ block.settings.label }}
+           </label>
+            {% endunless %}
+           
+              <select id="{{ block.settings.label | camelcase }}"{% if block.settings.required %} required {% endif %} name="contact[{{ block.settings.label }}]">
+              {% if block.settings.blank_option %}   <option value="" disabled selected></option> {% endif %}
+                {% if block.settings.value_1 != blank %}
+        
+            <option value="{{ block.settings.value_1 }}"> {{ block.settings.value_1 }} </option>
+        {% endif %}
+        {% if block.settings.value_2 != blank %}
+        
+            <option value="{{ block.settings.value_2 }}"> {{ block.settings.value_2 }} </option>
+        {% endif %}
+         
+        {% if block.settings.value_3 != blank %}
+        
+            <option value="{{ block.settings.value_3 }}"> {{ block.settings.value_3 }} </option>
+        {% endif %}
+                
+        {% if block.settings.value_4 != blank %}
+        
+            <option value="{{ block.settings.value_4 }}"> {{ block.settings.value_4 }} </option>
+        {% endif %}
+                
+                </select>
+          
+        {% endif %}
+          </div>
+        {% endfor %}
+        </div>
+   <br/>
+ <label style="
+    line-height: 25px;
+    margin-top: -20px;
+">By clicking this checkbox you are verifying yourself to be a dental professional and allow us to send you tracking for your samples</label>
+   <div class="mcwidget-checkbox" style="position:relative;left:-14px;width:fit-content;" data-widget-id="7821320"></div>
+   <input type="submit"  onclick="MC.getWidget(7821320).submit()"  class="btn btn--alt" value="{{ section.settings.btn_text  }}">
+    <p style="font-size: 10px; color: #aaa;">By ordering free samples you are automatically opted into our mailing list.</p>
+
+      </div>
+	
+  <div id="form-success" class="form-success" style="display: none;">
+      {% if form.posted_successfully? %}
+    <script>
+  fbq('track', 'Lead');
+</script>
+            <div class="note padding-horizontal-xlg margin-bottom-0 text-center styled-form">
+              <img src="{{ 'dentists-thankyou-1.svg' | asset_url }}"/>
+              <h3 class="bold"> {{ section.settings.success_title }} </h3>
+              {{ section.settings.success_text }}
+              
+             
     </div>
+          {% endif %}
+    </div>
+{% endform %}
+  </div>
+  </div>
+  </div>
 </div>
 
 <script>
-    $(document).ready(function () {
+  $(document).ready(function(){
 
-        $('.btn-submit').on('click', function (e) {
-            e.preventDefault();
+    $("label").html(function(index, text) {
+      return text.replace("wonderful", "<b>wonderful</b>");	
+    });
 
-            let error = 0;
+    $('#takesurvey').click(function() {
+      if($('.sample-checkbox:checked').length > 0) {
+      //  $('.main-content .shopify-section').addClass('hide');
+     //   $('#shopify-section-sample-survey-short').removeClass('hide');
 
-            $('#contact_form').find('textarea, input').each(function () {
-                if ($(this).prop('required')) {
-
-                    if ($(this).val().length == 0) {
-                        error = 1;
-                        $(this).addClass('error-field');
-                    } else {
-                        $(this).removeClass('error-field');
-                    }
-                }
-            })
-
-            if (error == 0) {
-                MC.getWidget(7821320).submit();
-                $("#contact_form").submit();
-            }
-        })
-
-        $("label").html(function (index, text) {
-            return text.replace("wonderful", "<b>wonderful</b>");
-        })
-
-        if (getUrlParameter('form_type') == 'contact' || getUrlParameter('contact_posted') == 'true') {
-            $('#thankyou').removeClass('hide');
-            slideEffects($('.contact-form.form-holder'), $('.form-success'));
-
-            $(window).load(function () {
-                scrollToDiv($('#form-success'));
-            })
-        }
-
+        var body = $("html, body");
+//         body.stop().animate({scrollTop:0}, 500, 'swing', function() {});
+      }
     })
+
+    if (getUrlParameter('form_type') == 'contact' || getUrlParameter('contact_posted') == 'true') {
+     // $('#shopify-section-sample-products').hide()
+     // $('#shopify-section-sample-survey-short').removeClass('hide');
+      $('#thankyou').removeClass('hide');
+      slideEffects($('.contact-form.form-holder'), $('.form-success'));
+      
+      $(window).load(function() {
+        scrollToDiv($('#form-success'));
+      });
+      /*
+      $('.copy-code').click(function(e){
+
+      e.preventDefault();
+
+        copyToClipboard('#discount_code');
+
+      Shopify.clear(function(){
+      $('.sample-checkbox:checked').each(function(){
+      push_to_queue($(this).data('id'), 1);
+        console.log($(this).data('id'));
+
+    Shopify.moveAlong();
+
+
+      })
+      });
+         window.location.href = '/checkout';
+      })
+      */
+    }
+  })
 </script>
 
 {% include 'party-snippet' %}
