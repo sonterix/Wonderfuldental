@@ -1,0 +1,31 @@
+{% for product in collections.all.products %}
+  {% assign titles = titles | append: ';' | append: product.title %}
+{% endfor %}
+
+<script src="https://widget.reviews.io/product/dist.js"></script>
+
+<div class="page-width">
+  <div id="widget-stamped"></div>
+</div>
+
+<script type="text/javascript">
+  productWidget("widget-stamped",{
+    store: "wonderfuldentalco",
+    sku: "{{ titles }}",
+    primaryClr: "#f47e27",
+    neutralClr: "#EBEBEB",
+    buttonClr: "#EEE",
+    textClr: "#333",
+    tabClr: "#eee",
+    ratingStars: false,
+    showAvatars: true,
+    perPage: 10
+  })
+</script>
+
+{% schema %}
+  {
+    "name": "Stamped Reviews",
+    "settings": []
+  }
+{% endschema %}

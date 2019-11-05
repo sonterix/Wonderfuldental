@@ -1,0 +1,836 @@
+{% assign debugMode = 1 %}
+{% assign hidePreviewBar = 0 %}
+{% capture javascript %}
+{% comment %}
+
+If there's an issue you want to fix, the "Debug Mode"
+will log inside console every function that is used.
+To turn it on  replace the debugMode variable value with 1.
+To turn this mode off replace the debugMode variable value with 0.
+  
+To hide the preview bar replace hidePreviewBar variable with 1.
+  
+{
+  {% endcomment %}
+  
+  var pickedVariantTitle = '';
+  
+  function changePickedVariantTitle(newTitle){
+  pickedVariantTitle = newTitle;
+    
+  }
+  
+  var checkoutId2 = '';
+  var upsellAddedCookie2 = 'upsellAdded' + checkoutId2;
+  
+  function changeCheckoutId(id){
+  checkoutId2 = id;
+    upsellAddedCookie2 = 'upsellAdded' + checkoutId2;
+    
+    console.log('upsellAddedCookie2:' + upsellAddedCookie2);
+  }
+  
+//Cookies
+
+function setCookie(cname, cval) {
+  
+  if(cval){
+     var cvalue = cval;
+  }
+  else{
+     var cvalue = pickedVariantTitle;
+  }
+ 
+ var exdays = "10000";
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  
+  console.log('setCookie(cname)');
+}
+
+function checkCookie(cname) {
+    var username = getCookie(cname);
+    console.log('checkCookie(cname)' + getCookie(cname) + 'blah');
+
+    if (username.length > 0) {
+      console.log('cookie is heree:' + cname);
+		return 1;
+    } else {
+      console.log('cookie is not here:' + cname);
+      return 0;
+    }
+  
+}
+
+function getCookie(name) {
+    var cookie = document.cookie;
+    var prefix = name + "=";
+    var begin = cookie.indexOf("; " + prefix);
+    if (begin == -1) {
+        begin = cookie.indexOf(prefix);
+        if (begin !== 0) return 0;
+    } else {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+        end = cookie.length;
+        }
+    }
+  
+  console.log('getCookie('+name+'): ' + unescape(cookie.substring(begin + prefix.length, end)));
+  
+    return unescape(cookie.substring(begin + prefix.length, end));
+} 
+
+function deleteCookie(name){
+   
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+ 
+  console.log('deleteCookie(name)');
+  
+}
+
+//Atrributes & URL
+
+function checkForAttr(attr) {
+        if (typeof attr !== typeof undefined && attr !== false) {
+            var result = 1;
+        } else {
+            var result = 0;
+        }
+  return result;
+  
+  console.log('checkForAttr(attr); result: ' + result);
+  
+    }
+
+function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+  
+  console.log('getUrlParameter(sParam); result:' + sParameterName[1] === undefined ? true : sParameterName[1] );
+  
+};
+
+//Price & Numbers
+
+    function priceToNumber(price) {
+        var number = Number(price.replace(/[^0-9\-]+/g, "")) * 100;
+      
+      console.log('priceToNumber(price); result:' + number);
+      
+        return number;
+    }
+
+    function textToNumber(number) {
+        var number = Number(number.replace(/[^0-9\.-]+/g, ""));
+      
+      console.log('textToNumber(number); result:' + number);
+      
+        return number;
+    }
+
+    function numberToPrice(number) {
+      var currency = '{{ 100 |money |remove: '1.00' |strip }}';
+        var realPrice = (number / 100).toFixed(2);
+        var price = currency + "" + realPrice;
+      
+      console.log('numberToPrice(number); result:' + price);
+      
+        return price;
+    }
+
+//Shopify Products
+
+    Shopify.queue = [];
+
+    Shopify.moveAlong = function() {
+        // If we still have requests in the queue, let's process the next one.
+        if (Shopify.queue.length) {
+            var request = Shopify.queue.shift();
+            Shopify.addItem(request.variantId, request.quantity, request.properties, Shopify.moveAlong);
+          updateCartIcon();
+        }
+        // If the queue is empty, we will redirect to the cart page.
+        else {
+            //$('#add').removeAttr('disabled');
+updateCartIcon();
+        }
+      console.log('Shopify.moveAlong = function()');
+      
+    };
+
+        Shopify.updateAlong = function() {
+  // If we still have requests in the queue, let's process the next one.
+  if (Shopify.queue.length) {
+    var request = Shopify.queue.shift();
+     Shopify.changeItem(request.variantId, request.quantity, Shopify.updateAlong);
+   // console.log("wow");
+    updateCartIcon();
+  }
+      else {
+        updateCartIcon();
+       // console.log("nothing to see here");
+      }
+
+          
+      console.log('Shopify.updateAlong = function()');
+      
+};
+  
+     Shopify.removeAlong = function() {
+  // If we still have requests in the queue, let's process the next one.
+  if (Shopify.queue.length) {
+    var request = Shopify.queue.shift();
+     Shopify.removeItem(request.variantId, Shopify.updateAlong);
+  }
+      else {
+        updateCartIcon();
+      }
+
+          console.log('Shopify.removeAlong = function()');
+      
+          
+};
+   
+  function updateCartTotal(){
+    setTimeout(function(){
+ jQuery.getJSON('/cart.js', function(cart) {
+    for(var i=0; i<cart.items.length; i++){
+      var item = cart.items[i];
+      var elem = $('.product-' + item.id+' .money');
+      elem.html(Shopify.formatMoney(item.price*item.quantity));
+      $('.cart__subtotal').html(Shopify.formatMoney(cart.total_price));
+    };
+   updateCartIcon();
+  });
+      
+    }, 300);
+    
+    console.log('updateCartTotal()');
+      
+};
+
+  
+    Shopify.addItem = function(id, qty, properties) { 
+        var params = {
+            quantity: qty,
+            id: id
+        };
+        if (properties != false) {
+            params.properties = properties;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/cart/add.js',
+            dataType: 'json',
+            data: params,
+            async: false,
+            success: function() {
+                if (Shopify.queue.length < 1) {
+                  
+    console.log('pickedVariantTitle: ' + pickedVariantTitle);
+                    setCookie(upsellAddedCookie2, pickedVariantTitle);
+                  setTimeout(function(){
+                  window.location.href = window.location.href + '#addSuccess' ;
+                    console.log('We should refresh now!! Checkout id: ' + upsellAddedCookie2 + 'with value: ' + pickedVariantTitle);
+                     setTimeout(function(){
+                       location.reload();
+                     },10);
+                  },300)
+                }
+            },
+            error: function() {
+                if (Shopify.queue.length < 1) {
+                  setTimeout(function(){
+                  window.location.href = window.location.href + '#addError' ;
+                  },100)
+                }
+            }
+        });
+    //  $('.cartdrawer').addClass('toggle-cart');
+      console.log('Shopify.addItem = function(id, qty, properties)');
+      if(window.location.href.indexOf('sample') <= 0 && $(window).width() > 768){
+         if( qty > 0 && $(window).width() > 1400 ) {
+        $('.cartdrawer').addClass('toggle-cart'); 
+           $('.site-header').addClass('not-transparent');
+         }
+     }
+    }
+
+ 
+	    function removeItem(id) {
+push_to_queue(id, 0);
+          Shopify.updateAlong();
+          
+          console.log('removeItem(id); id:' + id);
+    updateCartIcon();
+    }
+
+    function push_to_queue(variantID, quantity, properties) {
+      if(typeof Shopify.queue == "undefined"){
+        Shopify.queue = [];
+      }
+        Shopify.queue.push({
+            variantId: variantID,
+            quantity: quantity,
+            properties: properties
+        });
+      console.log('push_to_queue(variantID, quantity, properties), values:'+ variantID +', '+quantity + ', '+ properties);
+    
+    }
+
+  	function clearCart() {
+       Shopify.clear(function(){
+    console.log('Cart cleared');
+  });
+      
+      console.log('clearCart()');
+updateCartIcon();
+	}
+  
+	function callback() {
+        //window.location.href = "/cart";
+      console.log('callback()');
+    }
+	
+	function updateCartIcon() {
+      setTimeout(function(){
+            jQuery.getJSON('/cart.js', function(cart) {
+        var qty = 0;
+    for(var i=0; i<cart.items.length; i++){
+       qty = qty + cart.items[i].quantity;
+      
+    };
+        if( qty > 0 ){
+          
+        $('#cartDrawer .cart-number').text(qty);
+          $('#cartDrawer .cart-number').removeClass('hide');
+        }
+        else{
+          $('#cartDrawer .cart-number').addClass('hide');
+        }
+  }); console.log('updateCartIcon()');
+
+      }, 300)
+    }
+
+	//form validation
+	
+    function checkCheckbox(elem) {
+
+        if (!elem.is(':checked')) {
+            elem.parents('.item').removeClass('success').addClass('error');
+            console.log(invalid + ' invalid');
+            return 1;
+
+        } else {
+            elem.parents('.item').addClass('success').removeClass('error');
+            return 0;
+
+        }
+
+console.log('checkCheckbox(elem)');
+    }
+
+    function checkEmail(elem) {
+
+        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+
+        var val = elem.val();
+
+        if (!emailReg.test(val) || val == '') {
+
+            elem.removeClass('success').addClass('error');
+
+            return 1;
+
+        } else {
+
+            elem.addClass('success').removeClass('error');
+
+            return 0;
+
+        }
+console.log('checkEmail(elem)');
+
+    }
+
+    function checkPattern(elem) {
+
+        if (elem.is(":invalid")) {
+
+            elem.removeClass('success').addClass('error');
+
+            return 1;
+        } else {
+
+            elem.addClass('success').removeClass('error');
+
+            return 0;
+        }
+
+console.log('checkPattern(elem)');
+    }
+
+    function checkTextInputs(elem) {
+
+        var val = elem.val().replace(/ /g, '');
+
+        if (val == undefined || val == 'undefined' || val.length == 0) {
+
+
+
+            elem.removeClass('success').addClass('error');
+            return 1;
+        } else {
+
+            elem.addClass('success').removeClass('error');
+
+            return 0;
+
+        }
+
+console.log('checkTextInputs(elem)');
+    }
+
+    function checkRequired(elem) {
+
+
+        var parent = elem.parents('form');
+
+        parent.find('input[required]:not([type="checkbox"]):not([type="email"]):not([pattern]):visible').each(function() {
+
+            checkTextInputs($(this));
+
+        })
+
+        parent.find('input[type="checkbox"][required]:visible').each(function() {
+
+            checkCheckbox($(this));
+        })
+
+        parent.find('input[type="email"][required]:visible').each(function() {
+
+            checkEmail($(this));
+
+        })
+
+        parent.find('input[pattern][required]:visible').each(function() {
+
+            checkPattern($(this));
+
+        })
+
+        invalid = parent.find('.error').length;
+
+        console.log(invalid + ' invalid');
+        if (invalid > 0) {
+
+            if (invalid == 0) {
+                $('.add-to-cart')
+                    .text(addToCartText)
+                    .removeClass('disabled');
+            } else {
+                $('.add-to-cart')
+                    .text(addToCartError)
+                    .addClass('disabled');
+            }
+
+            parent.find('.errors-wrapper,  .errors-wrapper .empty-fields').removeClass('hide');
+
+            console.log('Empty fields: ' + invalid);
+
+            parent.find('.error[required][pattern]').change(function() {
+                console.log(invalid + ' invalid');
+
+                checkPattern($(this));
+                invalid = $(this).parents('form').find('.error').length;
+
+
+                if (invalid == 0) {
+                    $('.add-to-cart')
+                        .text(addToCartText)
+                        .removeClass('disabled');
+                } else {
+                    $('.add-to-cart')
+                        .text(addToCartError)
+                        .addClass('disabled');
+                }
+                console.log(invalid);
+
+            })
+
+            parent.find('.error[required][type="email"]').change(function() {
+                console.log('email changed');
+                checkEmail($(this));
+                invalid = $(this).parents('form').find('.error').length;
+
+
+                if (invalid == 0) {
+                    $('.add-to-cart')
+                        .text(addToCartText)
+                        .removeClass('disabled');
+                } else {
+                    $('.add-to-cart')
+                        .text(addToCartError)
+                        .addClass('disabled');
+                }
+                console.log(invalid);
+
+            })
+
+            parent.find('.error[required][type="checkbox"]').change(function() {
+                console.log('checkbox changed');
+                checkCheckbox($(this));
+                invalid = $(this).parents('form').find('.error').length;
+
+
+                if (invalid == 0) {
+                    $('.add-to-cart')
+                        .text(addToCartText)
+                        .removeClass('disabled');
+                } else {
+                    $('.add-to-cart')
+                        .text(addToCartError)
+                        .addClass('disabled');
+                }
+                console.log(invalid);
+
+            })
+
+            parent.find('.error[required]:not([type="checkbox"]):not([type="email"]):not([pattern]):visible').change(function() {
+                console.log('inputText changed');
+                checkTextInputs($(this));
+                invalid = $(this).parents('form').find('.error').length;
+
+
+                if (invalid == 0) {
+                    $('.add-to-cart')
+                        .text(addToCartText)
+                        .removeClass('disabled');
+                } else {
+                    $('.add-to-cart')
+                        .text(addToCartError)
+                        .addClass('disabled');
+                }
+
+                console.log(invalid);
+
+            })
+
+        }
+
+        return invalid;
+      
+      
+console.log('checkRequired(elem)');
+    }
+
+	//preventing input number to surpass the min and max values
+    
+    $('input[type="number"]').bind('input', function(){
+      
+      
+      
+      if($(this).val() > Number( $(this).attr('max'))){
+        $(this).val($(this).attr('max'));
+      }
+      else if($(this).val() < Number( $(this).attr('min'))){
+        $(this).val($(this).attr('min'));
+      } 
+      
+      console.log("$('input[type='number']').bind('input', function(){}");
+    })
+
+	//element effects
+	
+	function fadeEffects(hideElem, showElem){
+      
+      if(hideElem.length > 0){
+  hideElem.fadeOut(300);
+    
+    setTimeout(function(){
+      if(showElem.length > 0){
+      showElem.fadeIn(300);
+      }
+    }, 300)
+      }
+      else{
+        showElem.fadeIn(300);
+      }
+     console.log('fadeEffects(hideElem, showElem)');
+    
+}
+
+function slideEffects(hideElem, showElem){
+  if(hideElem.length > 0){
+  hideElem.slideUp(300);
+  }
+showElem.slideDown(300);
+console.log('slideEffects(hideElem, showElem)');
+    
+}
+
+function smoothLoad(){
+	//requires css body.loading: opacity: 0;
+	      $('body').removeClass('loading');
+
+window.onbeforeunload = function(){
+
+    
+ $('body').addClass('loading');
+ 
+  
+}
+
+
+console.log('smoothLoad()');
+}
+
+	//overflow Functions
+
+  var usedHideScroll = 0;
+  
+	    var scrollValue = 0;
+		
+    function hideScroll(){
+      scrollValue = $(document).scrollTop();
+      $('html, body').addClass('no-overflow').css('top', -scrollValue).css('position', 'fixed');
+      
+      console.log('function hideScroll()');
+      
+      usedHideScroll = 1;
+    }
+    
+       function showScroll(){
+         $('html, body').css('position', 'inherit').removeClass('no-overflow').css('top', 0);
+         
+         $('html, body').animate({
+        scrollTop: scrollValue},
+        0);
+         console.log('function showScroll()');
+         
+         usedHideScroll = 0;
+      }
+	  
+  function transparentHeader(){
+    
+    console.log('usedHideScroll: ' + usedHideScroll);
+    
+    if(usedHideScroll == 0){
+      
+    if($(document).scrollTop() > 60 ){
+        
+        $('.site-header').removeClass('transparent');
+            
+      }
+      
+      else{
+           
+        $('.site-header').addClass('transparent');
+         
+      }
+    
+    $(window).scroll(function(){
+      
+      console.log('$(window).scroll(function()) inside transparentHeader(); usedHideScroll: ' + usedHideScroll);
+    
+      
+      if(usedHideScroll == 0){
+      
+      if($(document).scrollTop() > 60 ){
+        
+        $('.site-header').removeClass('transparent');
+            
+      }
+      
+      else{
+           
+        $('.site-header').addClass('transparent');
+         
+      }
+      
+      }
+        
+    })
+    
+    
+console.log('transparentHeader()');
+    }
+  }
+  
+  //date functions
+  
+     function compareToToday(dateText) {
+// date is dd.mm.yyyy
+        var inputDate = dateText.split(".");
+        var today = new Date();
+        inputDate = new Date(inputDate[2], inputDate[1] - 1, inputDate[0], 0, 0, 0, 0);
+        today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+       
+       console.log('compareToToday(dateText); result: ' + inputDate < today );
+       
+        return inputDate < today;
+          //inputDate < today, if true, result is 'False'
+};
+
+     function compareDates(date1, date2) {
+// date is dd.mm.yyyy
+        var inputDate1 = date1.split(".");
+		var inputDate2 = date2.split(".");
+        inputDate1 = new Date(inputDate1[2], inputDate1[1] - 1, inputDate1[0], 0, 0, 0, 0);
+        inputDate2 = new Date(inputDate2[2], inputDate2[1] - 1, inputDate2[0], 0, 0, 0, 0);
+       
+       console.log('compareDates(date1, date2); result: '+ inputDate1 < inputDate2);
+       
+       
+        return inputDate1 < inputDate2;
+          //date1 < date2, if true, result is 'False'
+};
+
+//distance between dates
+
+  function daysDistance(firstDate,secondDate){
+                
+                 var startDay = new Date(firstDate);
+                  var endDay = new Date(secondDate);
+                  var millisecondsPerDay = 1000 * 60 * 60 * 24;
+
+                  var millisBetween = startDay.getTime() - endDay.getTime();
+                  var days = millisBetween / millisecondsPerDay;
+
+                  // Round down.
+                  return Math.abs( Math.floor(days));
+    
+    console.log('daysDistance(firstDate,secondDate); result: ' + Math.abs( Math.floor(days)));
+       
+}
+
+  //other functions
+  
+function stringToMath(string){
+  
+  console.log('stringToMath(string); result: ' + eval(string));
+  
+return eval(string);
+}
+  
+function copyToClipboard(element) {
+ var $temp = $("<input>");
+ $("body").append($temp);
+ $temp.val($(element).val()).select();
+ document.execCommand("copy");
+ $temp.remove();
+  
+  console.log('copyToClipboard(element)');
+  
+}
+  
+function scrollToDiv(element){
+  var headerHeight = 0;
+  
+  if($('.site-header').css('position') == 'fixed'|| $('.site-header__mobile-nav').css('position') == 'fixed'){
+   headerHeight =  $('.site-header').outerHeight();
+    console.log('has Fixed');
+  }
+  console.log('scrollin');
+		  $('html, body').animate({
+        scrollTop: element.offset().top - headerHeight},
+        300);
+  
+  console.log(element.offset().top);
+  
+   console.log('scrollToDiv(element)');
+  
+	  }
+
+  //custom modal
+  
+  function customModalShow(cookie, modal){
+   console.log(modal.attr('class').replace(/\s/g, ''));
+    if(cookie == 'cookie'){
+     
+      if(checkCookie(modal.attr('class').replace(/\s/g, '')) == 1){
+       console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opened');
+        
+        return 'opened';
+        
+        
+      }
+      else{
+        setCookie(modal.attr('class').replace(/\s/g, ''));
+        
+        hideScroll();
+        
+        fadeEffects('',modal);
+        
+           console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
+        
+        
+        $('.modal__close').click(function(){
+        closeModal(modal);
+        })
+        console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
+        
+        return 'opening';
+        
+        
+      }
+      
+    }
+    else{
+      
+      hideScroll();
+        
+        fadeEffects('',modal);
+        
+           console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
+        
+        
+        $('.modal__close').click(function(){
+        closeModal(modal);
+        })
+        console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
+        
+        return 'opening';
+        
+        
+      
+    }
+    
+  }
+  
+  function closeModal(elem){
+   fadeEffects(elem, ''); 
+    showScroll();
+  }
+  
+  {% comment %}
+}
+{% endcomment %}
+{% endcapture %}
+{% if debugMode == 0 %}
+
+ console.log = function() {};
+{% endif %}
+
+{% if hidePreviewBar == 1 %}
+
+$('html').addClass('preview-bar-iframe-hide');
+
+{% endif %}
+
+{{ javascript }}

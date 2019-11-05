@@ -1,0 +1,193 @@
+{% comment %} Sold out + Pre Order Messages text below {% endcomment %} 
+{% assign sold_out_label = "*Sold out" %} 
+{% assign pre_order = "Pre-order for August 9th shipment." %}
+
+{% assign collection = collections.all %}
+
+{% paginate collection.products by 100 %}
+    <div class="small-width">
+        <form action="/cart#gotocheckout" method="post"
+              class="medium-up--one-half cart-form relative medium-up--push-one-quarter">
+            <div>
+                {% include 'heading-snippet', settings: 'larger bold' %}
+            </div>
+
+            {% if collection.products_count > 0 %}
+                <table class="cart-table no-margin">
+                    <thead>
+                        <th></th>
+                        <th class="h5">PRODUCT</th>
+                        <th class="h5">PRICE</th>
+                        <th class="h5">AMOUNT</th>
+                        <th class="h5">QTY</th>
+                    </thead>
+                    <tbody>
+                    {% assign pastesCount = 0 %}
+                    {% assign varnishCount = 0 %}
+
+                    {% for product in collection.products %}
+                        {% if product.available %}
+                            {% for variant in product.variants %}
+                                {% if variant.available %}
+                                    {% if product.type == 'paste' %}
+                                        {% unless product.tags contains 'sample' %}
+
+                                            {% capture pastes %}
+                                                {{ pastes }}
+                                                {% include 'cart-template-item' %}
+                                            {% endcapture %}
+
+                                        {% endunless %}
+                                        {% elsif product.type == 'fluoride varnish' %}
+                                        {% unless product.tags contains 'sample' %}
+
+                                            {% capture varnish %}
+                                                {{ varnish }}
+                                                {% include 'cart-template-item' %}
+                                            {% endcapture %}
+
+                                        {% endunless %}
+                                        {% elsif product.type != 'paste' and product.type != 'fluoride varnish' and product.type != "gift" %}
+                                        {% unless product.tags contains 'sample' %}
+                                        {% assign counter = forloop.index | modulo : 2 %}
+                                            {% if counter == 0 %}
+
+                                                {% capture brush %}
+                                                    {{ brush }}
+                                                    {% include 'cart-template-item' %}
+                                                {% endcapture %}
+
+                                            {% else %}
+
+                                                {% capture angle %}
+                                                    {{ angle }}
+                                                    {% include 'cart-template-item' %}
+                                                {% endcapture %}
+
+                                            {% endif %}
+                                        {% endunless %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+
+                   
+                    {{ pastes }}
+                    {{ varnish }}
+                    {{ brush }}
+                    {{ angle }}
+                      
+                   
+                    </tbody>
+                </table>
+
+                <div class="text-left small--text-center">
+                    <div class="cart__shipping text-center display-block">Shipping &amp; taxes calculated at checkout
+                    </div>
+                </div>
+
+                <div class="margin-bottom-lg">
+                    <input type="submit" value="{{ 'cart.general.checkout' | t }}"
+                           class="btn btn-new display-block margin-auto"/>
+                </div>
+            {% else %}
+                <p>There are no products in this view.</p>
+            {% endif %}
+        </form>
+    </div>
+{% endpaginate %}
+
+{% if collection.products_count > 0 %}
+    {% include 'detect-user-agent' %}
+
+    <script>
+        jQuery(function ($) {
+            $('[max]').change(function () {
+                var max = parseInt($(this).attr('max'), 10);
+                var value = parseInt($(this).val(), 10) || 0;
+                if (value > max) {
+                    alert('We only have ' + max + ' of this item in stock');
+                    $(this).val(max);
+                }
+            })
+        })
+    </script>
+{% endif %}
+
+{% include 'quick-view-js' %}
+<h2 class="usa-label hide page-width" style="text-align: center;margin-top: 40px; margin-bottom: 30px;">
+    MADE IN U.S.A.
+    <img class="lazy" data-src="{{ "u27V59aA.png" | asset_url }}"
+         style="position: relative; top: 4px; padding-left: 20px;max-height: 20px;"/>
+</h2>
+
+{% schema %}
+{
+"name": "Cart page",
+"class": "shopify-section-cart-template",
+"settings": [
+{
+"type": "text",
+"id": "title",
+"label": "Heading",
+"default": "Order now"
+},
+{
+"type": "text",
+"id": "text",
+"label": "Text",
+"default": "Shop wonderful products here"
+},
+{
+"type": "checkbox",
+"id": "cart_notes_enable",
+"label": "Enable cart notes",
+"default": false
+},
+{
+"type": "text",
+"id": "modal_title",
+"label": "modal title",
+"default": "Reviews"
+},
+{
+"type": "richtext",
+"id": "modal_content",
+"label": "modal content",
+"default": "<p>would you like to leave a review?"
+    },
+    {
+    "type": "text",
+    "id": "no_button_label",
+    "label": "No button label",
+    "default": "No"
+    },
+    {
+    "type": "text",
+    "id": "yes_button_label",
+    "label": "Yes button label",
+    "default": "Yes"
+    }
+    ],
+    "blocks": [
+    {
+    "type": "image",
+    "name": "Testimonial image",
+    "settings": [
+    {
+    "type": "image_picker",
+    "id": "image",
+    "label": "Image"
+    }
+    ]
+    }
+    ],
+    "presets": [
+    {
+    "name": "Cart",
+    "category": "cart"
+    }
+    ]
+    }
+    {% endschema %}

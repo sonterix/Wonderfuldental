@@ -1,0 +1,33 @@
+  <div class="product-reviews-holder">
+    {% assign filterKey = collection.title | split: '-' | last %}
+    {% if filterKey == "Fluoride Varnish" %} {% assign filterKey = "Varnish" %} {% endif %} 
+    {% include 'custom-reviews-snippet', filter: filterKey, enable_grid: 'true', grid_size: 'medium-up--one-half', no_scroll: 'true', enable_rating: 'true' %}
+  </div>
+<div class="page-width">
+    <div class="collection-videos medium-up--three-quarters margin-auto text-center">
+      {% if section.settings.video_title != blank %}
+      <h3 class="color-blue bold bordered-bottom padding-bottom-xlg margin-bottom-xlg2 inline-block relative uppercase border-blue">{{ section.settings.video_title }}</h3>
+      {% endif %}
+    {% for product in collection.products %}
+    {% assign videos = product.metafields.video %}
+{% for video in videos %}
+      {{ video |last }}
+      {% endfor %}
+      {% endfor %}
+  <script>
+    $(document).ready(function(){
+      $('.collection-videos iframe').each(function(){
+      
+      $(this).height($(this).width()*9/16);
+      });
+      $(window).resize(function(){
+      $('.collection-videos iframe').each(function(){
+      
+      $(this).height($(this).width()*9/16);
+      });
+      })
+    })
+  </script>
+    </div>
+
+</div>

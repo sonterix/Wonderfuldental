@@ -1,0 +1,42 @@
+<div class="page-width">
+  <div class="grid">
+    <div class="grid__item medium-up--one-third text-center medium-up--push-one-third">
+      <h2>{{ section.settings.title }}</h2>
+      {{ section.settings.text }}
+    </div>
+    <div class="grid__item one-whole">
+      {% if section.settings.image %}
+      <img src="{{ section.settings.image |img_url: '1200x1200' }}" />
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Section name",
+    "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Title"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          }
+]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
