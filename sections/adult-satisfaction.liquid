@@ -1,0 +1,57 @@
+<div class="small-width medium-up--padding-vertical-xlg small--padding-top-sm">
+<div class="grid">
+  <div class="grid__item medium-up--three-quarters push--one-eight">
+  <div class="grid small--break-table grid--table">
+    {% if section.settings.image %}
+    <div class="grid__item medium-up--one-third text-center">
+      <img src="{{ section.settings.image |img_url: '400x400' }}" class="medium-up--three-quarters small--two-thirds small--margin-auto"/>
+    </div>
+    {% endif %}
+    <div class="grid__item small--text-center {% if section.settings.image %}medium-up--two-thirds{% else %}text-center{% endif %}">
+      <h2 class="section-title bold">{{ section.settings.title }}</h2>
+      
+    </div>
+  </div>
+  {% if section.settings.link_label != blank and section.settings.link_url %}
+      <a href="{{ section.settings.link_url }}" class="btn btn--large small--margin-bottom-0 small--margin-top-sm margin-auto text-center">{{ section.settings.link_label }}</a>
+      {% endif %}
+</div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Satisfaction section",
+	"class": "small--padding-vertical-0 small--margin-vertical-0",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Image with text"
+      },
+      {
+        "type": "text",
+        "id": "link_label",
+        "label": "Link label"
+      },
+      {
+        "type": "url",
+        "id": "link_url",
+        "label": "Link URL"
+      }
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

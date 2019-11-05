@@ -1,0 +1,682 @@
+<div class="small-width {{ section.settings.section_height_desktop }} {{ section.settings.section_height_mobile }}">
+  <div class="grid {% if section.settings.three-quarters %}medium-up--three-quarters small--padding-top-md{% endif %}">
+    {% assign img_co`unter = 0 %}
+    {% if section.settings.custom_type %}
+    {% for block in section.blocks %}
+
+      {% if block.type == 'heading' %}
+    	<div id="block-{{ block.id }}" class="grid__item 
+                    {% if block.settings.inline %}
+                    {% assign img_counter = img_counter | plus: 1 %}
+                    {% else %}
+                    one-whole
+                    {% endif %}
+                    ">
+          {% if block.settings.main_heading %}
+              <h1 {% if block.settings.accordion %} id="js--accordion js--accordion-{{ block.id }}" {% endif %} {% if block.settings.font_size_orig == false %}style="font-size: {{ block.settings.font_size }}px;" {% endif %} class="{{ block.settings.text_alignment }} heading bold {% if block.settings.no_margin %} no-margin {% endif %}">{{ block.settings.heading_text }} {% if block.settings.accordion %} {% include 'icon-triangle' %} {% endif %}</h1>   
+          {% else %}
+              <h2 {% if block.settings.accordion %} id="js--accordion js--accordion-{{ block.id }}" {% endif %} {% if block.settings.font_size_orig == false %}style="font-size: {{ block.settings.font_size }}px;" {% endif %} class="{% if block.settings.h2 %} h2 {% else %} h1 {% endif %} heading bold {{ block.settings.text_alignment }} {% if block.settings.no_margin %} no-margin {% endif %}">{{ block.settings.heading_text }} {% if block.settings.accordion %} {% include 'icon-triangle' %} {% endif %}</h2>
+          {% endif %}
+       
+          {% if block.settings.accordion %}
+            <script>
+              $('#js--accordion-{{ block.id }}').on('click', function(){
+               // $(this).toggleClass('blue-heading');
+                $('#shopify-section-{{ block.settings.accordion_section }}').slideToggle();
+              })
+            </script>
+          {% endif %}
+          
+    	</div>
+      {% endif %}
+    
+      {% if block.type == 'heading_with_image' %}
+          <div id="block-{{ block.id }}" class="grid__item one-whole">
+            {% if block.settings.main_heading %}
+                <h1 class="heading {{ block.settings.text_alignment }} bold heading-image">
+                    {{ block.settings.heading_text_part_one }}
+            		<img class="lazy" data-src="{%- if block.settings.heading_image != blank -%}{{ heading_image | img_url: '100x' }}{%- else -%}{{ block.settings.img_svg }}{%- endif -%}">
+            		{{ block.settings.heading_text_part_two }}
+                  
+            	</h1>
+            {% else %}
+           		<h2 class="heading {% if block.settings.h2 %} h2 {% else %} h1 {% endif %} {{ block.settings.text_alignment }} bold heading-image">
+                    {{ block.settings.heading_text_part_one }}
+            		<img class="lazy" data-src="{%- if block.settings.heading_image != blank -%}{{ heading_image | img_url: '100x' }}{%- else -%}{{ block.settings.img_svg }}{%- endif -%}">
+            		{{ block.settings.heading_text_part_two }}
+            	</h2> 
+            {% endif %}
+          </div>
+      {% endif %}
+{% endfor %}
+    
+    <div class="grid__item">
+    <div class="grid grid--table">
+     
+    {% for block in section.blocks %}
+      {% if block.type == 'image' %}
+    	<div id="block-{{ block.id }}" class="grid__item {% if block.settings.one_line %} one-whole {% else %} img-holder small--one-whole {% if block.settings.desktop_only %} small--hide {% elsif block.settings.mobile_only %}custom-view-2 medium-up--hide {% endif %} {% endif %} text-center">
+          {% assign img_counter = img_counter | plus: 1 %}
+          <img class="lazy" {% if block.settings.custom_height %}style="max-height: {{ block.settings.custom_height_range }}px;"{% endif %} data-src="
+                             {%- if block.settings.img != blank -%}
+                             	{{ block.settings.img | img_url: '600x' }}
+                             {%- else -%}
+                             	{{ block.settings.img_svg }}
+                             {%- endif -%}
+                                                                                                                                    
+                             ">
+           {% if block.settings.text_svg != blank %}
+                    <div class="display-block">
+                      {{ block.settings.text_svg }}
+                    </div>
+                    {% endif %}
+          {% if block.settings.one_line %} {% assign img_counter = img_counter | minus: 1 %} {% endif %}
+          {% if block.settings.image_text != blank %} <h4 class="bold medium-up--hide"> {{  block.settings.image_text }}  </h4> {% endif %}
+    	</div>
+      {% endif %}
+  
+    
+    {% if block.type == 'richtext' %}
+    	<div class="grid__item one-whole">
+          {{ block.settings.richtext }}
+    	</div>
+    {% endif %}
+		
+    {% if block.type == 'button' %}
+      {% if block.settings.btn_link != blank and block.settings.btn_text != blank %}
+        <div class="grid__item one-whole text-center">
+          <a class="btn btn-new" href="{{ block.settings.btn_link }}">{{ block.settings.btn_text }}</a>
+        </div>
+      {% endif %}
+    {% endif %}
+    	
+    {% endfor %}
+    </div>
+  </div>
+    {% else %}
+    {% for block in section.blocks %}
+
+      {% if block.type == 'heading' %}
+    	<div id="block-{{ block.id }}" class="grid__item 
+                    {% if block.settings.inline %}
+                    {% assign img_counter = img_counter | plus: 1 %}
+                    {% else %}
+                    one-whole
+                    {% endif %}
+                    ">
+          {% if block.settings.main_heading %}
+              <h1 {% if block.settings.accordion %} id="js--accordion js--accordion-{{ block.id }}" {% endif %} {% if block.settings.font_size_orig == false %}style="font-size: {{ block.settings.font_size }}px;" {% endif %} class="{{ block.settings.text_alignment }} heading bold {% if block.settings.no_margin %} no-margin {% endif %}">{{ block.settings.heading_text }} {% if block.settings.accordion %} {% include 'icon-triangle' %} {% endif %} </h1>   
+          {% else %}
+              <h2 {% if block.settings.accordion %} id="js--accordion-{{ block.id }}" {% endif %} {% if block.settings.font_size_orig == false %}style="font-size: {{ block.settings.font_size }}px;" {% endif %} class="{% if block.settings.h2 %} h2 {% else %} h1 {% endif %} heading bold {{ block.settings.text_alignment }} {% if block.settings.no_margin %} no-margin {% endif %}">{{ block.settings.heading_text }} {% if block.settings.accordion %} {% include 'icon-triangle' %} {% endif %}</h2>
+          {% endif %}
+       
+          {% if block.settings.accordion %}
+            <script>
+              $('#js--accordion-{{ block.id }}').on('click', function(){
+                $(this).find('svg').toggleClass('rotate');
+               // $(this).toggleClass('blue-heading');
+                $('#shopify-section-{{ block.settings.accordion_section }}').slideToggle();
+              })
+            </script>
+          {% endif %}
+          
+    	</div>
+      {% endif %}
+    
+      {% if block.type == 'heading_with_image' %}
+          <div id="block-{{ block.id }}" class="grid__item one-whole">
+            {% if block.settings.main_heading %}
+                <h1 class="heading {{ block.settings.text_alignment }} bold heading-image">
+                    {{ block.settings.heading_text_part_one }}
+            		<img src="{%- if block.settings.heading_image != blank -%}{{ heading_image | img_url: '100x' }}{%- else -%}{{ block.settings.img_svg }}{%- endif -%}">
+            		{{ block.settings.heading_text_part_two }}
+            	</h1>
+            {% else %}
+           		<h2 class="heading {% if block.settings.h2 %} h2 {% else %} h1 {% endif %} {{ block.settings.text_alignment }} bold heading-image">
+                    {{ block.settings.heading_text_part_one }}
+            		<img src="{%- if block.settings.heading_image != blank -%}{{ heading_image | img_url: '100x' }}{%- else -%}{{ block.settings.img_svg }}{%- endif -%}">
+            		{{ block.settings.heading_text_part_two }}
+            	</h2> 
+            {% endif %}
+          </div>
+      {% endif %}
+
+      {% if block.type == 'image' %}
+    	<div id="block-{{ block.id }}" class="grid__item {% if block.settings.one_line %} one-whole {% else %} img-holder {% if block.settings.push_one_sixth %}small--push-one-sixth {% endif %}{% if block.settings.one_third %} small--one-third {% else %} small--one-whole {% endif %} {% endif %} text-center">
+          {% assign img_counter = img_counter | plus: 1 %}
+          <img {% if block.settings.custom_height %}style="max-height: {{ block.settings.custom_height_range }}px;"{% endif %} src="
+                             {%- if block.settings.img != blank -%}
+                             	{{ block.settings.img | img_url: '600x' }}
+                             {%- else -%}
+                             	{{ block.settings.img_svg }}
+                             {%- endif -%}
+                             ">
+          
+           {% if block.settings.text_svg != blank %}
+                    <div class="display-block">
+                      {{ block.settings.text_svg }}
+                    </div>
+                    {% endif %}
+          
+          {% if block.settings.one_line %} {% assign img_counter = img_counter | minus: 1 %} {% endif %}
+          {% if block.settings.image_text != blank %} <h4 class="bold medium-up--hide"> {{  block.settings.image_text }}  </h4> {% endif %}
+    	</div>
+    
+      {% endif %}
+    
+    {% if block.type == 'richtext' %}
+    	<div class="grid__item one-whole">
+          {{ block.settings.richtext }}
+    	</div>
+    {% endif %}
+		
+    {% if block.type == 'button' %}
+      {% if block.settings.btn_link != blank and block.settings.btn_text != blank %}
+        <div class="grid__item one-whole text-center">
+          <a class="btn  btn-new" href="{{ block.settings.btn_link }}">{{ block.settings.btn_text }}</a>
+        </div>
+      {% endif %}
+    {% endif %}
+    	
+    {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+
+
+<style>
+  #block-1560433361528 svg { 
+    max-height: 300px!important; 
+  } 
+  
+  #block-1560433215337 svg {
+    max-height: 210px!important;
+}
+  
+  #block-1560432873411 svg {
+  	max-height: 300px!important; 
+  }
+
+  #block-1560433495410 svg {
+    max-height: 280px;
+  }
+  
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    
+    {% if section.settings.is_accordion %}
+    	display: none;
+    {% endif %}
+  }
+  
+  @media only screen and (min-width: 749px) {
+    #shopify-section-{{ section.id }} .img-holder {
+    width: {% if img_counter != 0 %} calc(100% / {{ img_counter }}) {% else %} 100% {% endif %}; 
+    }
+    #shopify-section-1560262721129 .img-holder {
+    width: 100%!important;
+}
+  }
+  
+  #shopify-section-{{ section.id }} svg {
+	max-height: {{ section.settings.max_img_height }}px;
+  }
+  
+  @media only screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .img-holder svg {
+      max-height: {{ section.settings.max_img_height_mobile }}px;
+    }
+  }
+  
+    {% for block in section.blocks %}
+  
+      {% if block.type == 'image' %}
+  		@media only screen and (min-width: 749px) {
+          #block-{{ block.id }} svg {
+             margin-top: 60px
+          }
+        }
+      {% endif %}
+  		
+      {% if block.type == 'heading' %}
+        {% if block.settings.inline %}
+          #block-{{ block.id }} {
+            width: calc(100% / {{ img_counter }}) ;
+          }
+        {% endif %}
+      {% endif %}
+  	
+      {% if block.type == 'heading_with_image' %}
+  		#block-{{ block.id }} .heading-image {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: {{ block.settings.text_alignment }};
+        }
+  
+  		#block-{{ block.id }} .heading-image svg {
+          max-width: {{ block.settings.img_width }}px;
+        }
+  
+      {% endif %}
+    {% endfor %}
+  
+ 
+
+  
+#shopify-section-1560497463843 { 
+    margin-bottom: 0px!important;
+  }
+  
+  #block-1560497636444 svg,   #block-1560497636444 img {
+    max-height: 250px; 
+  }
+  
+  #block-1560497960629 svg,  #block-1560497960629 img { 
+    max-height: 320px; 
+  }
+  
+  #block-1560498071639 svg,  #block-1560498071639 img { 
+    max-height: 240px; 
+  }
+  
+  @media(max-width: 768px) {
+    #block-1560259644326 { 
+      display: none; 
+    }
+  }
+   @media(max-width: 768px) { 
+ #shopify-section-1560256925521 svg, #shopify-section-1560256925521 img { 
+   max-height: 120px!important;
+ }
+   }
+  
+  #block-1560782810184 img { 
+    max-width: 120px;
+  }
+  
+  #block-1560782878001 img { 
+    max-width: 160px;
+  }
+  
+  @media(min-width: 768px){
+  #shopify-section-1560262721129 img { 
+    max-height: 80px;
+  }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Img with Text Ver1",
+  "class": "home_img_text_ver1 no-margin",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_height_desktop",
+      "options": [
+        {
+          "value": "medium-up--padding-vertical-sm",
+          "label": "10px"
+        },
+        {
+          "value": "medium-up--padding-vertical-md",
+          "label": "20px"
+        },
+        {
+          "value": "medium-up--padding-vertical-lg",
+          "label": "30px"
+        },
+        {
+          "value": "medium-up--padding-vertical-xlg",
+          "label": "40px"
+        },
+        {
+          "value": "",
+          "label": "unset"
+        }
+      ],
+      "label": "Section Padding Desktop"
+    },
+    {
+      "type": "select",
+      "id": "section_height_mobile",
+      "options": [
+        {
+          "value": "small--padding-vertical-sm",
+          "label": "10px"
+        },
+        {
+          "value": "small--padding-vertical-md",
+          "label": "20px"
+        },
+        {
+          "value": "small--padding-vertical-lg",
+          "label": "30px"
+        },
+        {
+          "value": "small--padding-vertical-xlg",
+          "label": "40px"
+        },
+        {
+          "value": "",
+          "label": "unset"
+        }
+      ],
+      "label": "Section Padding Mobile"
+    },
+	  {
+      "type": "checkbox",
+      "id": "custom_type",
+      "label": "Logo Section?",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "is_accordion",
+      "label": "Section is a part of accordion",
+      "default": false
+    },
+	{
+      "type": "checkbox",
+      "id": "three-quarters",
+      "label": "content-width is three-quarters",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color"
+    },
+    {
+          "type": "range",
+          "id": "max_img_height",
+          "min": 0,
+          "max": 500,
+          "step": 10,
+          "unit": "px",
+          "label": "Max Img Height",
+          "default": 500
+    },
+    {
+          "type": "range",
+          "id": "max_img_height_mobile",
+          "min": 0,
+          "max": 500,
+          "step": 10,
+          "unit": "px",
+          "label": "Max Img Height Mobile",
+          "default": 200
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Heading With Image",
+      "type": "heading_with_image",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "main_heading",
+          "label": "Make Heading h1",
+          "default": false,
+          "info": "Enable this only on one section"
+        },
+        {
+          "type": "text",
+          "id": "heading_text_part_one",
+          "label": "Heading Text First Part"
+        },
+        {
+          "type": "image_picker",
+          "id": "heading_image",
+          "label": "Heading Image"
+        },
+        {
+          "type": "text",
+          "id": "img_svg",
+          "label": "SVG Img"
+        },
+		 {
+          "type": "textarea",
+          "id": "text_svg",
+          "label": "SVG HTML"
+        },
+        {
+          "type": "range",
+          "id": "img_width",
+          "min": 0,
+          "max": 150,
+          "step": 5,
+          "unit": "px",
+          "label": "Max Img Width",
+          "default": 30
+        },
+        {
+          "type": "text",
+          "id": "heading_text_part_two",
+          "label": "Heading Text Second Part"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "flex-start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "flex-end",
+              "label": "Right"
+            }
+          ],
+          "label": "Text Alignment"
+        }
+      ]
+    },
+    {
+      "name": "Heading",
+      "type": "heading",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "accordion",
+          "label": "This heading opens accordion",
+          "default": false
+        },
+		{
+          "type": "checkbox",
+          "id": "h2",
+          "label": "h2 font size",
+          "default": false,
+          "info": "Enable this only on one section"
+        },
+        {
+          "type": "text",
+          "id": "accordion_section",
+          "label": "The ID of the section that is an acc"
+        },
+        {
+          "type": "checkbox",
+          "id": "main_heading",
+          "label": "Make Heading h1",
+          "default": false,
+          "info": "Enable this only on one section"
+        },
+        {
+          "type": "text",
+          "id": "heading_text",
+          "label": "Heading Text"
+        },
+        {
+          "type": "checkbox",
+          "id": "inline",
+          "label": "Make Heading Inline",
+          "default": false,
+          "info": "Puts the heading next to the images"
+        },
+        {
+          "type": "checkbox",
+          "id": "no_margin",
+          "label": "Remove Heading Margin",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "min": 14,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Font Size",
+          "default": 14
+        },
+        {
+          "type": "checkbox",
+          "id": "font_size_orig",
+          "label": "Keep Original Font Size",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "text-left",
+              "label": "Left"
+            },
+            {
+              "value": "text-center",
+              "label": "Center"
+            },
+            {
+              "value": "text-right",
+              "label": "Right"
+            }
+          ],
+          "label": "Text Alignment"
+        }
+      ]
+    },
+    {
+      "name": "Text Field",
+      "type": "richtext",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "richtext",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "type": "image",
+      "settings": [
+		{
+          "type": "checkbox",
+          "id": "desktop_only",
+          "label": "Desktop Only?",
+          "default": false
+        },
+		{
+          "type": "checkbox",
+          "id": "mobile_only",
+          "label": "Mobile Only?",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+		 {
+          "type": "text",
+          "id": "image_text",
+          "label": "Text below image (mobile)"
+        },
+		{
+          "type": "checkbox",
+          "id": "one_third",
+          "label": "One third? (mobile)",
+		  "default": false
+        },
+		{
+          "type": "checkbox",
+          "id": "push_one_sixth",
+          "label": "Push one sixth? (mobile )?",
+		  "default": false
+        },
+        {
+          "type": "text",
+          "id": "img_svg",
+          "label": "SVG Img"
+        },
+		 {
+          "type": "textarea",
+          "id": "text_svg",
+          "label": "SVG HTML"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "label": "Margin Top",
+          "default": 0
+        },
+        {
+          "type": "checkbox",
+          "id": "one_line",
+          "label": "Make Image One in Line",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "custom_height",
+          "label": "Use Custom Image Height",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "custom_height_range",
+          "min": 0,
+          "max": 500,
+          "step": 5,
+          "unit": "px",
+          "label": "Custom Height",
+          "default": 0
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "type": "button",
+      "settings": [
+        {
+          "type": "url",
+          "id": "btn_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Page Section Ver1",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

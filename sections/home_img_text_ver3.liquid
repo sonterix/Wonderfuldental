@@ -1,0 +1,444 @@
+<div class="small-width {{ section.settings.section_height_desktop }} {{ section.settings.section_height_mobile }}">
+  <div class="grid grid--no-gutters grid--table small--break-table width-auto medium-up--display-grid two-halves">
+    {% for block in section.blocks %}
+    	{% unless block.type == 'button' %}
+    	<div class="grid__item align-bottom small--one-whole {% if block.type == 'image' %}text-center {% if block.settings.custom_css != blank -%}custom-grid-css{%- endif -%}{% endif %}">
+          {% if block.type == 'image' %}
+          
+          {%- if block.settings.custom_css != blank -%}
+          <style>
+            @media only screen and (min-width: 750px) {
+              .custom-grid-css {
+                {{ block.settings.custom_css }}
+              } 
+            }
+          </style>
+          {%- endif -%}
+          
+              {% if block.settings.image_1 != blank or block.settings.image_1_svg != blank or block.settings.text_2_svg != blank  %}
+                <div class="{%- if block.settings.custom_css != blank -%}medium-up--hide {% endif -%} grid grid--table grid--no-gutters medium-up--height-100 {% if block.settings.desktop_only %} small-custom-hide {% elsif block.settings.mobile_only %}custom-view medium-up-custom-hide {% endif %}">
+                  <div class="padding-left-md align-bottom grid__item {% if block.settings.image_2 != blank or block.settings.image_2_svg != blank %} one-half {% else %} one-whole {% endif %}">
+                    <img class="" src="
+                             {%- if block.settings.image_1 != blank -%}
+                             	{{ block.settings.image_1 | img_url: '800x' }}
+                             {%- else -%}
+                             	{{ block.settings.image_1_svg }}
+                             {%- endif -%}
+                             ">
+                    {% if block.settings.text_1_svg != blank %}
+                    <div class="display-block">
+                      {{ block.settings.text_1_svg }}
+                    </div>
+                    {% endif %}
+                  </div>
+
+                  {% if block.settings.image_2 != blank or block.settings.image_2_svg != blank or block.settings.text_2_svg != blank  %}
+                    <div class="padding-left-md align-bottom grid__item one-half">
+                      <img class="" src="
+                             {%- if block.settings.image_2 != blank -%}
+                             	{{ block.settings.image_2 | img_url: '800x' }}
+                             {%- else -%}
+                             	{{ block.settings.image_2_svg }}
+                             {%- endif -%}
+                             ">
+                    {% if block.settings.text_2_svg != blank %}
+                    <div class="display-block">
+                      {{ block.settings.text_2_svg }}
+                    </div>
+                    {% endif %}
+                  
+                  
+                  </div>
+                  {% endif %}
+
+                </div>
+              {% endif %}
+          
+          {% else %}
+          	{% if block.type == 'heading' %}
+          
+              {% if block.settings.main_heading %}
+              	<h1 {% if block.settings.font_size_orig == false %}style="font-size: {{ block.settings.font_size }}px;" {% endif %} class="{{ block.settings.text_alignment }} bold">{{ block.settings.heading_text }}</h1>
+              {% else %}
+              	<h2 {% if block.settings.font_size_orig == false %}style="font-size: {{ block.settings.font_size }}px;" {% endif %} class="h1 bold {{ block.settings.text_alignment }}">{{ block.settings.heading_text }}</h2>
+              {% endif %}
+          	
+          {% if block.settings.image_1 != blank or block.settings.image_1_svg != blank or block.settings.text_1_svg != blank  %}
+                <div class="grid grid--table grid--no-gutters medium-up--height-100 {% if block.settings.desktop_only %} small-custom-hide {% elsif block.settings.mobile_only %}custom-view medium-up-custom-hide {% endif %}">
+                  <div class="padding-left-md align-bottom grid__item {% if block.settings.image_2 != blank or block.settings.image_2_svg != blank %} one-half {% else %} one-whole {% endif %}">
+                    <img class="" src="
+                             {%- if block.settings.image_1 != blank -%}
+                             	{{ block.settings.image_1 | img_url: '800x' }}
+                             {%- else -%}
+                             	{{ block.settings.image_1_svg }}
+                             {%- endif -%}
+                             ">
+                    {% if block.settings.text_1_svg != blank %}
+                    <div class="display-block">
+                      {{ block.settings.text_1_svg }}
+                    </div>
+                    {% endif %}
+                    
+                  </div>
+
+                  {% if block.settings.image_2 != blank or block.settings.image_2_svg != blank or block.settings.text_2_svg != blank  %}
+                    <div class="align-bottom grid__item one-half">
+                      <img class="" src="
+                             {%- if block.settings.image_2 != blank -%}
+                             	{{ block.settings.image_2 | img_url: '800x' }}
+                             {%- else -%}
+                             	{{ block.settings.image_2_svg }}
+                             {%- endif -%}
+                             ">
+                  {% if block.settings.text_2_svg != blank %}
+                    <div class="display-block">
+                      {{ block.settings.text_2_svg }}
+                    </div>
+                    {% endif %}
+                  
+                  </div>
+                  
+                  {% endif %}
+
+                </div>
+              {% endif %}
+          
+          	{% endif %}
+            
+
+          {% endif %}
+    	</div>
+     	{% endunless %}
+    {% endfor %}
+  </div>
+      <div class=" padding-left-md align-bottom grid__item  one-whole custom-grid ">
+<img src="https://cdn.shopify.com/s/files/1/1715/6045/files/product-hero.svg?20062">
+</div>
+  <div class="grid">
+    <div class="grid__item one-whole text-center medium-up--margin-top-md">
+  {% for block in section.blocks %}
+	{% if block.type == 'button' %}
+      {% if block.settings.btn_url != blank and block.settings.btn_text != blank %}
+      
+              <a class="{% unless forloop.last %}btn btn-new {% else %} bold  {% endunless %} margin-horizontal-md small--margin-top-sm medium-up--margin-vertical-sm " href="{{ block.settings.btn_url }}">  {% if forloop.last %} or {% endif %}{{ block.settings.btn_text }}</a>
+         
+   	 {% endif %}
+  	{% endif %}
+  {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+
+<style>
+    #shopify-section-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+  }
+  
+  @media only screen and (min-width: 749px) {
+    #shopify-section-{{ section.id }} .item-width:first-child {
+      width: {{ section.settings.width }}%; 
+    }
+    
+    #shopify-section-{{ section.id }} .item-width:last-child {
+      width: calc(100% - {{ section.settings.width }}%); 
+    }
+  }
+  
+  #shopify-section-{{ section.id }} svg {
+	max-height: {{ section.settings.max_img_height }}px;
+    max-width: 240px; 
+  }
+  
+  @media only screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} svg {
+      max-height: {{ section.settings.max_img_height_mobile }}px;
+    }
+    
+    #block-1560432873411 svg { 
+      margin-top: 30px; 
+    }
+    #block-1560433215337 svg  {
+      margin-top: 30px; 
+    } 
+  }
+  
+  @media screen and (max-width: 1281px){
+    #shopify-section-1560271111217 svg { 
+    max-height: 500px;
+    max-width: 360px;
+    margin-left: auto;
+    display: block;
+    }
+  
+</style>
+
+{% schema %}
+{
+  "name": "Img with Text Ver3",
+  "class": "home_img_text_ver3 no-margin",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_height_desktop",
+      "options": [
+        {
+          "value": "medium-up--padding-vertical-sm",
+          "label": "10px"
+        },
+        {
+          "value": "medium-up--padding-vertical-md",
+          "label": "20px"
+        },
+        {
+          "value": "medium-up--padding-vertical-lg",
+          "label": "30px"
+        },
+        {
+          "value": "medium-up--padding-vertical-xlg",
+          "label": "40px"
+        }
+      ],
+      "label": "Section Padding Desktop"
+    },
+    {
+      "type": "select",
+      "id": "section_height_mobile",
+      "options": [
+        {
+          "value": "small--padding-vertical-sm",
+          "label": "10px"
+        },
+        {
+          "value": "small--padding-vertical-md",
+          "label": "20px"
+        },
+        {
+          "value": "small--padding-vertical-lg",
+          "label": "30px"
+        },
+        {
+          "value": "small--padding-vertical-xlg",
+          "label": "40px"
+        }
+      ],
+      "label": "Section Padding Mobile"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color"
+    },
+    {
+      "type": "range",
+      "id": "max_img_height",
+      "min": 0,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "label": "Max Img Height",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "max_img_height_mobile",
+      "min": 0,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "label": "Max Img Height Mobile",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Left Column Width",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Heading",
+      "type": "heading",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "main_heading",
+          "label": "Make Heading h1",
+          "default": false,
+          "info": "Enable this only on one section"
+        },
+		{
+          "type": "checkbox",
+          "id": "desktop_only",
+          "label": "Desktop Only?",
+          "default": false
+        },
+		{
+          "type": "checkbox",
+          "id": "mobile_only",
+          "label": "Mobile Only?",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "heading_text",
+          "label": "Heading Text"
+        },
+        {
+          "type": "checkbox",
+          "id": "inline",
+          "label": "Make Heading Inline",
+          "default": false,
+          "info": "Puts the heading next to the images"
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "min": 14,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Font Size",
+          "default": 14
+        },
+        {
+          "type": "checkbox",
+          "id": "font_size_orig",
+          "label": "Keep Original Font Size",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "text-left",
+              "label": "Left"
+            },
+            {
+              "value": "text-center",
+              "label": "Center"
+            },
+            {
+              "value": "text-right",
+              "label": "Right"
+            }
+          ],
+          "label": "Text Alignment"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Image 1"
+        },
+        {
+          "type": "text",
+          "id": "image_1_svg",
+          "label": "Image 1 SVG"
+        },
+		{
+		  "type": "textarea", 
+		  "id": "text_1_svg",
+	      "label": "SVG Code"
+		},
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image 2"
+        },
+        {
+          "type": "text",
+          "id": "image_2_svg",
+          "label": "Image 2 SVG"
+        },
+		{
+		  "type": "textarea", 
+		  "id": "text_2_svg",
+	      "label": "SVG Code"
+		}
+      ]
+    },
+    {
+      "name": "Image",
+      "type": "image",
+      "settings": [
+	    {
+          "type": "checkbox",
+          "id": "desktop_only",
+          "label": "Desktop Only?",
+          "default": false
+        },
+		{
+          "type": "checkbox",
+          "id": "mobile_only",
+          "label": "Mobile Only?",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Image 1"
+        },
+        {
+          "type": "text",
+          "id": "image_1_svg",
+          "label": "Image 1 SVG"
+        },
+		{
+		  "type": "textarea", 
+		  "id": "text_1_svg",
+	      "label": "SVG Code"
+		},
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image 2"
+        },
+        {
+          "type": "text",
+          "id": "image_2_svg",
+          "label": "Image 2 SVG"
+        },
+		{
+		  "type": "textarea", 
+		  "id": "text_2_svg",
+	      "label": "SVG Code"
+		},
+        {
+          "type": "textarea",
+          "id": "custom_css",
+          "label": "Custom CSS"
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "type": "button",
+      "settings": [
+        {
+          "type": "url",
+          "id": "btn_url",
+          "label": "Button Url"
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Page Section Ver3",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

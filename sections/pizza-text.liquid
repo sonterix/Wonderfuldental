@@ -1,0 +1,29 @@
+<div class="pizza-text__wrapper padding-vertical-md margin-auto">
+  {% if section.settings.title != blank %}
+    <h2 class="text-center bold h3 medium-up--h2">{{ section.settings.title }}</h2>
+  {% endif %}
+  {% if section.settings.content != blank %}
+    <p class="small-font">{{ section.settings.content }}</p>
+  {% endif %}
+</div>
+
+{% schema %}
+  {
+    "name": "Text",
+    "class": "no-margin no-padding",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "default": "Some text..",
+        "label": "Title"
+      },
+      {
+        "type": "textarea",
+        "id": "content",
+        "default": "Some text..",
+        "label": "Content"
+      }
+	]
+  }
+{% endschema %}

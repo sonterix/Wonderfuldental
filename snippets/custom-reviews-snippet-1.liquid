@@ -1,0 +1,158 @@
+{% assign star0 = 0 %}
+{% assign star1 = 0 %}
+{% assign star2 = 0 %}
+{% assign star3 = 0 %}
+{% assign star4 = 0 %}
+{% assign star5 = 0 %}
+{% unless filter != blank %}
+{% assign filter = '' %}
+{% endunless %}
+<script>
+  console.log('filter value: {{ filter }}; enable grid: {{ enable_grid }}; grid size: {{ grid_size }}');
+</script>
+
+{% assign totalreviews = 0 %}
+
+{% for product in collections['all'].products %}
+
+{% capture productsArray %}{{ productsArray }},{{ product.handle }}:{{ product.id }}{% endcapture %}
+{% endfor %}
+{% assign productsArray = productsArray |remove_first: ',' |split: ',' %}
+<div class="page-width">
+  {% assign reviews = shop.metafields.reviews |sort: 'key'%}
+
+  {% assign reviews = reviews |split: '", "'%}
+
+  {% assign review = reviews[0] %}
+
+  {% assign reviewsSize = reviews.size |minus: 1%}
+  {% for i in (0..reviewsSize) limit: '100' %}
+
+  {% assign review = reviews[i] |split: '"=>"' |last %}
+
+  {% assign totalreviews = totalreviews |plus: 1 %}
+  {% assign review = review | split: '|' %}
+  {% assign stars = review[0] |plus: 0 %}
+
+
+
+  {% assign writer = review[2] %}
+  {% assign text = review[3] %}
+
+  {% assign textCheck = text |remove: '"' |strip  %}
+
+  {% assign date = review[5] |split: 'T' |first |split: '-' |reverse |join: '/' |remove: ' ' %}
+  {% assign dates = date | split: '/' %}
+  {% capture newDate %}{{ dates[1] }}/{{ dates[0] }}/{{ dates[2] }}{% endcapture %}
+  {% assign productId = review |last |strip %}
+  {% assign productHandle = 'empty' %}
+  {% for productObj in productsArray %}
+  {% if productObj contains productId %}
+  {% assign productHandle = productObj |split: ':' |first %}
+  {% assign product = all_products[productHandle] %}
+  {% break %}
+  {% endif %}
+  {% endfor %}
+  {% unless productHandle == 'empty' %}
+  {% if textCheck != '' and product.title contains filter%}
+  {% assign totalReviewsCounter = totalReviewsCounter |plus: 1 %}
+
+
+  {% if stars == 0 %}
+  {% assign star0 = star0 |plus: 1 %}
+  {% elsif stars == 1 %}
+  {% assign star1 = star1 |plus: 1 %}
+  {% elsif stars == 2 %}
+  {% assign star2 = star2 |plus: 1 %}
+  {% elsif stars == 3 %}
+  {% assign star3 = star3 |plus: 1 %}
+  {% elsif stars == 4 %}
+  {% assign star4 = star4 |plus: 1 %}
+  {% elsif stars == 5 %}
+  {% assign star5 = star5 |plus: 1 %}
+  {% endif %}
+
+  {% capture html %}{{ html }}
+  {% if enable_grid != blank and grid_size != blank %}
+  <div class="grid__item {{ grid_size }}">
+    {% endif %}
+    <div class="stamped-ratings-wrapper stamped-review-card" data-id="{{ reviews[i] |split: '"=>"' |first }}">
+      <div class="stamped-reviews-image">
+        <a href="{{ product.url }}"><img loading="lazy" src="{{ product.featured_image  |img_url: 'medium' }}" style="max-height: 100%; max-width: 100%; width: auto; height: auto; top: 0; bottom: 0; left: 0; right: 0; margin: auto;" onerror="this.style.display=&quot;none&quot;" alt="{{ product.title }} Product Image">
+        </a></div><div class="stamped-reviews-date"> {{ newDate }}</div><div class="stamped-reviews-rating stamped-style-color-star"> {% if stars > 0 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 1 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 2 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 3 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 4 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}</div><div class="stamped-reviews-title"><a href="https://stamped.io/go/d3xXaWRnZXRGdWxsUGFnZXw0NDIyMXxyfDk2NzMxMDE1" class="stamped-review-title stamped-style-color-link">{{ product.title }}</a></div><div class="stamped-reviews-message stamped-style-color-text">{{ text }}</div><div class="stamped-reviews-author stamped-style-color-text">{{ writer }} <span class="stamped-verified-label stamped-style-color-verified" data-verified-type="2"></span></div><div class="stamped-reviews-location" style="display:none;"></div><div class="stamped-products-reviews-title"><a href="https://stamped.io/go/d3xXaWRnZXRGdWxsUGFnZXw0NDIyMXxyfDk2NzMxMDE1" class="stamped-review-product style-color-link">{{ product.title }}</a></div></div>
+
+    {% if enable_grid != blank and grid_size != blank %}
+  </div>
+  {% endif %}
+  {% endcapture %}
+  {% endif %}
+  {% endunless %}
+  {% endfor %}
+
+  <div class="stamped-reviews-widget no-overflow" data-widget-type="full-page">
+    {% for product in collections.all.products %}
+      {% assign titles = titles | append: ';' | append: product.title %}
+    {% endfor %}
+
+    <script src="https://widget.reviews.io/product/dist.js"></script>
+
+    <div class="page-width">
+      <div id="widget-modal"></div>
+    </div>
+
+    <script type="text/javascript">
+      productWidget("widget-modal",{
+        store: "wonderfuldentalco",
+        sku: "{{ titles }}",
+        primaryClr: "#f47e27",
+        neutralClr: "#EBEBEB",
+        buttonClr: "#EEE",
+        textClr: "#333",
+        tabClr: "#eee",
+        ratingStars: false,
+        showAvatars: true,
+        perPage: 40
+      })
+    </script>
+
+  </div>
+</div>
+
+<div class="page-width">
+  <div class="reviews">
+    {% include 'site-reviews' %}
+  </div>
+  <div id="stamped-reviews-widget hide" data-widget-type="full-page"></div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    var shown = 5;
+    var step = shown + 1;
+    var topOffset = $('.stamped-reviews-widget').offset().top;
+    var height = $('.stamped-reviews-widget').height();
+    var totalOffset = topOffset + height - $(window).height()*2;
+
+    var css = '<style>.stamped-reviews-widget>div:nth-child(n+'+step+')){display: none}</style>';
+
+    {% unless no_scroll != blank %}
+    $(window).scroll(function(){
+      // var top = $(window).scrollTop();
+
+
+      if(top > totalOffset && $('.stamped-reviews-widget>div').length > shown ){
+
+        $('.stamped-reviews-widget>div:hidden:not(:nth-child(n+'+( shown + step )+'))').slideDown(300);
+        shown = shown + step;
+      }
+
+      height = $('.stamped-reviews-widget').height();
+      totalOffset = topOffset + height - $(window).height();
+    })
+    $('.expand-reviews').click(function(){
+      $('.reviews #review-holder').css('display','block');
+    })
+    {% endunless %}
+  })
+</script>
+

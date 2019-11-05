@@ -1,0 +1,122 @@
+<div class="small-width">
+  <div id="sliderHolder" class="slider-holder custom-slider">
+
+{% for i in (1..section.settings.number) %}
+{% assign min = 0 %}
+{% assign max = shop.metafields.reviews.size %}
+{% assign diff = max | minus: min %}
+{% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
+
+{% assign reviews = shop.metafields.reviews |split: ", " %}
+
+{% assign review = reviews[randomNumber] %}
+
+  {% assign review = review | split: '|' %}
+                
+  {% assign stars = review[0] |plus: 0 %}
+                
+  {% assign writer = review[2] %}
+                
+  {% assign text = review[3] %}
+                
+  {% assign textCheck = review[3] |remove: '"' |strip %}
+                
+  {% assign date = review[5] |split: 'T' |first |split: '-' |reverse |join: '/' |remove: ' ' %}
+
+            {% assign minImg = 0 %}
+{% assign maxImg = section.blocks.size |minus: 1 %}
+{% assign diffImg = maxImg | minus: minImg %}
+{% assign randomNumberImg = "now" | date: "%N" | modulo: diffImg | plus: minImg %}
+
+
+{% if textCheck != '' %}
+           <div>
+        <div class="quotes-slide text-left padding-md margin-sm">
+            <div class="review-holder">
+            <div class="medium-up--two-thirds">
+              <div class="grid grid--no-gutters">
+               <div class="grid__item one-third"> 
+                <div class="bubble no-overflow margin-bottom-sm">
+                  {% if section.blocks.size > 0%}
+                  <img src="{{ section.blocks[randomNumberImg].settings.image |img_url: '80x80'}}"/>
+                  {% endif %}
+        </div>
+                </div>
+                <div class="grid__item two-thirds">
+                <h4 class="bold h4">{{ writer }}</h4>
+              </div>
+              </div>
+            </div>
+            <blockquote class="quotes-slider__text text-left no-padding">
+              {{ text }}
+            </blockquote>
+            </div>
+          </div>
+         </div>
+
+                {% else %}
+                {% assign number = number |plus: 1 %}
+                {% endif %}
+
+{% endfor %}
+  </div>
+</div>
+
+<script>
+
+  $(document).ready(function(){
+    $('#sliderHolder').slick({
+      dots: false,
+      slidesToShow: 3,
+ 	 slidesToScroll: 3
+    });
+  })
+</script>
+
+{% schema %}
+  {
+    "name": "Metafields random reviews",
+    "settings": [
+	{
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Testimonials"
+      },
+	{
+            "type": "image_picker",
+            "id": "facebook_logo",
+            "label": "Image"
+          },
+	{
+    "type":   "range",
+    "id":     "number",
+    "min":       5,
+    "max":       100,
+    "step":      1,
+    "unit":      "rev",
+    "label":     "Number of reviews",
+    "default":   20
+	}
+	],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Testimonial image",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

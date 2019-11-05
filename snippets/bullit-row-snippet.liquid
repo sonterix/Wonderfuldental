@@ -1,0 +1,148 @@
+<div class="page-width feature-row">
+  
+  {% case section.settings.text_width %}
+  {% when 'one-half' %}
+  {% assign textWidth = 'medium-up--one-half' %}
+  {% assign imageWidth = 'medium-up--one-half' %}
+  {% when 'one-third' %}
+  {% assign textWidth = 'medium-up--one-third' %}
+  {% assign imageWidth = 'medium-up--two-thirds' %}
+  {% when 'two-thirds' %}
+  {% assign textWidth = 'medium-up--two-thirds' %}
+  {% assign imageWidth = 'medium-up--one-third' %}
+    {% when 'three-fifths' %}
+  {% assign textWidth = 'medium-up--three-fifths' %}
+  {% assign imageWidth = 'medium-up--two-fifths' %}
+  {% endcase %}
+  
+  {% capture image_layout %}
+    <div class="feature-row__item {{ imageWidth }}">
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | img_url: '600x600' | img_tag: section.settings.image.alt, 'feature-row__image' }}
+      {% else %}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+      {% endif %}
+    </div>
+  {% endcapture %}
+
+  <div class="feature-row {% if section.settings.inverse_mobile %} small--hide {% endif %}">
+    {% if section.settings.layout == 'left' %}
+      {{ image_layout }}
+    {% endif %}
+
+    <div class="feature-row__item feature-row__text  feature-row__text--{{ section.settings.layout }} {{ textWidth }}">
+      {% if section.settings.title != blank %}
+         {% if section.settings.show_cta %} 
+{% include 'heading-snippet', settings: 'section-title text-left small-text-center bold color-white', text: 'no' %}
+    {% else %}
+{% include 'heading-snippet', settings: 'section-title text-left  bold color-white', text: 'no' %}
+  {% endif %}
+      {% endif %}
+        <div class="rte-setting featured-row__subtext">
+      {% if section.settings.text != blank %}
+          {{ section.settings.text }}
+      {% endif %}
+          
+        {% for block in section.blocks %}
+      {% if block.type == 'bullit' %}
+		<div class="grid grid--sm-gutter grid--table">
+          {% if block.settings.image %}
+  <div class="grid__item" style="width: 50px">
+    <img src="{{ block.settings.image |img_url: '30x30'}}"/>
+          </div>
+          {% endif %}
+          <div class="grid__item">
+            <div class="text bold margin-bottom-sm2">
+              {{ block.settings.text }}
+            </div>
+          </div>
+      </div>
+      {% else %}
+       {% capture quote %}
+		{{ quote }}
+      <div class="grid grid--table">
+        
+          {% if block.settings.image %}
+  <div class="grid__item" style="width: 70px">
+    <img src="{{ block.settings.image |img_url: '50x50'}}"/>
+          </div>
+        {% endif %}
+          <div class="grid__item">
+            <div class="text">
+              {{ block.settings.text }}
+            </div>
+            <h5 class="author-name">{{ block.settings.author }}</h5>
+           <h5 class="author-job">{{ block.settings.job }}</h5>
+          </div>
+      </div>
+		{% endcapture %}
+      {% endif %}
+{% endfor %}
+      {{ quote }}
+      </div>
+      
+    </div>
+
+    {% if section.settings.layout == 'right' %}
+      {{ image_layout }}
+    {% endif %}
+      
+
+  </div>
+    	{% if section.settings.inverse_mobile %}
+    <div class="medium-up--hide">
+      {{ image_layout }}
+
+    <div class="feature-row__item feature-row__text  feature-row__text--{{ section.settings.layout }} {{ textWidth }}">
+      {% if section.settings.title != blank %}
+         {% if section.settings.show_cta %} 
+{% include 'heading-snippet', settings: 'section-title small-text-center bold color-white' %}
+    {% else %}
+{% include 'heading-snippet', settings: 'section-title text-center bold color-white' %}
+  {% endif %}
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <div class="rte-setting featured-row__subtext">{{ section.settings.text }}</div>
+      {% endif %}
+      
+      {% for block in section.blocks %}
+      {% if block.type == 'bullit' %}
+		<div class="grid grid--table">
+          {% if block.settings.image %}
+  <div class="grid__item" style="width: 90px">
+    <img src="{{ block.settings.image |img_url: '70x70'}}"/>
+          </div>
+          {% endif %}
+          <div class="grid__item">
+            <div class="text bold">
+              {{ block.settings.text }}
+            </div>
+          </div>
+      </div>
+      {% else %}
+       {% capture quote %}
+		{{ quote }}
+      <div class="grid grid--table">
+        
+          {% if block.settings.image %}
+  <div class="grid__item" style="width: 70px">
+    <img src="{{ block.settings.image |img_url: '50x50'}}"/>
+          </div>
+        {% endif %}
+          <div class="grid__item">
+            <div class="text">
+              {{ block.settings.text }}
+            </div>
+            <h5 class="author-name">{{ block.settings.author }}</h5>
+           <h5 class="author-job">{{ block.settings.job }}</h5>
+          </div>
+      </div>
+		{% endcapture %}
+      {% endif %}
+{% endfor %}
+      
+      {{ quote }}
+    </div>
+    </div>
+    {% endif %}
+</div>
