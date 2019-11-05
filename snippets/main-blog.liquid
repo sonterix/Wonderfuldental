@@ -1,0 +1,19 @@
+<!-- main-blog snippet -->
+
+<div class="grid__item one-whole">
+    <div class="grid grid--table align-middles">
+      <div class="grid__item medium-up--one-half">
+        <img src="{{ article.image.src | img_url: 'large' }}">
+      </div>
+      <div class="grid__item medium-up--one-half text-center">
+        {% for tag in article.tags %}
+        <a class="bold uppercase" href="/tagged/{{tag}}">{{ tag }} </a>{% unless forloop.last == true %} | {% endunless %}
+        {% endfor 
+        
+        {% endfor %}
+        <a href="{{ article.url }}"> <h2 class="uppercase bold"> {{ article.title }} </h1></a>
+      </div>
+       </div>
+  	 </div>
+
+<!-- end main-blog snippet -->

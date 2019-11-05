@@ -1,0 +1,144 @@
+{% paginate blog.articles by 12 %}
+{% comment %}
+<div class="filter-holder">
+<div class="page-width">
+  
+    {% if blog.tags.size > 0 %}
+      <div id="BlogTagFilter" class="blog-nav text-left page-width">
+        <a class="topic show_topics large-hide" href="javascript:void(0)">{{ 'blogs.article.show_topics' | t }}<span class="arrow">{% include 'icon-chevron-down' %}</span></a>
+       <div class="topics_holder">
+        <a class="topic" href="/blogs/{{ blog.handle }}">{{ 'blogs.article.all_topics' | t }}</a>
+        {% for tag in blog.all_tags %}
+          <a class="topic" href="/blogs/{{ blog.handle }}/tagged/{{ tag | handleize }}" {% if current_tags contains tag %}selected{% endif %}>{{ tag }}</a>
+        {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+</div>
+</div>
+{% endcomment %}
+<div class="grid">
+
+    <div class="grid__item">
+
+    <header class="section-header text-center hide">
+     
+      <h1>
+        {% if current_tags %}
+          {{ blog.title | link_to: blog.url }} &mdash; {{ current_tags.first }}
+        {% else %}
+          {{ blog.title }}
+        {% endif %}
+        <a href="{{ shop.url }}{{ blog.url }}.atom" class="icon-fallback-text rss-link">
+          <span class="icon icon-rss" aria-hidden="true"></span>
+          <span class="fallback-text">RSS</span>
+        </a>
+      </h1>
+      <hr class="hr--small">
+    </header>
+      <div class=" articles-holder margin-bottom-xlg">
+<div class="grid-blog">
+  <div class="page-width page-width-custom">
+{% assign featuredArticle = section.settings.featured_article %}
+  
+  {% assign firstSmall = section.settings.small_featured_article_1 %}
+  {% assign secondSmall = section.settings.small_featured_article_2 %}
+  
+  {% assign otherArticles = '<div class="grid small__articles--holder">' %}
+    {% for article in blog.articles %}
+  {% if article.handle == featuredArticle and section.settings.show_featured_article %}
+
+{% assign shownewest = 1 %}
+  
+  
+{% include 'article-thumbnail',  showNewest: shownewest %}
+  
+  {% elsif article.handle == firstSmall or article.handle == secondSmall %}
+  
+  {% capture smallFeatured %}
+  {{ smallFeatured }}
+ {% include 'article-thumbnail',  showNewest: 2 %}
+  {% endcapture %}
+  
+  {% else %}
+  {% capture otherArticles %}{{ otherArticles }}{% include 'article-thumbnail'%}{% endcapture %}
+  {% endif %}
+
+
+  {% endfor %}
+  </div> 
+  <div class="small-width small-width-custom ">
+  <div class="grid grid--xlg2-gutter">
+  {{ smallFeatured }}
+  </div>
+  </div>
+  </div>
+    </div>
+  <div class="small-width">
+  {{ otherArticles |append: '</div>'}}
+        </div>
+      </div>
+    {% if paginate.pages > 1 %}
+      {% include 'pagination' %}
+    {% endif %}
+
+
+</div>
+
+{% endpaginate %}
+<script>
+  $(document).ready(function(){
+    $('.show_topics').click(function(){
+      $(this).toggleClass('opened');
+      $('.topics_holder').toggleClass('opened');
+      $(this).find('.icon-chevron-down').toggleClass('rotate');
+      
+    })
+  })
+</script>
+{% schema %}
+  {
+    "name": "Featured Article",
+    "settings": [
+{
+   "type": "article",
+   "id": "featured_article",
+   "label": "Article to feature"
+},
+{
+   "type": "article",
+   "id": "small_featured_article_1",
+   "label": "First small article to feature"
+},
+{
+   "type": "article",
+   "id": "small_featured_article_2",
+   "label": "First small article to feature"
+},
+	  {
+        "id": "featured_article_image",
+        "type": "image_picker",
+        "label": "Featured article Image"
+      },
+	  {
+        "id": "show_featured_article_image",
+        "type": "checkbox",
+        "label": "Show featured article Image",
+		"default": false
+      },
+	  {
+        "id": "show_featured_article",
+        "type": "checkbox",
+        "label": "Show featured article",
+		"default": false
+      }
+]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

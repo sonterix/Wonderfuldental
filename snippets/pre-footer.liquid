@@ -1,0 +1,17 @@
+<!-- pre-footer snippet -->
+
+
+<div class="doc-pre-footer grid big-width grid--table align-bottom{% if template contains 'landing-page-samples' or template contains 'adult' %} hide{% endif %}">
+  <div class="grid__item doc-image medium-up--one-sixth small-hide medium-hide"> 
+    
+  </div>
+  <div class="grid__item doc-text medium-up--one-whole text-center">
+    <h2 class="bold margin-bottom-0"> {{ settings.doc_text | replace: "<p>", "" | replace: "</p>", " "}}  </h2>
+     {% if settings.mobile_number %}
+     <a href="tel:{{ settings.mobile_number |remove: '.'}}"><i class="fa fa-phone small-hide"></i><span class="mobile-number">{{ settings.mobile_label }} {{ settings.mobile_number }}</span></a>  {% unless template contains 'sample' %}|<a href="#" class="contact-open"><i class="fa fa-envelope small-hide"></i> {{ settings.email_text }}</a>{% endunless %} 
+     {% endif %}
+  </div>
+</div>
+
+
+<!-- end pre-footer snippet -->

@@ -1,0 +1,119 @@
+
+<div class="page-width">
+  {% if page.template contains "adult" %} <div class="small--hide"> {% endif %}
+  {% include 'heading-snippet', settings: 'bold', headingtype: 'h1' %}
+ 
+  
+
+  <div class="samples-wrapper margin-top--xlg medium-up--one-half margin-auto">
+    <div class="text-center">
+       <div class="successMsg notify">Please note: We only ship to dental offices and clinics.</div>
+	   <div class="successMsg notify" >Simply take our survey, and enter your office information and we will ship out free samples right away!</div>
+    </div>
+ 
+  <div class="sample-holder border-bottom">
+    <div class="grid grid--no-gutters grid--table small--text-center">
+      <div class="grid__item relative effect_image--holder small--one-quarter medium-up--one-fifth">
+        <div class=" ">
+        
+        <img class="" src="{{'slack-imgs.png' |asset_url }}"/>
+        
+        </div>
+      </div>
+      <div class="grid__item relative product-title medium-up--one-half padding-left-md">
+        
+        <div class="">
+        <h3 class="product-title bold no-margin">wonderful samples</h3>
+        </div>
+      </div>
+      <div class="grid__item small--one-half medium-up--one-quarter">
+        <h2 class="text-center bold no-margin small--h3">{% if product.price == 0 %}{{ 'cart.general.free' |t }}{% else %}{{ product.price |money_with_currency }}{% endif %}</h2>
+      </div>
+      <div class="grid__item small--one-third medium-up--one-quarter medium-up--text-right styled-form">
+        <input type="checkbox" data-name="{{ product.title }}" data-id="{{ product.selected_or_first_available_variant.id }}" class="sample-checkbox">
+      </div>
+    </div>
+  </div>
+  {% if page.template contains "adult" %} </div> {% endif %}
+
+<a href="#" class="btn float-right add-samples fixed-sample  medium-up--hide">Order Free Samples </a>
+  {% if page.template contains "adult" %} <div class="small--hide"> {% endif %}
+
+      {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <a href="#" id="takesurvey" class="btn float-right add-samples">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+  </div>
+</div>
+ {% for product in collections['all'].products limit: 1 %}
+   <div class="grid__item one-whole" id="review-holder" style="display: none;"> 
+     <div class="expand-cart text-left inline-block link"> Show cart </div>
+       <div class="margin-right-md margin-top--md">
+     <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+     
+       </div>
+   </div>
+<script>
+  $(document).ready(function(){ 
+    $('.fixed-sample, .add-samples').click(function(){
+      $('.sample-checkbox').click();
+      setTimeout(function(){
+        $('#takesurvey').click();
+      }, 200);
+    })
+
+  })
+
+  
+</script> 
+   {% endfor %}
+  {% if page.template contains "adult" %} </div> {% endif %}
+
+{% schema %}
+{
+    "name": "Sample products",
+    "settings": [
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Order now"
+      },
+      {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      }
+	],
+    "blocks": [
+      {
+        "type": "product",
+        "name": "Product",
+        "settings": [
+          {
+            "label": "Product",
+            "id": "product",
+            "type": "product"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

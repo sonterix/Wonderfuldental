@@ -1,0 +1,36 @@
+<script src="https://widget.reviews.io/product/dist.js"></script>
+
+<div class="reviews-holder">
+  <div class="absolute-reviews-holder no-overflow">
+    <div class="overflow-wrapper">
+      <h4 class="bold padding-md no-margin">Reviews for {{ product.title }}</h4>
+
+      <div class="stamped-reviews-widget padding-sm no-overflow" data-widget-type="full-page">
+        {% if enable_grid != blank and grid_size != blank %}
+          <div class="grid">
+        {% endif %}
+
+          <div id="widget-{{ product.id }}"></div>
+
+        {% if enable_grid != blank and grid_size != blank %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  productWidget("widget-{{ product.id }}",{
+    store: "wonderfuldentalco",
+    sku: "{{ product.title }}",
+    primaryClr: "#f47e27",
+    neutralClr: "#EBEBEB",
+    buttonClr: "#EEE",
+    textClr: "#333",
+    tabClr: "#eee",
+    ratingStars: false,
+    showAvatars: true,
+    perPage: 10
+  })
+</script>

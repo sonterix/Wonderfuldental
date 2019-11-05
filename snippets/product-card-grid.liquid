@@ -1,0 +1,31 @@
+{% unless grid_image_width %}
+{%- assign grid_image_width = '300x300' -%}
+{% endunless %}
+{%- assign grid_image_scale = '2' -%}
+
+<div class="grid-view-item{% unless product.available %} product-price--sold-out grid-view-item--sold-out{% endunless %}">
+    <a class="grid-view-item__link"
+       href="{% if product.handle contains "varnish" %}/collections/varnish/products/{% elsif product.handle contains "paste" %}/collections/paste/products/{% elsif product.handle contains "microbrushes" %}/collections/accessories/products/{% endif %}{{ product.handle }}">
+        {% assign images = product.metafields.image %}
+        {% if images != blank %}
+            {% for image in images limit: 1 %}
+                <img class="grid-view-item__image" src="{{ image | last }}" alt="{{ product.title }}">
+            {% endfor %}
+        {% else %}
+            <img class="grid-view-item__image"
+                 src="{{ product.featured_image.src | img_url: grid_image_width, scale: grid_image_scale }}"
+                 alt="{{ product.featured_image.alt }}">
+        {% endif %}
+
+        <div class="product-title-holder lowercase text text-left h4 bold margin-bottom-0 small--margin-top-sm">{{ product.title }}
+            <br/> {% if product.title contains "Varnish" %} {{ product.price | money }} /100 doses
+                <br/> 5% sodium fluoride varnish {% elsif product.title contains "Paste" %}{% if product.title contains "Rings" %}{{ product.price | money }} / 10 rings {% else %}{{ product.price | money }} / 200 cups
+                    <br/> medium grit  {% endif %}{% elsif product.title contains 'Angles' %}100 / unit</br>
+                latex free{% elsif product.title contains 'Microbrushes' %} 50/package {% endif %}</div>
+
+        {% if section.settings.show_vendor %}
+            <div class="grid-view-item__vendor">{{ product.vendor }}</div>
+        {% endif %}
+    </a>
+    {% include 'add-to-cart-snippet' %}
+</div>
