@@ -10,96 +10,96 @@
 
 //Cookies
 
-function setCookie(cname) {
- var cvalue = "1";
- var exdays = "10000";
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    function setCookie(cname) {
+        var cvalue = "1";
+        var exdays = "10000";
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 
-  console.log('setCookie(cname)');
-}
-
-function checkCookie(cname) {
-    var username = getCookie(cname);
-    if (username == '1') {
-        console.log('cookie is here');
-		return 1;
-    } else {
-		console.log('cookie is not here');
-      return 0;
+        console.log('setCookie(cname)');
     }
 
-  console.log('checkCookie(cname)');
-}
-
-function getCookie(name) {
-    var cookie = document.cookie;
-    var prefix = name + "=";
-    var begin = cookie.indexOf("; " + prefix);
-    if (begin == -1) {
-        begin = cookie.indexOf(prefix);
-        if (begin !== 0) return 0;
-    } else {
-        begin += 2;
-        var end = document.cookie.indexOf(";", begin);
-        if (end == -1) {
-        end = cookie.length;
+    function checkCookie(cname) {
+        var username = getCookie(cname);
+        if (username == '1') {
+            console.log('cookie is here');
+            return 1;
+        } else {
+            console.log('cookie is not here');
+            return 0;
         }
+
+        console.log('checkCookie(cname)');
     }
 
-  console.log('getCookie(name)');
+    function getCookie(name) {
+        var cookie = document.cookie;
+        var prefix = name + "=";
+        var begin = cookie.indexOf("; " + prefix);
+        if (begin == -1) {
+            begin = cookie.indexOf(prefix);
+            if (begin !== 0) return 0;
+        } else {
+            begin += 2;
+            var end = document.cookie.indexOf(";", begin);
+            if (end == -1) {
+                end = cookie.length;
+            }
+        }
 
-    return unescape(cookie.substring(begin + prefix.length, end));
-}
+        console.log('getCookie(name)');
 
-function deleteCookie(name){
+        return unescape(cookie.substring(begin + prefix.length, end));
+    }
 
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    function deleteCookie(name) {
 
-  console.log('deleteCookie(name)');
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 
-}
+        console.log('deleteCookie(name)');
+
+    }
 
 //Atrributes & URL
 
-function checkForAttr(attr) {
+    function checkForAttr(attr) {
         if (typeof attr !== typeof undefined && attr !== false) {
             var result = 1;
         } else {
             var result = 0;
         }
-  return result;
+        return result;
 
-  console.log('checkForAttr(attr); result: ' + result);
+        console.log('checkForAttr(attr); result: ' + result);
 
     }
 
-function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
+    function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
 
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
 
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
         }
-    }
 
-  console.log('getUrlParameter(sParam); result:' + sParameterName[1] === undefined ? true : sParameterName[1] );
+        console.log('getUrlParameter(sParam); result:' + sParameterName[1] === undefined ? true : sParameterName[1]);
 
-};
+    };
 
 //Price & Numbers
 
     function priceToNumber(price) {
         var number = Number(price.replace(/[^0-9\-]+/g, "")) * 100;
 
-      console.log('priceToNumber(price); result:' + number);
+        console.log('priceToNumber(price); result:' + number);
 
         return number;
     }
@@ -107,17 +107,17 @@ function getUrlParameter(sParam) {
     function textToNumber(number) {
         var number = Number(number.replace(/[^0-9\.-]+/g, ""));
 
-      console.log('textToNumber(number); result:' + number);
+        console.log('textToNumber(number); result:' + number);
 
         return number;
     }
 
     function numberToPrice(number) {
-      var currency = '$';
+        var currency = '$';
         var realPrice = (number / 100).toFixed(2);
         var price = currency + " " + realPrice;
 
-      console.log('numberToPrice(number); result:' + price);
+        console.log('numberToPrice(number); result:' + price);
 
         return price;
     }
@@ -126,75 +126,74 @@ function getUrlParameter(sParam) {
 
     Shopify.queue = [];
 
-    Shopify.moveAlong = function() {
+    Shopify.moveAlong = function () {
         // If we still have requests in the queue, let's process the next one.
         if (Shopify.queue.length) {
             var request = Shopify.queue.shift();
             Shopify.addItem(request.variantId, request.quantity, request.properties, Shopify.moveAlong);
-          updateCartIcon();
+            updateCartIcon();
         }
         // If the queue is empty, we will redirect to the cart page.
         else {
             //$('#add').removeAttr('disabled');
-updateCartIcon();
+            updateCartIcon();
         }
-      console.log('Shopify.moveAlong = function()');
+        console.log('Shopify.moveAlong = function()');
 
     };
 
-        Shopify.updateAlong = function() {
-  // If we still have requests in the queue, let's process the next one.
-  if (Shopify.queue.length) {
-    var request = Shopify.queue.shift();
-     Shopify.changeItem(request.variantId, request.quantity, Shopify.updateAlong);
-   // console.log("wow");
-    updateCartIcon();
-  }
-      else {
-        updateCartIcon();
-       // console.log("nothing to see here");
-      }
+    Shopify.updateAlong = function () {
+        // If we still have requests in the queue, let's process the next one.
+        if (Shopify.queue.length) {
+            var request = Shopify.queue.shift();
+            Shopify.changeItem(request.variantId, request.quantity, Shopify.updateAlong);
+            // console.log("wow");
+            updateCartIcon();
+        } else {
+            updateCartIcon();
+            // console.log("nothing to see here");
+        }
 
 
-      console.log('Shopify.updateAlong = function()');
+        console.log('Shopify.updateAlong = function()');
 
-};
-
-     Shopify.removeAlong = function() {
-  // If we still have requests in the queue, let's process the next one.
-  if (Shopify.queue.length) {
-    var request = Shopify.queue.shift();
-     Shopify.removeItem(request.variantId, Shopify.updateAlong);
-  }
-      else {
-        updateCartIcon();
-      }
-
-          console.log('Shopify.removeAlong = function()');
-
-
-};
-
-  function updateCartTotal(){
-    setTimeout(function(){
- jQuery.getJSON('/cart.js', function(cart) {
-    for(var i=0; i<cart.items.length; i++){
-      var item = cart.items[i];
-      var elem = $('.product-' + item.id+' .money');
-      elem.html(Shopify.formatMoney(item.price*item.quantity));
-      $('.cart__subtotal').html(Shopify.formatMoney(cart.total_price));
     };
-   updateCartIcon();
-  });
 
-    }, 300);
+    Shopify.removeAlong = function () {
+        // If we still have requests in the queue, let's process the next one.
+        if (Shopify.queue.length) {
+            var request = Shopify.queue.shift();
+            Shopify.removeItem(request.variantId, Shopify.updateAlong);
+        } else {
+            updateCartIcon();
+        }
 
-    console.log('updateCartTotal()');
-
-};
+        console.log('Shopify.removeAlong = function()');
 
 
-    Shopify.addItem = function(id, qty, properties) {
+    };
+
+    function updateCartTotal() {
+        setTimeout(function () {
+            jQuery.getJSON('/cart.js', function (cart) {
+                for (var i = 0; i < cart.items.length; i++) {
+                    var item = cart.items[i];
+                    var elem = $('.product-' + item.id + ' .money');
+                    elem.html(Shopify.formatMoney(item.price * item.quantity));
+                    $('.cart__subtotal').html(Shopify.formatMoney(cart.total_price));
+                }
+                ;
+                updateCartIcon();
+            });
+
+        }, 300);
+
+        console.log('updateCartTotal()');
+
+    };
+
+
+    Shopify.addItem = function (id, qty, properties) {
         var params = {
             quantity: qty,
             id: id
@@ -208,83 +207,81 @@ updateCartIcon();
             dataType: 'json',
             data: params,
             async: false,
-            success: function() {
+            success: function () {
                 if (Shopify.queue.length < 1) {
-                  updateCartIcon();
+                    updateCartIcon();
                 }
             },
-            error: function() {
+            error: function () {
                 $('.add-to-cart').text(addToCartError);
             }
         });
-    //  $('.cartdrawer').addClass('toggle-cart');
-      console.log('Shopify.addItem = function(id, qty, properties)');
-      if(window.location.href.indexOf('sample') <= 0 && $(window).width() > 768){
-         if( qty > 0 && $(window).width() > 1400 ) {
-        $('.cartdrawer').addClass('toggle-cart');
-           $('.site-header').addClass('not-transparent');
-         }
-     }
+        //  $('.cartdrawer').addClass('toggle-cart');
+        console.log('Shopify.addItem = function(id, qty, properties)');
+        if (window.location.href.indexOf('sample') <= 0 && $(window).width() > 768) {
+            if (qty > 0 && $(window).width() > 1400) {
+                $('.cartdrawer').addClass('toggle-cart');
+                $('.site-header').addClass('not-transparent');
+            }
+        }
     }
 
 
-	    function removeItem(id) {
-push_to_queue(id, 0);
-          Shopify.updateAlong();
-
-          console.log('removeItem(id); id:' + id);
-    updateCartIcon();
+    function removeItem(id) {
+        push_to_queue(id, 0);
+        Shopify.updateAlong();
+        updateCartIcon();
     }
 
     function push_to_queue(variantID, quantity, properties) {
-      if(typeof Shopify.queue == "undefined"){
-        Shopify.queue = [];
-      }
+        if (typeof Shopify.queue == "undefined") {
+            Shopify.queue = [];
+        }
+
         Shopify.queue.push({
             variantId: variantID,
             quantity: quantity,
             properties: properties
         });
-      console.log('push_to_queue(variantID, quantity, properties), values:'+ variantID +', '+quantity + ', '+ properties);
-
     }
 
-  	function clearCart() {
-       Shopify.clear(function(){
-    console.log('Cart cleared');
-  });
+    function clearCart() {
+        Shopify.clear(function () {
+            console.log('Cart cleared');
+        });
 
-      console.log('clearCart()');
-updateCartIcon();
-	}
+        console.log('clearCart()');
+        updateCartIcon();
+    }
 
-	function callback() {
+    function callback() {
         //window.location.href = "/cart";
-      console.log('callback()');
+        console.log('callback()');
     }
 
-	function updateCartIcon() {
-      setTimeout(function(){
-            jQuery.getJSON('/cart.js', function(cart) {
-        var qty = 0;
-    for(var i=0; i<cart.items.length; i++){
-       qty = qty + cart.items[i].quantity;
+    function updateCartIcon() {
+        setTimeout(function () {
+            jQuery.getJSON('/cart.js', function (cart) {
+                var qty = 0;
+                for (var i = 0; i < cart.items.length; i++) {
+                    qty = qty + cart.items[i].quantity;
 
-    };
-        if( qty > 0 ){
+                }
+                ;
+                if (qty > 0) {
 
-        $('#cartDrawer .cart-number').text(qty);
-          $('#cartDrawer .cart-number').removeClass('hide');
-        }
-        else{
-          $('#cartDrawer .cart-number').addClass('hide');
-        }
-  }); console.log('updateCartIcon()');
+                    $('#cartDrawer .cart-number').text(qty);
+                    $('#cartDrawer .cart-number').removeClass('hide');
+                } else {
+                    $('#cartDrawer .cart-number').addClass('hide');
+                }
+            });
+            console.log('updateCartIcon()');
 
-      }, 300)
+        }, 300)
     }
 
-	//form validation
+    //form validation
 
     function checkCheckbox(elem) {
 
@@ -299,7 +296,7 @@ updateCartIcon();
 
         }
 
-console.log('checkCheckbox(elem)');
+        console.log('checkCheckbox(elem)');
     }
 
     function checkEmail(elem) {
@@ -321,7 +318,7 @@ console.log('checkCheckbox(elem)');
             return 0;
 
         }
-console.log('checkEmail(elem)');
+        console.log('checkEmail(elem)');
 
     }
 
@@ -339,7 +336,7 @@ console.log('checkEmail(elem)');
             return 0;
         }
 
-console.log('checkPattern(elem)');
+        console.log('checkPattern(elem)');
     }
 
     function checkTextInputs(elem) {
@@ -347,7 +344,6 @@ console.log('checkPattern(elem)');
         var val = elem.val().replace(/ /g, '');
 
         if (val == undefined || val == 'undefined' || val.length == 0) {
-
 
 
             elem.removeClass('success').addClass('error');
@@ -360,7 +356,7 @@ console.log('checkPattern(elem)');
 
         }
 
-console.log('checkTextInputs(elem)');
+        console.log('checkTextInputs(elem)');
     }
 
     function checkRequired(elem) {
@@ -368,24 +364,24 @@ console.log('checkTextInputs(elem)');
 
         var parent = elem.parents('form');
 
-        parent.find('input[required]:not([type="checkbox"]):not([type="email"]):not([pattern]):visible').each(function() {
+        parent.find('input[required]:not([type="checkbox"]):not([type="email"]):not([pattern]):visible').each(function () {
 
             checkTextInputs($(this));
 
         })
 
-        parent.find('input[type="checkbox"][required]:visible').each(function() {
+        parent.find('input[type="checkbox"][required]:visible').each(function () {
 
             checkCheckbox($(this));
         })
 
-        parent.find('input[type="email"][required]:visible').each(function() {
+        parent.find('input[type="email"][required]:visible').each(function () {
 
             checkEmail($(this));
 
         })
 
-        parent.find('input[pattern][required]:visible').each(function() {
+        parent.find('input[pattern][required]:visible').each(function () {
 
             checkPattern($(this));
 
@@ -410,7 +406,7 @@ console.log('checkTextInputs(elem)');
 
             console.log('Empty fields: ' + invalid);
 
-            parent.find('.error[required][pattern]').change(function() {
+            parent.find('.error[required][pattern]').change(function () {
                 console.log(invalid + ' invalid');
 
                 checkPattern($(this));
@@ -430,7 +426,7 @@ console.log('checkTextInputs(elem)');
 
             })
 
-            parent.find('.error[required][type="email"]').change(function() {
+            parent.find('.error[required][type="email"]').change(function () {
                 console.log('email changed');
                 checkEmail($(this));
                 invalid = $(this).parents('form').find('.error').length;
@@ -449,7 +445,7 @@ console.log('checkTextInputs(elem)');
 
             })
 
-            parent.find('.error[required][type="checkbox"]').change(function() {
+            parent.find('.error[required][type="checkbox"]').change(function () {
                 console.log('checkbox changed');
                 checkCheckbox($(this));
                 invalid = $(this).parents('form').find('.error').length;
@@ -468,7 +464,7 @@ console.log('checkTextInputs(elem)');
 
             })
 
-            parent.find('.error[required]:not([type="checkbox"]):not([type="email"]):not([pattern]):visible').change(function() {
+            parent.find('.error[required]:not([type="checkbox"]):not([type="email"]):not([pattern]):visible').change(function () {
                 console.log('inputText changed');
                 checkTextInputs($(this));
                 invalid = $(this).parents('form').find('.error').length;
@@ -493,565 +489,546 @@ console.log('checkTextInputs(elem)');
         return invalid;
 
 
-console.log('checkRequired(elem)');
+        console.log('checkRequired(elem)');
     }
 
-	//preventing input number to surpass the min and max values
+    //preventing input number to surpass the min and max values
 
-    $('input[type="number"]').bind('input', function(){
+    $('input[type="number"]').bind('input', function () {
 
 
+        if ($(this).val() > Number($(this).attr('max'))) {
+            $(this).val($(this).attr('max'));
+        } else if ($(this).val() < Number($(this).attr('min'))) {
+            $(this).val($(this).attr('min'));
+        }
 
-      if($(this).val() > Number( $(this).attr('max'))){
-        $(this).val($(this).attr('max'));
-      }
-      else if($(this).val() < Number( $(this).attr('min'))){
-        $(this).val($(this).attr('min'));
-      }
-
-      console.log("$('input[type='number']').bind('input', function(){}");
+        console.log("$('input[type='number']').bind('input', function(){}");
     })
 
-	//element effects
+    //element effects
 
-	function fadeEffects(hideElem, showElem){
+    function fadeEffects(hideElem, showElem) {
 
-      if(hideElem.length > 0){
-  hideElem.fadeOut(300);
+        if (hideElem.length > 0) {
+            hideElem.fadeOut(300);
 
-    setTimeout(function(){
-      if(showElem.length > 0){
-      showElem.fadeIn(300);
-      }
-    }, 300)
-      }
-      else{
-        showElem.fadeIn(300);
-      }
-     console.log('fadeEffects(hideElem, showElem)');
+            setTimeout(function () {
+                if (showElem.length > 0) {
+                    showElem.fadeIn(300);
+                }
+            }, 300)
+        } else {
+            showElem.fadeIn(300);
+        }
+        console.log('fadeEffects(hideElem, showElem)');
 
-}
-
-  function slideEffects(hideElem, showElem){
-    if (hideElem.length > 0) {
-      hideElem.slideUp(300);
     }
-    
-    showElem.slideDown(300);
-  }
-  
-    function slideItems(hideElem, showElem){
-    if (hideElem.length > 0) {
-      hideElem.hide();
+
+    function slideEffects(hideElem, showElem) {
+        if (hideElem.length > 0) {
+            hideElem.slideUp(300);
+        }
+
+        showElem.slideDown(300);
     }
-    
-    showElem.show();
-  }
 
-function smoothLoad(){
-	//requires css body.loading: opacity: 0;
-	      $('body').removeClass('loading');
+    function slideItems(hideElem, showElem) {
+        if (hideElem.length > 0) {
+            hideElem.hide();
+        }
 
-window.onbeforeunload = function(){
-
-
- $('body').addClass('loading');
-
-
-}
-
-
-console.log('smoothLoad()');
-}
-
-	//overflow Functions
-
-  var usedHideScroll = 0;
-  var scrollValue = 0;
-
-  function hideScroll(){
-    $('html, body').addClass('no-overflow').css('top', -scrollValue).css('position', 'fixed');
-    usedHideScroll = 1;
-  }
-
-  function showScroll(){
-    $('html, body').css('position', 'inherit').removeClass('no-overflow').css('top', 0);
-    usedHideScroll = 0;
-  }
-
-  function transparentHeader(){
-
-    console.log('usedHideScroll: ' + usedHideScroll);
-
-    if(usedHideScroll == 0){
-
-    if($(document).scrollTop() > 60 ){
-
-        $('.site-header').removeClass('transparent');
-
-      }
-
-      else{
-
-        $('.site-header').addClass('transparent');
-
-      }
-
-    $(window).scroll(function(){
-
-      console.log('$(window).scroll(function()) inside transparentHeader(); usedHideScroll: ' + usedHideScroll);
-
-
-      if(usedHideScroll == 0){
-
-      if($(document).scrollTop() > 60 ){
-
-        $('.site-header').removeClass('transparent');
-
-      }
-
-      else{
-
-        $('.site-header').addClass('transparent');
-
-      }
-
-      }
-
-    })
-
-
-console.log('transparentHeader()');
+        showElem.show();
     }
-  }
 
-  //date functions
+    function smoothLoad() {
+        //requires css body.loading: opacity: 0;
+        $('body').removeClass('loading');
 
-     function compareToToday(dateText) {
+        window.onbeforeunload = function () {
+
+
+            $('body').addClass('loading');
+
+
+        }
+
+
+        console.log('smoothLoad()');
+    }
+
+    //overflow Functions
+
+    var usedHideScroll = 0;
+    var scrollValue = 0;
+
+    function hideScroll() {
+        $('html, body').addClass('no-overflow').css('top', -scrollValue).css('position', 'fixed');
+        usedHideScroll = 1;
+    }
+
+    function showScroll() {
+        $('html, body').css('position', 'inherit').removeClass('no-overflow').css('top', 0);
+        usedHideScroll = 0;
+    }
+
+    function transparentHeader() {
+
+        console.log('usedHideScroll: ' + usedHideScroll);
+
+        if (usedHideScroll == 0) {
+
+            if ($(document).scrollTop() > 60) {
+
+                $('.site-header').removeClass('transparent');
+
+            } else {
+
+                $('.site-header').addClass('transparent');
+
+            }
+
+            $(window).scroll(function () {
+
+                console.log('$(window).scroll(function()) inside transparentHeader(); usedHideScroll: ' + usedHideScroll);
+
+
+                if (usedHideScroll == 0) {
+
+                    if ($(document).scrollTop() > 60) {
+
+                        $('.site-header').removeClass('transparent');
+
+                    } else {
+
+                        $('.site-header').addClass('transparent');
+
+                    }
+
+                }
+
+            })
+
+
+            console.log('transparentHeader()');
+        }
+    }
+
+    //date functions
+
+    function compareToToday(dateText) {
 // date is dd.mm.yyyy
         var inputDate = dateText.split(".");
         var today = new Date();
         inputDate = new Date(inputDate[2], inputDate[1] - 1, inputDate[0], 0, 0, 0, 0);
         today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
 
-       console.log('compareToToday(dateText); result: ' + inputDate < today );
+        console.log('compareToToday(dateText); result: ' + inputDate < today);
 
         return inputDate < today;
-          //inputDate < today, if true, result is 'False'
-};
+        //inputDate < today, if true, result is 'False'
+    };
 
-     function compareDates(date1, date2) {
+    function compareDates(date1, date2) {
 // date is dd.mm.yyyy
         var inputDate1 = date1.split(".");
-		var inputDate2 = date2.split(".");
+        var inputDate2 = date2.split(".");
         inputDate1 = new Date(inputDate1[2], inputDate1[1] - 1, inputDate1[0], 0, 0, 0, 0);
         inputDate2 = new Date(inputDate2[2], inputDate2[1] - 1, inputDate2[0], 0, 0, 0, 0);
 
-       console.log('compareDates(date1, date2); result: '+ inputDate1 < inputDate2);
+        console.log('compareDates(date1, date2); result: ' + inputDate1 < inputDate2);
 
 
         return inputDate1 < inputDate2;
-          //date1 < date2, if true, result is 'False'
-};
+        //date1 < date2, if true, result is 'False'
+    };
 
 //distance between dates
 
-  function daysDistance(firstDate,secondDate){
+    function daysDistance(firstDate, secondDate) {
 
-                 var startDay = new Date(firstDate);
-                  var endDay = new Date(secondDate);
-                  var millisecondsPerDay = 1000 * 60 * 60 * 24;
+        var startDay = new Date(firstDate);
+        var endDay = new Date(secondDate);
+        var millisecondsPerDay = 1000 * 60 * 60 * 24;
 
-                  var millisBetween = startDay.getTime() - endDay.getTime();
-                  var days = millisBetween / millisecondsPerDay;
+        var millisBetween = startDay.getTime() - endDay.getTime();
+        var days = millisBetween / millisecondsPerDay;
 
-                  // Round down.
-                  return Math.abs( Math.floor(days));
+        // Round down.
+        return Math.abs(Math.floor(days));
 
-    console.log('daysDistance(firstDate,secondDate); result: ' + Math.abs( Math.floor(days)));
+        console.log('daysDistance(firstDate,secondDate); result: ' + Math.abs(Math.floor(days)));
 
-}
+    }
 
-  //other functions
+    //other functions
 
-function stringToMath(string){
+    function stringToMath(string) {
 
-  console.log('stringToMath(string); result: ' + eval(string));
+        console.log('stringToMath(string); result: ' + eval(string));
 
-return eval(string);
-}
+        return eval(string);
+    }
 
-function copyToClipboard(element) {
- var $temp = $("<input>");
- $("body").append($temp);
- $temp.val($(element).val()).select();
- document.execCommand("copy");
- $temp.remove();
+    function copyToClipboard(element) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(element).val()).select();
+        document.execCommand("copy");
+        $temp.remove();
 
-  console.log('copyToClipboard(element)');
+        console.log('copyToClipboard(element)');
 
-}
+    }
 
-function scrollToDiv(element){
-  var headerHeight = 0;
+    function scrollToDiv(element) {
+        var headerHeight = 0;
 
-  if($('.site-header').css('position') == 'fixed'|| $('.site-header__mobile-nav').css('position') == 'fixed'){
-   headerHeight =  $('.site-header').outerHeight();
-    console.log('has Fixed');
-  }
-  console.log('scrollin');
-		  $('html, body').animate({
-        scrollTop: element.offset().top - headerHeight},
-        300);
+        if ($('.site-header').css('position') == 'fixed' || $('.site-header__mobile-nav').css('position') == 'fixed') {
+            headerHeight = $('.site-header').outerHeight();
+            console.log('has Fixed');
+        }
+        console.log('scrollin');
+        $('html, body').animate({
+                scrollTop: element.offset().top - headerHeight
+            },
+            300);
 
-  console.log(element.offset().top);
+        console.log(element.offset().top);
 
-   console.log('scrollToDiv(element)');
+        console.log('scrollToDiv(element)');
 
-	  }
+    }
 
-  //custom modal
+    //custom modal
 
-  function customModalShow(cookie, modal){
-    if(cookie == 'cookie'){
+    function customModalShow(cookie, modal) {
+        if (cookie == 'cookie') {
 
-      if (checkCookie(modal.attr('class').replace(/\s/g, '')) == 1) {
-        return 'opened';
-      } else {
-        setCookie(modal.attr('class').replace(/\s/g, ''));
+            if (checkCookie(modal.attr('class').replace(/\s/g, '')) == 1) {
+                return 'opened';
+            } else {
+                setCookie(modal.attr('class').replace(/\s/g, ''));
 
 //         hideScroll();
 
-        fadeEffects('',modal);
+                fadeEffects('', modal);
 
-        $('.modal__close').click(function(){
-        closeModal(modal);
-        })
-        console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
+                $('.modal__close').click(function () {
+                    closeModal(modal);
+                })
+                console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
 
-        return 'opening';
-      }
+                return 'opening';
+            }
 
-    } else {
+        } else {
 
-      $('#tawkchat-container').css('opacity', 0).css('pointer-events', 'none');
-      $('.fixed-header').addClass('modal-open');
+            $('#tawkchat-container').css('opacity', 0).css('pointer-events', 'none');
+            $('.fixed-header').addClass('modal-open');
 
 //       hideScroll();
 
-      fadeEffects('',modal);
+            fadeEffects('', modal);
 
-      setTimeout(function(){
-        $('.modal__text-content').css('padding-bottom', $('.product-descriptions:visible').outerHeight());
+            setTimeout(function () {
+                $('.modal__text-content').css('padding-bottom', $('.product-descriptions:visible').outerHeight());
 
-      }, 300);
+            }, 300);
 
 
+            $('.modal__close').click(function () {
+                closeModal(modal);
+            })
 
-        $('.modal__close').click(function(){
-        closeModal(modal);
-        })
+            $('.modal__close--overlay').click(function () {
+                closeModal(modal);
+            })
 
-        $('.modal__close--overlay').click(function(){
-        closeModal(modal);
-        })
+            $(document).one("keyup", function (e) {
+                if (e.key === "Escape") {
+                    closeModal(modal);
+                }
+            })
+            console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
 
-        $(document).one("keyup", function (e) {
-         if(e.key === "Escape") {
-         closeModal(modal);
+            return 'opening';
+
+
+        }
+
     }
-        })
-        console.log('customModalShow(cookie), cookie: ' + cookie + 'opened: opening');
 
-        return 'opening';
+    function closeModal(elem) {
+        fadeEffects(elem, '');
+        showScroll();
 
-
-
+        $('#tawkchat-container').css('opacity', 1).css('pointer-events', 'auto');
+        $('.fixed-header').removeClass('modal-open');
     }
 
-  }
-
-  function closeModal(elem){
-   fadeEffects(elem, '');
-    showScroll();
-
-    $('#tawkchat-container').css('opacity', 1).css('pointer-events', 'auto');
-    $('.fixed-header').removeClass('modal-open');
-  }
-
-  
+    
 
 
-function sameHeight(obj, child){
+function sameHeight(obj, child) {
     obj.css('height', 'auto');
     var maxHeight = 0;
-    obj.each(function(){
-      if($(this).outerHeight() > maxHeight){
-        maxHeight = $(this).outerHeight();
-        console.log('bigger height: ' + maxHeight +'---'+$(this).outerHeight())
-      }
-      else{
-       console.log('height not bigger: ' + maxHeight +'---'+$(this).outerHeight())
+    obj.each(function () {
+        if ($(this).outerHeight() > maxHeight) {
+            maxHeight = $(this).outerHeight();
+            console.log('bigger height: ' + maxHeight + '---' + $(this).outerHeight())
+        } else {
+            console.log('height not bigger: ' + maxHeight + '---' + $(this).outerHeight())
 
-      }
+        }
 
     })
     obj.css('height', maxHeight);
 
-    obj.each(function(){
-      var diff = ($(this).height() - $(this).find(child).outerHeight())/2;
+    obj.each(function () {
+        var diff = ($(this).height() - $(this).find(child).outerHeight()) / 2;
 
-      $(this).find(child).css('top', diff);
+        $(this).find(child).css('top', diff);
     })
 
-  }
+}
 
 
 
 
-	  //on ready functions
+//on ready functions
 
-	  $(document).ready(function(){
-        var $toggleFormBtn = $('.Link[data-action="toggle-recover-form"]');
+$(document).ready(function () {
+    var $toggleFormBtn = $('.Link[data-action="toggle-recover-form"]');
 
-        toggleForms($('.Link--forgot'), $('#recover_customer_password'), $('#customer_login'));
+    toggleForms($('.Link--forgot'), $('#recover_customer_password'), $('#customer_login'));
 
-        toggleForms($('.Link--login'), $('#customer_login'), $('#recover_customer_password'));
+    toggleForms($('.Link--login'), $('#customer_login'), $('#recover_customer_password'));
 
-        function toggleForms($trigger, $formToShow, $formToHide) {
-          $trigger.on('click', function(event) {
+    function toggleForms($trigger, $formToShow, $formToHide) {
+        $trigger.on('click', function (event) {
             event.preventDefault();
 
             $formToShow.css({
-              display: 'block'
+                display: 'block'
             });
 
-            setTimeout(function() {
-              $formToShow.css({
-                visibility: 'inherit',
-                opacity: 1,
-                transform: 'matrix(1, 0, 0, 1, 0, 0)'
-              });
+            setTimeout(function () {
+                $formToShow.css({
+                    visibility: 'inherit',
+                    opacity: 1,
+                    transform: 'matrix(1, 0, 0, 1, 0, 0)'
+                });
 
-              $formToHide.css({
-                visibility: 'hidden',
-                opacity: 0,
-                transform: 'matrix(1, 0, 0, 1, 0, 20)'
-              });
+                $formToHide.css({
+                    visibility: 'hidden',
+                    opacity: 0,
+                    transform: 'matrix(1, 0, 0, 1, 0, 20)'
+                });
             }, 10);
 
             $formToHide.css({
-              display: 'none'
+                display: 'none'
             });
-          });
-        }
+        });
+    }
 
-        if($(window).width() > 768){
-          $('.shopify-section-cart-template select').each(function(){
+    if ($(window).width() > 768) {
+        $('.shopify-section-cart-template select').each(function () {
             $(this).attr({
-   			   nameI: $(this).attr('name'),
-   			 })
-    	.removeAttr('name');
+                nameI: $(this).attr('name'),
+            })
+                .removeAttr('name');
 
-          })
-        }
-        else {
-             $('.shopify-section-cart-template input').each(function(){
-            $(this).attr({
-   			   nameI: $(this).attr('name'),
-   			 })
-    	.removeAttr('name');
-
-          })
-        }
-
-        $(window).resize(function(){
-          if($(window).width() > 768){
-            $('.shopify-section-cart-template select').each(function(){
-            $(this).attr({
-   			   nameI: $(this).attr('name'),
-   			 })
-    	.removeAttr('name');
-
-          })
-
-            $('.shopify-section-cart-template input').each(function(){
-            $(this).attr({
-   			   name: $(this).attr('nameI'),
-   			 })
-    	.removeAttr('nameI');
-
-          })
-
-          }
-          else {
-              $('.shopify-section-cart-template input').each(function(){
-            $(this).attr({
-   			   nameI: $(this).attr('name'),
-   			 })
-    	.removeAttr('name');
-
-          })
-
-            $('.shopify-section-cart-template select').each(function(){
-            $(this).attr({
-   			   name: $(this).attr('nameI'),
-   			 })
-    	.removeAttr('nameI');
-
-          })
-
-          }
         })
+    } else {
+        $('.shopify-section-cart-template input').each(function () {
+            $(this).attr({
+                nameI: $(this).attr('name'),
+            })
+                .removeAttr('name');
 
-        $('a[href="#expandmenu"]').click(function(){
-          console.log($(this).text());
-            if($(this).text() == "..more"){
+        })
+    }
+
+    $(window).resize(function () {
+        if ($(window).width() > 768) {
+            $('.shopify-section-cart-template select').each(function () {
+                $(this).attr({
+                    nameI: $(this).attr('name'),
+                })
+                    .removeAttr('name');
+
+            })
+
+            $('.shopify-section-cart-template input').each(function () {
+                $(this).attr({
+                    name: $(this).attr('nameI'),
+                })
+                    .removeAttr('nameI');
+
+            })
+
+        } else {
+            $('.shopify-section-cart-template input').each(function () {
+                $(this).attr({
+                    nameI: $(this).attr('name'),
+                })
+                    .removeAttr('name');
+
+            })
+
+            $('.shopify-section-cart-template select').each(function () {
+                $(this).attr({
+                    name: $(this).attr('nameI'),
+                })
+                    .removeAttr('nameI');
+
+            })
+
+        }
+    })
+
+    $('a[href="#expandmenu"]').click(function () {
+        console.log($(this).text());
+        if ($(this).text() == "..more") {
             $(this).text('..less');
-          }else {
-           $(this).text('..more');
-          }
-          $('.mobile-nav-2').toggleClass('hide');
-        })
-        $('.js-toggle-submenu').click(function(){
-          $(this).toggleClass('is-active');
-        })
-
-
-        $(".hamburger-nav-11").click(function(){
-          $(this).toggleClass('mobile-nav--close').toggleClass('mobile-nav--open');
-
-          $('.navigation11').toggleClass('nav-closed');
-
-
-        })
-
-
-                   //qty input function
-
-
-  $('.frequency_label').text($(this).text().replace('Deliver Every', 'repeat this order'));
-
-
-
-        $('.close-cart').click(function(){
-          $('.cartdrawer').removeClass('toggle-cart');
-           $('.site-header').removeClass('not-transparent');
-
-        })
-
-        $('#cartDrawer').click(function(){
-          if(!$('.cartdrawer').hasClass('toggle-cart') &&  $('.js-mobile-nav-toggle').hasClass('mobile-nav--close')){
-           $('.js-mobile-nav-toggle').trigger('click');
-          }
-          if(!$('.cartdrawer').hasClass('toggle-cart')){
-          $('.site-header').addClass('not-transparent');
-          }
-          else{
-           $('.site-header').removeClass('not-transparent');
-         }
-          $('.cartdrawer').toggleClass('toggle-cart');
-
-        })
-
-        smoothLoad();
-
-
-
-        //transparentHeader();
-
-		  //smooth scroll if interlan link
-
-  $('a').click(function(e){
-   if($(this).attr('href').indexOf('#') == 0 && $(this).attr('href').length > 1 && $($(this).attr('href')).length > 0){
-        e.preventDefault();
-$('html, body').animate({
-        scrollTop: $($(this).attr('href')).offset().top},
-        300);
-     return false;
-  }
-
-
-})
-
-
-
-               $('.input__number-holder .qty').click(function(){
-      var input = $(this).parents('.input__number-holder').find('input');
-      var val = Number(input.val());
-                  console.log('value before add: ' + val);
-      if($(this).hasClass('minus')){
-
-        //removing from qty
-
-         if(val > 1){
-       input.val(val - 1);
-      }
-      else if(checkForAttr(input.attr('min')) == 1){
-       input.val(input.attr('min'));
-      }
-        else{
-          input.val(0);
+        } else {
+            $(this).text('..more');
         }
-         }
-         else{
-           // adding to qty
-
-           if(checkForAttr(input.attr('max')) == 1 ){
-             var max = input.attr('max');
-             console.log('max: '+ max);
-             if(input.val() < max){
-         input.val(val + 1);
-                console.log('changed to: ' + val +' + '+ 1);
-             }
-           }
-           else{
-             input.val(val + 1);
-             console.log('changed to: ' + val +' + '+ 1);
-           }
-         }
+        $('.mobile-nav-2').toggleClass('hide');
+    })
+    $('.js-toggle-submenu').click(function () {
+        $(this).toggleClass('is-active');
     })
 
 
-               Number.prototype.formatMoney = function(c, d, t){
-    var n = this,
-    c = isNaN(c = Math.abs(c)) ? 2 : c,
-    d = d == undefined ? "." : d,
-    t = t == undefined ? "," : t,
-    s = n < 0 ? "-" : "",
-    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
-    j = (j = i.length) > 3 ? j % 3 : 0;
-   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
- };
+    $(".hamburger-nav-11").click(function () {
+        $(this).toggleClass('mobile-nav--close').toggleClass('mobile-nav--open');
+
+        $('.navigation11').toggleClass('nav-closed');
 
 
-        $('.DynamicAddToCart').click(function(){
-          var id = $(this).parents('.DynamicAddToCartHolder').data('id');
+    })
 
-          if( $(this).parents('.DynamicAddToCartHolder').find('input').val().length > 0 && $(this).parents('.DynamicAddToCartHolder').find('input').val() > 0){
+
+    //qty input function
+
+
+    $('.frequency_label').text($(this).text().replace('Deliver Every', 'repeat this order'));
+
+
+    $('.close-cart').click(function () {
+        $('.cartdrawer').removeClass('toggle-cart');
+        $('.site-header').removeClass('not-transparent');
+
+    })
+
+    $('#cartDrawer').click(function () {
+        if (!$('.cartdrawer').hasClass('toggle-cart') && $('.js-mobile-nav-toggle').hasClass('mobile-nav--close')) {
+            $('.js-mobile-nav-toggle').trigger('click');
+        }
+        if (!$('.cartdrawer').hasClass('toggle-cart')) {
+            $('.site-header').addClass('not-transparent');
+        } else {
+            $('.site-header').removeClass('not-transparent');
+        }
+        $('.cartdrawer').toggleClass('toggle-cart');
+
+    })
+
+    smoothLoad();
+
+
+    //transparentHeader();
+
+    //smooth scroll if interlan link
+
+    $('a').click(function (e) {
+        if ($(this).attr('href').indexOf('#') == 0 && $(this).attr('href').length > 1 && $($(this).attr('href')).length > 0) {
+            e.preventDefault();
+            $('html, body').animate({
+                    scrollTop: $($(this).attr('href')).offset().top
+                },
+                300);
+            return false;
+        }
+
+
+    })
+
+
+    $('.input__number-holder .qty').click(function () {
+        var input = $(this).parents('.input__number-holder').find('input');
+        var val = Number(input.val());
+        console.log('value before add: ' + val);
+        if ($(this).hasClass('minus')) {
+
+            //removing from qty
+
+            if (val > 1) {
+                input.val(val - 1);
+            } else if (checkForAttr(input.attr('min')) == 1) {
+                input.val(input.attr('min'));
+            } else {
+                input.val(0);
+            }
+        } else {
+            // adding to qty
+
+            if (checkForAttr(input.attr('max')) == 1) {
+                var max = input.attr('max');
+                console.log('max: ' + max);
+                if (input.val() < max) {
+                    input.val(val + 1);
+                    console.log('changed to: ' + val + ' + ' + 1);
+                }
+            } else {
+                input.val(val + 1);
+                console.log('changed to: ' + val + ' + ' + 1);
+            }
+        }
+    })
+
+
+    Number.prototype.formatMoney = function (c, d, t) {
+        var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+            j = (j = i.length) > 3 ? j % 3 : 0;
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    };
+
+
+    $('.DynamicAddToCart').click(function () {
+        var id = $(this).parents('.DynamicAddToCartHolder').data('id');
+
+        if ($(this).parents('.DynamicAddToCartHolder').find('input').val().length > 0 && $(this).parents('.DynamicAddToCartHolder').find('input').val() > 0) {
             var qty = $(this).parents('.DynamicAddToCartHolder').find('input').val();
 
             push_to_queue(id, qty);
             Shopify.moveAlong();
 
-            if(Shopify.queue.length == 0){
-             $(this).parents('.DynamicAddToCartHolder').prepend('<div class="cart-success width-100 margin-vertical-md"><i class="fa fa-check"></i> ' + $(this).parents('.DynamicAddToCartHolder').data('title') + ' successfully added to cart</div>');
-         }
-          }
-        })
+            if (Shopify.queue.length == 0) {
+                $(this).parents('.DynamicAddToCartHolder').prepend('<div class="cart-success width-100 margin-vertical-md"><i class="fa fa-check"></i> ' + $(this).parents('.DynamicAddToCartHolder').data('title') + ' successfully added to cart</div>');
+            }
+        }
+    })
 
 
-        $('.modal__text-content').scroll(function(){
-          if(($(this).find(".rte").offset().top - $(this).find('.rte').offsetParent().offset().top) < 0){
+    $('.modal__text-content').scroll(function () {
+        if (($(this).find(".rte").offset().top - $(this).find('.rte').offsetParent().offset().top) < 0) {
             $(this).find('.product-descriptions').addClass('fixed');
-            }
-          else{
-          $(this).find('.product-descriptions').removeClass('fixed');
-            }
+        } else {
+            $(this).find('.product-descriptions').removeClass('fixed');
+        }
 
-        })
+    })
 
-	  })
+})
 
 
 

@@ -1,0 +1,88 @@
+<div id="EditAddress_{{ address.id }}" class="form-vertical Form mfp-hide address-form">
+  {% form 'customer_address', address %}
+    <h4 class="h2 margin-bottom-lg">{{ 'customer.addresses.edit_address' | t }}</h4>
+
+    <div class="grid">
+      <div class="grid__item">
+        <div class="Form__Item">
+          <input type="text" class="Form__Input" id="AddressFirstName_{{ form.id }}" name="address[first_name]" value="{{ form.first_name }}" placeholder="{{ 'customer.addresses.first_name' | t }}">
+
+          <label class="Form__FloatingLabel" for="AddressFirstName_{{ form.id }}">{{ 'customer.addresses.first_name' | t }}</label>
+        </div>
+      </div>
+
+      <div class="grid__item">
+        <div class="Form__Item">
+          <input type="text" class="Form__Input" id="AddressLastName_{{ form.id }}" name="address[last_name]" value="{{ form.last_name }}" placeholder="{{ 'customer.addresses.last_name' | t }}">
+
+          <label class="Form__FloatingLabel" for="AddressLastName_{{ form.id }}">{{ 'customer.addresses.last_name' | t }}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="grid__item">
+        <div class="Form__Item">
+          <input type="text" class="Form__Input" id="AddressCompany_{{ form.id }}" name="address[company]" value="{{ form.company }}" placeholder="{{ 'customer.addresses.company' | t }}">
+
+          <label class="Form__FloatingLabel" for="AddressCompany_{{ form.id }}">{{ 'customer.addresses.company' | t }}</label>
+        </div>
+
+        <div class="Form__Item">
+          <input type="text" class="Form__Input" id="AddressAddress1_{{ form.id }}" name="address[address1]" value="{{ form.address1 }}" placeholder="{{ 'customer.addresses.address1' | t }}">
+
+          <label class="Form__FloatingLabel" for="AddressAddress1_{{ form.id }}">{{ 'customer.addresses.address1' | t }}</label>
+        </div>
+
+        <div class="Form__Item">
+          <input type="text" class="Form__Input" id="AddressAddress2_{{ form.id }}" name="address[address2]" value="{{ form.address2 }}" placeholder="{{ 'customer.addresses.address2' | t }}">
+
+          <label class="Form__FloatingLabel" for="AddressAddress2_{{ form.id }}">{{ 'customer.addresses.address2' | t }}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="Form__Item">
+      <input type="text" class="Form__Input" id="AddressCity_{{ form.id }}" name="address[city]" value="{{ form.city }}" placeholder="{{ 'customer.addresses.city' | t }}">
+
+      <label class="Form__FloatingLabel" for="AddressCity_{{ form.id }}">{{ 'customer.addresses.city' | t }}</label>
+    </div>
+
+    <div class="grid">
+      <div class="grid__item medium-up--one-half">
+        <label class="hide" for="AddressCountry_{{ form.id }}">{{ 'customer.addresses.country' | t }}</label>
+
+        <select id="AddressCountry_{{ form.id }}" name="address[country]" data-default="{{ form.country }}">{{ country_option_tags }}</select>
+      </div>
+
+      <div class="grid__item medium-up--one-half">
+        <div class="Form__Item">
+          <input type="text" class="Form__Input" id="AddressZip_{{ form.id }}" name="address[zip]" value="{{ form.zip }}" autocapitalize="characters" placeholder="{{ 'customer.addresses.zip' | t }}">
+
+          <label class="Form__FloatingLabel" for="AddressZip_{{ form.id }}">{{ 'customer.addresses.zip' | t }}</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="AddressProvinceContainer_{{ form.id }}" style="display:none">
+      <label class="hide" for="AddressProvince_{{ form.id }}">{{ 'customer.addresses.province' | t }}</label>
+      <select id="AddressProvince_{{ form.id }}" name="address[province]" data-default="{{ form.province }}"></select>
+    </div>
+
+    <div class="Form__Item">
+      <input class="Form__Input" type="tel" id="AddressPhone_{{ form.id }}" name="address[phone]" value="{{ form.phone }}" placeholder="{{ 'customer.addresses.phone' | t }}">
+
+      <label class="Form__FloatingLabel" for="AddressPhone_{{ form.id }}">{{ 'customer.addresses.phone' | t }}</label>
+    </div>
+
+    <div class="text-center">
+      {% unless address.id == customer.default_address.id %}
+        {{ form.set_as_default_checkbox }}
+        <label for="address_default_address_{{ form.id }}">{{ 'customer.addresses.set_default' | t }}</label>
+      {% endunless %}
+
+      <div class="yellow-gradietn-btn"><input type="submit" class="btn" value="{{ 'customer.addresses.update' | t }}"></div>
+      <div class="blue-underline-btn"><button type="button" class="text-link close-popup">{{ 'customer.addresses.cancel' | t }}</button></div>
+    </div>
+  {% endform %}
+</div>
