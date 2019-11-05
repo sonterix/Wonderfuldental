@@ -1,15 +1,12 @@
-<script>window.location.href = '/account/login';</script>
-
 <div class="section-account">
   <div class="Container">
     <div class="PageContent PageContent--fitScreen PageContent--extraNarrow">
       <div class="form-vertical Form">
-          {% comment %}
         {% form 'create_customer' %}
 
           <h1 class="text-center Form__Title Heading u-h1">{{ 'customer.register.title' | t }}</h1>
 
-          <p class="Form__Legend">{{ 'customer.register.description' | t }}</p>
+          <p class="Form__Legend">{{ 'customer.register.description_html' | t }}</p>
 
           {{ form.errors | default_errors }}
 
@@ -41,9 +38,6 @@
             <input type="submit" value="{{ 'customer.register.submit' | t }}" class="Form__Submit Button Button--primary Button--full">
           </p>
         {% endform %}
-          {% endcomment %}
-
-          {% include 'customer-fields' %}
       </div>
     </div><!-- /.PageContent PageContent-/-fitScreen PageContent-/-extraNarrow -->
   </div><!-- /.Container -->
