@@ -1,0 +1,605 @@
+<div class="page-width text-center static-cart hide">
+
+{% include 'bold-cart' %}
+<div class="small-width no-select" data-section-id="{{ section.id }}" data-section-type="cart-template">
+  {% include 'heading-snippet', settings: 'larger bold' %}
+  
+<div class="grid grid--table small--break-table align-top">
+  <div class="grid__item medium-up--two-thirds padding-top-sm medium-up--push-one-sixth">
+
+    
+  <div class="grid">
+
+{% assign varnish = "" %}
+{% assign pastes = "" %}
+{% assign brush = "" %}
+{% assign angle = "" %}
+{% assign collection = collections.all %}
+{% comment %}
+Source: https://gist.github.com/carolineschnapp/9122054
+If you are not on a collection page, do define which collection to use in the order form.
+Use the following assign statement, replace 'your-collection-handle-here' with your collection handle.
+
+Use the assign statement outside of this comment block at the top of your template.
+{% endcomment %}
+
+{% paginate collection.products by 100 %}
+
+{% comment %}
+<form action="/cart" method="post">
+  
+  {% if collection.products_count > 0 %}
+    <div>
+      <h1>{% if template contains 'page' %}{{ page.title }}{% else %}{{ collection.title }}{% endif %}</h1>
+      <input type="submit" value="Update Cart" />
+      <a href="/checkout" class="btn btn--main"> Proceed to checkout </a>
+        
+    </div>
+  {% else %}
+    <h1>{% if template contains 'page' %}{{ page.title }}{% else %}{{ collection.title }}{% endif %}</h1>
+  {% endif %}
+
+  {% if template contains 'page' and page.content.size > 0 %}
+    <div class="rte">
+      {{ page.content }}
+    </div>  
+  {% elsif collection.description.size > 0 %}
+    <div class="rte">
+      {{ collection.description }}
+    </div>
+  {% endif %}
+
+  {% if collection.products_count > 0 %}
+
+    <table>
+      <tbody>
+      {% for product in collection.products %}
+        {% if product.available %}
+          {% for variant in product.variants %}
+            {% if variant.available %}
+              <tr class="{% cycle 'pure-table-odd', '' %}">
+                <td>
+                  <a href="{{ variant.url | collection }}">
+                    <img src="{{ variant.image | default: product.featured_image | img_url: 'small' }}" alt="{{ variant.title | escape }}" />
+                  </a>
+                </td>
+                <td>
+                  <a href="{{ variant.url | collection }}">
+                   {{ product.title }}{% unless variant.title contains 'Default' %} - {{ variant.title }}{% endunless %}{% unless variant.sku == blank %} - {{ variant.sku }}{% endunless %}
+                  </a>
+                </td>
+                <td>
+                   {{ variant.price | money }}
+                </td>
+                <td style="text-align:right;">
+                  {% assign value = 0 %}
+                  {% for item1 in cart.items %}{% if item1.product.selected_or_first_available_variant.id == variant.id %}{% assign value = item1.quantity | strip  %}{% endif %}{% endfor %}
+                  <input name="updates[{{ variant.id }}]" onfocus="this.select()" class="quantity field" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ value }}" tabindex="1" />
+                </td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+      </tbody>
+    </table>
+    
+    <div>
+      <input type="submit" value="Add to the cart" />
+    </div>
+  
+  {% else %}
+    <p>There are no products in this view.</p>
+  {% endif %}
+
+</form>
+{% endcomment %}
+
+{% endpaginate %}
+
+<form action="/cart#added" method="post">
+  <div class="notification-ie">
+    ALERT: Internet Explorer is not a supported browser on this site. Please use another browser for optimal experience. 
+  </div>
+  <a name="added"></a>
+  
+  {% if collection.products_count > 0 %}
+    <div>
+    
+      <div class="static-cart-footer margin-vertical-lg">
+   
+         
+    <div class="text-right small--text-center">
+     
+            {% if cart.total_discounts > 0 %}
+              <div class="cart__savings">
+                {{ 'cart.general.savings' | t }}
+                <span class="cart__savings-amount">{{ cart.total_discounts | money }}</span>
+              </div>
+            {% endif %}
+            <div class="cart__shipping">{{ 'cart.general.shipping_at_checkout' | t }}</div>
+            <a href="collections/all" class=" hide btn btn--secondary cart__update cart__continue--large small--hide" >{{ 'cart.general.continue_shopping' | t }}</a>
+         <div class="additional-checkout-buttons">
+			{{ content_for_additional_checkout_buttons }}
+		 </div>
+       <input type="submit" class="btn" value="Update Cart" />
+      {% if cart.total_price > 0 %}
+        <a href="/checkout" class=" btn checkout-btn margin-left-md" >{{ 'cart.general.checkout' | t }}</a>
+      {% endif %}
+               
+      
+    </div>
+        
+        <div class="grid grid--no-gutters margin-vertical-md ">
+      <div class="grid__item one-half">
+		      
+     </div>
+                <div class="grid__item one-quarter">
+		       {{ 'cart.general.total' | t }}
+     </div>
+     <div class="grid__item one-quarter text-right">
+        <span class="cart__subtotal">{{ bold_cart_total_price | money }}</span>
+     </div>
+    <div class="grid__item one-whole">
+     <div class="one-whole border-bottom margin-bottom-0">
+       &nbsp;
+      </div>
+    </div>
+    </div>
+    
+        
+  {% else %}
+  {% endif %}
+
+
+ <div class="grid">
+
+    
+    {% assign pasteCount = 0 %}
+    {% assign varnishCount = 0 %}
+    
+    {% for product in collections['all'].products %}
+    {% assign price = product.price %}
+    {% assign qty = 0 %}
+    
+    {% assign added = '' %}
+    
+    {% assign package = '' %}
+    
+    {% for tag in product.tags %}
+    {% if tag contains 'product_package:' %}
+    
+    {% assign package = tag |remove: 'product_package:' |strip %}
+    {% endif %}
+    {% endfor %}
+    
+    {% for item in cart.items %}
+    {% include 'bold-cart-item' with item %}
+    {% if item.variant.id == product.selected_or_first_available_variant.id %}
+    {% if product.type == 'fluoride varnish'  %}
+     {% assign varnishCount = varnishCount |plus: item.quantity %}
+    {% elsif product.type == 'paste' %}
+    {% assign pasteCount = pasteCount |plus: item.quantity %}
+    {% endif %}
+    {% assign added = 'added' %}
+    {% assign qty = item.quantity %}
+    {% endif %}
+    {% endfor %}
+    {% if product.type == 'paste'%}
+    {% unless product.tags contains 'sample' %}
+    {% capture pastes %}
+    {{ pastes }}
+   
+     <div class="product-holder relative paste-item product-{{ product.selected_or_first_available_variant.id}}" data-price="{{ product.price}}">
+     <div class="grid grid--table grid--no-gutters">
+	   <div class="grid__item small--one-sixth medium-up--one-eighth effect_image--holder text-right padding-right-md relative">
+
+          <img src="{{ product.featured_image |img_url: 'x60' }}" alt="{{ product.title |downcase }}"/>
+   
+        {% capture prodReviews %}
+           {% include 'product-reviews' %}
+         {% endcapture %}
+         {{ prodReviews }}
+          </div>
+          <div class="product-title grid__item small--one-third medium-up--three-eighths relative">
+          <h3 class="no-margin h5">{{ product.title }}</h3>
+             {% if product.tags contains 'pre_order' %}
+              <p class="red no-margin bold">{{ pre_order }}</p>
+            {% endif %}
+            {% if product.tags contains 'sold_out' %}
+            <p class="red no-margin bold">{{ sold_out_label }}</p>
+            {% endif %}
+            
+            
+         {{ prodReviews }}
+       </div>
+       {{ bold_recurring_desc }}
+{{ bold_item_properties }}
+
+       <div class="grid__item text-left small--one-quarter medium-up--one-eighth price">
+       <span class="small-font">
+         {{ product.price |money }}
+         </span>
+         </div>
+         <div class="grid__item text-left small--one-quarter medium-up--one-eighth package">
+                 <span class="small-font">
+         {% for tag in product.tags %}
+    {% if tag contains 'product_package:' %}
+    
+      {{ tag |remove: 'product_package:' |strip }}
+    {% endif %}
+    {% endfor %}
+           </span>
+       </div>
+
+       
+<div class="grid__item text-left small--one-sixth medium-up--one-eighth">
+   {% unless product.tags contains "sold_out" %}
+                    {% assign value = 0 %}
+                  {% for item1 in cart.items %}{% if item1.product.selected_or_first_available_variant.id ==  product.selected_or_first_available_variant.id  %}{% assign value = item1.quantity | strip  %}{% endif %}{% endfor %}
+                  <input name="updates[{{ product.selected_or_first_available_variant.id }}]" onfocus="this.select()" class="" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ value }}" tabindex="1" />
+   
+  {% comment %}                
+  <select class="text-center cart-input medium-up--hide {{ added }}" name="updates[{{ product.selected_or_first_available_variant.id }}]" data-package="{% if package != '' %}{{ package }}{% else %}1 piece{% endif %}" data-id="{{ product.selected_or_first_available_variant.id }}">
+                  
+                  {% for i in (0..25) %}
+                  <option value="{{ i }}" {% unless qty != i %} selected {% endunless %} >{{ i }}</option>
+            {% endfor %}
+         </select>
+  {% endcomment %}
+  {% endunless %}
+       </div>
+       <div class="grid__item small--one-sixth medium-up--one-eighth text-left small-hide">
+          <p class=" color-dark money small-font">{% if qty >  0 %} {{ product.price |times: qty |money }}{% endif %}</p>
+      </div>
+    </div>
+    </div>
+   
+    {% endcapture %}
+    {% endunless %}
+    {% elsif product.type == 'fluoride varnish'  %}
+    {% unless product.tags contains 'sample' %}
+    
+    {% capture varnish %}
+    {{ varnish }}
+      <div class="product-holder varnish-item product-{{ product.selected_or_first_available_variant.id}}"  data-price="{{ product.price}}">
+     <div class="grid grid--table grid--no-gutters">
+	   <div class="grid__item small--one-sixth medium-up--one-eighth effect_image--holder relative text-right padding-right-md">
+                
+          <img src="{{ product.featured_image |img_url: 'x50' }}" alt="{{ product.title |downcase }}"/>
+         
+             {% capture prodReviews %}
+           {% include 'product-reviews' %}
+         {% endcapture %}
+         {{ prodReviews }}
+         
+        
+          </div>
+          <div class="product-title grid__item small--one-third relative medium-up--three-eighths">
+          <h3 class="no-margin h5">{{ product.title }}</h3>
+             {% if product.tags contains 'pre_order' %}
+              <p class="red no-margin bold">{{ pre_order }}</p>
+            {% endif %}
+            {% if product.tags contains 'sold_out' %}
+            <p class="red no-margin bold">{{ sold_out_label }}</p>
+            {% endif %}
+            
+            
+         {{ prodReviews }}
+       </div>
+       
+       <div class="grid__item text-left small--one-quarter medium-up--one-eighth price">
+       <span class="small-font">
+         {{ product.price |money }}
+         </span>
+         </div>
+       <div class="grid__item text-left small--one-quarter medium-up--one-eighth package">
+             <span class="small-font">
+             {% for tag in product.tags %}
+    {% if tag contains 'product_package:' %}
+    
+      {{ tag |remove: 'product_package:' |strip }}
+    {% endif %}
+    {% endfor %}
+           </span>
+         
+       </div>
+       
+       
+<div class="grid__item text-left small--one-sixth medium-up--one-eighth">
+   {% unless product.tags contains "sold_out" %}
+                    {% assign value = 0 %}
+                  {% for item1 in cart.items %}{% if item1.product.selected_or_first_available_variant.id ==  product.selected_or_first_available_variant.id  %}{% assign value = item1.quantity | strip  %}{% endif %}{% endfor %}
+                  <input name="updates[{{ product.selected_or_first_available_variant.id }}]" onfocus="this.select()" class="" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ value }}" tabindex="1" />
+   
+  {% comment %}                
+  <select class="text-center cart-input medium-up--hide {{ added }}" name="updates[{{ product.selected_or_first_available_variant.id }}]" data-package="{% if package != '' %}{{ package }}{% else %}1 piece{% endif %}" data-id="{{ product.selected_or_first_available_variant.id }}">
+                  
+                  {% for i in (0..25) %}
+                  <option value="{{ i }}" {% unless qty != i %} selected {% endunless %} >{{ i }}</option>
+            {% endfor %}
+         </select>
+  {% endcomment %}
+  {% endunless %}
+       </div>
+       <div class="grid__item small--one-sixth medium-up--one-eighth text-left small-hide">
+          <p class=" color-dark money small-font">{% if qty >  0 %} {{ product.price |times: qty |money }}{% endif %}</p>
+      </div>
+    </div>
+    </div>
+   
+    {% endcapture %}
+    {% endunless %}
+    {% endif %}
+    {% endfor %}
+    
+    {% for product in collections['all'].products %}
+    
+    {% assign qty = 0 %}
+    
+    {% assign added = '' %}
+    
+    {% assign package = '' %}
+    
+    {% for tag in product.tags %}
+    {% if tag contains 'product_package:' %}
+    
+    {% assign package = tag |remove: 'product_package:' |strip %}
+    {% endif %}
+    {% endfor %}
+    
+    {% for item in cart.items %}
+    {% include 'bold-cart-item' with item %}
+    {% if item.variant.id == product.selected_or_first_available_variant.id %}
+     
+    {% assign added = 'added' %}
+    {% assign qty = item.quantity %}
+    {% endif %}
+    {% endfor %}
+    {% if product.type != 'paste' and product.type != 'fluoride varnish'%}
+    {% assign counter = counter |plus: 1 |modulo: 2 %}
+    {% if counter == 1 %}
+    {% unless product.tags contains 'sample' %}
+ 
+    {% capture brush %}
+
+     <div class="product-holder brush-item product-{{ product.selected_or_first_available_variant.id}}" data-price="{{ product.price}}">
+     <div class="grid grid--table grid--no-gutters">
+	   <div class="grid__item relative small--one-sixth medium-up--one-eighth effect_image--holder text-right padding-right-md text-right padding-right-md">
+                 
+          <img src="{{ product.featured_image |img_url: 'x55' }}" alt="{{ product.title |downcase }}"/>
+       
+           
+             {% capture prodReviews %}
+           {% include 'product-reviews' %}
+         {% endcapture %}
+         {{ prodReviews }}
+         
+        
+          </div>
+          <div class=" product-title relative grid__item small--one-third medium-up--three-eighths">
+          <h3 class="no-margin h5">{{ product.title }}</h3>
+            {% if product.tags contains 'pre_order' %}
+              <p class="red no-margin bold">{{ pre_order }}</p>
+            {% endif %}
+            {% if product.tags contains 'sold_out' %}
+            <p class="red no-margin bold">{{ sold_out_label }}</p>
+            {% endif %}
+            
+         {{ prodReviews }}
+       </div>
+       
+       <div class="grid__item text-left small--one-quarter medium-up--one-eighth price">
+       <span class="small-font">
+         
+         {{product.price  |money }}{% if package != '' %}{% endif %}
+         </span>
+         </div>
+         <div class="grid__item text-left small--one-quarter medium-up--one-eighth package">
+           <span class="small-font">
+             {% for tag in product.tags %}
+    {% if tag contains 'product_package:' %}
+    
+      {{ tag |remove: 'product_package:' |strip }}
+    {% endif %}
+    {% endfor %}
+           </span>
+         
+       </div>
+       
+
+<div class="grid__item text-left small--one-sixth medium-up--one-eighth">
+   {% unless product.tags contains "sold_out" %}
+                    {% assign value = 0 %}
+                  {% for item1 in cart.items %}{% if item1.product.selected_or_first_available_variant.id ==  product.selected_or_first_available_variant.id  %}{% assign value = item1.quantity | strip  %}{% endif %}{% endfor %}
+                  <input name="updates[{{ product.selected_or_first_available_variant.id }}]" onfocus="this.select()" class="" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ value }}" tabindex="1" />
+   
+  {% comment %}                
+  <select class="text-center cart-input medium-up--hide {{ added }}" name="updates[{{ product.selected_or_first_available_variant.id }}]" data-package="{% if package != '' %}{{ package }}{% else %}1 piece{% endif %}" data-id="{{ product.selected_or_first_available_variant.id }}">
+                  
+                  {% for i in (0..25) %}
+                  <option value="{{ i }}" {% unless qty != i %} selected {% endunless %} >{{ i }}</option>
+            {% endfor %}
+         </select>
+  {% endcomment %}
+  {% endunless %}
+       </div>
+       <div class="grid__item small--one-sixth medium-up--one-eighth text-left small-hide">
+          <p class=" color-dark money small-font">{% if qty >  0 %} {{ product.price |times: qty |money }}{% endif %}</p>
+      </div>
+    </div>
+    </div>
+ 
+    {% endcapture %}
+    {% endunless %}
+    {% else %}
+    {% unless product.tags contains 'sample' %}
+    
+    {% capture angle %}
+  
+     <div class="product-holder angle-item product-{{ product.selected_or_first_available_variant.id}}"  data-price="{{ product.price}}">
+     <div class="grid grid--table grid--no-gutters">
+	   <div class="grid__item relative small--one-sixth medium-up--one-eighth effect_image--holder text-right padding-right-md">
+             
+             {% capture prodReviews %}
+           {% include 'product-reviews' %}
+         {% endcapture %}
+         {{ prodReviews }}
+          
+          <img src="{{ product.featured_image |img_url: 'x50' }}" alt="{{ product.title |downcase }}"/>
+       </div>
+          <div class="product-title relative grid__item small--one-third medium-up--three-eighths">
+          <h3 class="no-margin h5">{{ product.title }}</h3>
+             {% if product.tags contains 'pre_order' %}
+              <p class="red no-margin bold">{{ pre_order }}</p>
+            {% endif %}
+            {% if product.tags contains 'sold_out' %}
+            <p class="red no-margin bold">{{ sold_out_label }}</p>
+            {% endif %}
+            
+          
+         {{ prodReviews }}
+       </div>
+       
+       <div class="grid__item text-left small--one-quarter medium-up--one-eighth price">
+       <span class="small-font">
+         {{product.price |money }}{% if package != '' %}{% endif %}
+         </span>
+         </div>
+         <div class="grid__item text-left small--one-quarter medium-up--one-eighth package">
+                <span class="small-font">
+             {% for tag in product.tags %}
+    {% if tag contains 'product_package:' %}
+    
+      {{ tag |remove: 'product_package:' |strip }}
+    {% endif %}
+    {% endfor %}
+           </span>
+       </div>
+   
+<div class="grid__item text-left small--one-sixth medium-up--one-eighth">
+   {% unless product.tags contains "sold_out" %}
+                    {% assign value = 0 %}
+                  {% for item1 in cart.items %}{% if item1.product.selected_or_first_available_variant.id ==  product.selected_or_first_available_variant.id  %}{% assign value = item1.quantity | strip  %}{% endif %}{% endfor %}
+                  <input name="updates[{{ product.selected_or_first_available_variant.id }}]" onfocus="this.select()" class="" min="0" {% unless variant.inventory_management == blank or variant.inventory_policy == 'continue' %} max="{{ variant.inventory_quantity }}" {% endunless %} type="text" value="{{ value }}" tabindex="1" />
+   
+  {% comment %}                
+  <select class="text-center cart-input medium-up--hide {{ added }}" name="updates[{{ product.selected_or_first_available_variant.id }}]" data-package="{% if package != '' %}{{ package }}{% else %}1 piece{% endif %}" data-id="{{ product.selected_or_first_available_variant.id }}">
+                  
+                  {% for i in (0..25) %}
+                  <option value="{{ i }}" {% unless qty != i %} selected {% endunless %} >{{ i }}</option>
+            {% endfor %}
+         </select>
+  {% endcomment %}
+  {% endunless %}
+       </div>
+       <div class="grid__item small--one-sixth medium-up--one-eighth text-left small-hide">
+          <p class=" color-dark money small-font">{% if qty >  0 %} {{ product.price |times: qty |money }}{% endif %}</p>
+      </div>
+    </div>
+    </div>
+    {% endcapture %}
+   
+    {% endunless %}
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    
+    <div class="grid__item " id="products-holder">
+      <div class="grid text-center grid--table grid--no-gutters">
+        <div class="grid__item  small--one-sixth medium-up--one-eighth">
+          <p>&nbsp;</p>
+        </div>
+        <div class="grid__item  small--one-third medium-up--three-eighths text-left">
+          <p class="h5 uppercase"> Product </p>
+        </div>
+        <div class="grid__item small--one-quarter medium-up--one-eighth text-left">
+          <p class="h5 uppercase"> Price </p>
+        </div>
+         <div class="grid__item small--one-quarter medium-up--one-eighth text-left">
+          <p class="h5 uppercase"> Amount </p>
+        </div>
+        <div class="grid__item small--one-sixth medium-up--one-eighth text-left">
+          <p class="h5 uppercase"> Qty </p>
+        </div>
+        <div class="grid__item small--one-sixth medium-up--one-eighth text-left small-hide">
+          <p class="h5 uppercase"> Total </p>
+        </div>
+      </div>
+    
+      {{ varnish }}
+ 
+      {{ brush }}
+      {{ pastes }}
+      {{ angle   }}
+    </div>
+      
+  </div>
+
+            <div class="text-right small--text-center">
+     
+            {% if cart.total_discounts > 0 %}
+              <div class="cart__savings">
+                {{ 'cart.general.savings' | t }}
+                <span class="cart__savings-amount">{{ cart.total_discounts | money }}</span>
+              </div>
+            {% endif %}
+            <div class="cart__shipping">{{ 'cart.general.shipping_at_checkout' | t }}</div>
+            <a href="collections/all" class=" hide btn btn--secondary cart__update cart__continue--large small--hide" >{{ 'cart.general.continue_shopping' | t }}</a>
+         <div class="additional-checkout-buttons">
+			{{ content_for_additional_checkout_buttons }}
+		 </div>
+       <input type="submit" class="btn" value="Update Cart" />
+      {% if cart.total_price > 0 %}
+        <a href="/checkout" class=" btn checkout-btn margin-left-md" >{{ 'cart.general.checkout' | t }}</a>
+      {% endif %}
+               
+      
+    </div>
+        
+        <div class="grid grid--no-gutters margin-vertical-md ">
+      <div class="grid__item one-half">
+		      
+     </div>
+                <div class="grid__item one-quarter">
+		       {{ 'cart.general.total' | t }}
+     </div>
+     <div class="grid__item one-quarter text-right">
+        <span class="cart__subtotal">{{ bold_cart_total_price | money }}</span>
+     </div>
+    <div class="grid__item one-whole">
+     <div class="one-whole border-bottom margin-bottom-0">
+       &nbsp;
+      </div>
+    </div>
+    </div>
+
+
+</form>
+
+
+    </div>
+      
+  </div>
+  </div>
+
+
+
+
+{% if collection.products_count > 0 %}
+<script>
+jQuery(function($) {
+/*  $('table .quantity:first').focus(); */
+  $('[max]').change(function() {
+    var max = parseInt($(this).attr('max'), 10);
+    var value = parseInt($(this).val(), 10) || 0;
+    if (value > max) { 
+      alert('We only have ' + max + ' of this item in stock');
+      $(this).val(max); 
+    }    
+  });
+});
+</script>
+{% endif %}
+</div>
+</div>

@@ -1,0 +1,111 @@
+<div class="page-width">
+  
+      {% include 'heading-snippet', settings: 'bold' %}
+  <div class="grid grid--xlg2-gutter">
+    <div class="grid__item medium-up--one-half">
+      <h3 class="bold">{{ section.settings.column_heading }}</h3>
+      {{ section.settings.description }}
+    </div>
+    <div class="grid__item medium-up--one-half">
+      <div class="grid grid--table padding-vertical-md">
+        <div class="grid__item one-half">
+          <ul class="list-red">
+          {% for block in section.blocks %}
+            {% if block.type == 'list_text'%}
+            <li>{{ block.settings.text }}</li>
+            {% else %}
+            {% capture rows %}
+            {{ rows }}  
+            <tr>
+              <td class="one-third">{{ block.settings.box_1 }}</td>
+              <td class="one-third">{{ block.settings.box_2 }}</td>
+              <td class="one-third">{{ block.settings.box_3 }}</td>
+            </tr>
+            {% endcapture %}
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="grid__item one-half">
+          {% if section.settings.image != blank %}
+          <img src="{{ section.settings.image |img_url: 'x400' }}"/>
+          {% endif %}
+        </div>
+      </div>
+      <table class="border-blue table">
+            {{ rows }}
+          </table>
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Product description",
+    "settings": [
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Order now"
+      },
+	  {
+        "type": "text",
+        "id": "column_heading",
+        "label": "Column heading",
+        "default": "Order now"
+      },
+      {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description"
+      },
+	  {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      }
+
+	],
+    "blocks": [
+      {
+        "type": "list_text",
+        "name": "List text",
+        "settings": [
+          {
+            "label": "Text",
+            "id": "text",
+            "type": "text"
+          }
+        ]
+      },
+	  {
+        "type": "table_row",
+        "name": "Table row",
+        "settings": [
+          {
+            "label": "1st box",
+            "id": "box_1",
+            "type": "text"
+          },
+		{
+            "label": "2nd box",
+            "id": "box_2",
+            "type": "text"
+          },
+		{
+            "label": "3rd box",
+            "id": "box_3",
+            "type": "text"
+          }
+		
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

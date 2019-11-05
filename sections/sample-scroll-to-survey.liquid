@@ -1,0 +1,63 @@
+<div class="page-width">
+ <div class="grid grid--table small--break-table grid--xlg2-gutter"> 
+   <div class="grid__item medium-up--one-half text-left">
+
+  {% include 'heading-snippet', wrapper: 'no-margin', settings: 'text-left no-margin color-white bold' %}
+
+   </div>
+   <div  class="grid__item medium-up--one-half">
+      {% if section.settings.button_label != blank %}
+        <a href="javasript:void(0);" class="btn btn--large small-shadow scroll-to-survey">
+          <span>{{ section.settings.button_label }}</span> {% include 'icon-arrow-right' %}
+        </a>
+      {% endif %}
+   </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function(){
+    $('.scroll-to-survey').click(function(e){
+      e.preventDefault();
+    $('html, body').animate({
+          scrollTop: $(this).parents('.shopify-section').next().offset().top - $('.site-header').outerHeight()
+        }, 1000)
+    })
+  })
+</script>
+{% include 'gradient-background' %}
+{% schema %}
+  {
+    "name": "Reviews",
+    "settings": [
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Order now"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label"
+      },
+      {
+        "type": "color",
+        "id": "prim_color",
+        "label": "Left color",
+        "default": "#248fba"
+      },
+      {
+        "type": "color",
+        "id": "sec_color",
+        "label": "Right color",
+        "default": "#0f7ca8"
+      }
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

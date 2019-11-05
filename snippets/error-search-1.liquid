@@ -1,0 +1,102 @@
+<div class="page-width">
+
+  
+    
+  {% for collection in currProduct.collections %}
+  {% assign collKey = collection.title | split: '-' | last |split: ' ' |last%}
+  <script> console.log('{{ collKey }}--{{ product.title }}')</script>
+  {% if product.title contains collKey %}
+  {% assign collection = collection %}
+  {% break %}
+  {% endif %}
+  {% endfor %}
+  <div id="parentCollection" data-title="{{ collection.title }}" data-handle="{{ collection.handle }}" class="parent-collection hide">
+    {% assign sizes = '' %}
+  {% for collProduct in collection.products %}
+  <div class="collection-product{% if collProduct.id == product.id %} active{% endif %}" data-id="{{ collProduct.id }}" data-handle="{{ collProduct.handle }}">
+    {% capture collProductTitles %}
+    {{ collProductTitles }}
+    <div class="product-title" style="{% unless collProduct.id == product.id %}display: none;{% endunless %}"  data-id="{{ collProduct.id }}">{{ collProduct.title |remove: collection.title }}</div>
+    {% endcapture %}
+    {% capture collProductDescriptions %}
+    {{ collProductDescriptions }}
+    <div class="description" style="{% unless collProduct.id == product.id %}display: none;{% endunless %}" data-id="{{ collProduct.id }}">{{ collProduct.description }}</div>
+    {% endcapture %}
+    {% assign swatch_color = 'blank' %}
+    {% for tag in collProduct.tags %}
+      {% if tag contains 'swatch_color_'%}
+      {% assign swatch_color = tag |remove: 'swatch_color_' %}
+    {% capture swatchColorElements %}
+	  {{ swatchColorElements }}
+    <div class="swatch-color {% if collProduct.id == product.id %} active{% endif %}" style="background: {{ swatch_color }}" data-id="{{ collProduct.id }}"></div>
+	{% endcapture %}
+	{% endif %}
+    {% endfor %}
+    {% if swatch_color == 'blank' %}
+    {% unless collProduct.tags contains 'sample' %}
+    {% capture swatchColorElements %}
+	  {{ swatchColorElements }}
+    <option {% if collProduct.id == product.id %} selected{% endif %} value="{{ collProduct.id }}">
+      {% assign titleParts = collection.title |replace: '-', ' '| split: ' ' %}
+      {% assign prodTitle = collProduct.title %}
+      {% for part in titleParts %}
+      {% assign prodTitle = prodTitle |remove: part |remove: '  ' %}
+      {% endfor %}
+    {{ prodTitle | replace: "(Latex-Free)","" | replace: "(Latex-free)",""}}
+    </div>
+    {% endcapture %}
+    {% endunless %}
+    {% endif %}
+    {% capture productSliders %}
+    {{ productSliders }}
+    {% assign imagesBreadcrumps = '' %}
+    <div class="product-slider-holder" style="{% unless collProduct.id == product.id %}display: none;{% endunless %}"  data-id="{{ collProduct.id }}" data-color="{{ swatch_color }}">
+   <div class="grid">
+     {% capture SingleSlider %}
+     <div class="grid__item four-fifths">
+      <div class="productSlider" data-id="{{ collProduct.id }}">
+      {% for image in collProduct.images %}
+      <div class="image-holder">
+        {% if collProduct.id == product.id %}
+        <img src="{{ image.src |img_url: '1000x1000' }}"/>
+        {% else %}
+         <img class="smallImg" src="{{ image.src |img_url: '30x30' }}" data-src="{{ image.src |img_url: '1000x1000' }}"/>
+        {% endif %}
+      </div>
+      
+      {% capture imagesBreadcrumps %}
+      {{ imagesBreadcrumps }}
+      <div class="small--thumbnails">
+        <img class="margin-auto" src="{{ image.src |img_url: '60x60' }}"/>
+      </div>
+      {% endcapture %}
+      {% endfor %}
+    </div>
+     </div>
+     {% endcapture %}
+     <div class="grid__item one-fifth">
+      <div class="thumbnails-slider" data-id="{{ collProduct.id }}">
+        {{ imagesBreadcrumps }}
+      </div>
+     </div>
+    {{ SingleSlider }}
+     </div>
+    </div>
+    {%  endcapture %}
+    
+    {% for variant in collProduct.variants %}
+    <div class="product-variant {% if collProduct.variants.size > 1 %}active hide{% endif %}" data-id="{{ variant.id }}" data-name="{{ variant.title }}" data-size="{{ variant.option1 }}" data-price="{{ variant.price |money }}" data-title="{{collProduct.title }}" 
+         {% if variant.compare_at_price and variant.compare_at_price > variant.price %} data-compare-price="{{  variant.compare_at_price |money }}"{% endif %}>
+    </div>
+    {% assign sizeToCheck = variant.option1 |prepend: '-' |append: '-' %}
+    {% unless sizes contains sizeToCheck %}
+    {% if sizes == '' %}
+    {% assign sizes = variant.option1 |prepend: '-' |append: '-' %}
+    {% else %}
+    {% capture sizes %}{{ sizes }},-{{ variant.option1 }}-{% endcapture %}
+    {% endif %}
+    {% endunless %}
+    {% endfor %}
+    </div>
+  {% endfor %}
+  </div>

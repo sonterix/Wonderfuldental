@@ -1,0 +1,296 @@
+<!-- /templates/article.liquid -->
+{% assign number_of_comments = article.comments_count %}
+
+{% if comment and comment.created_at %}
+  {% assign number_of_comments = article.comments_count | plus: 1 %}
+{% endif %}
+
+
+  <article class="article small-width" itemscope itemtype="http://schema.org/Article">
+
+    <header class="section-header text-center margin-top-lg ">
+      <div class="grid">
+      <h1 class="h2 grid__item medium-up--three-fifths medium-up--push-one-fifth f22 bold text-center margin-bottom-md margin-top-40 margin-auto">{{ article.title }}</h1>
+      </div>
+       <div class="article__info-wrapper margin-top-sm">
+         
+           {{ 'blogs.article.by' |  t }} <span class="author__name">{{ article.author }}</span>
+         <span class="devider"></span>
+           <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" >{{ article.published_at | date: format: 'month_day_year' }}</time><span class="devider"></span>
+           {% assign article_words = article.content | strip_html | strip_newlines | downcase | replace: 'and','' | replace: 'the','' | split:' ' %}
+           {{ article_words | size | divided_by: 150 }}{{ 'blogs.article.minute_read' | t }}
+         
+           {% if section.settings.social_sharing_blog %}
+         	 <div class="article-social-sharing">{% include 'social-sharing' type: 'list'%}</div>
+           {% endif %}
+       </div>
+    </header>
+
+    <div class="grid">
+      <div class="grid__item">
+        <div class="featured__image-wrapper">
+{% for block in section.blocks %}
+          {% if block.settings.article_selected == article.handle and block.settings.featured-image %}
+          {% assign hasImage = 1 %}
+          <img src="{{ block.settings.featured-image | img_url: '1024x1024' }}">
+          {% endif %}
+          {% endfor %}
+         
+         
+        </div>
+        <div class="grid">
+          <div class="grid__item medium-up--two-thirds medium-up--push-one-sixth">
+        <div class="rte rte--indented-images" itemprop="articleBody">
+         
+          
+          {{ article.content }}
+        </div>
+        </div>
+        </div>
+{% comment %}
+        <ul class="tags tags--article inline-list">
+          {% include 'tags-article' %}
+        </ul>
+        {% endcomment %}
+
+        
+
+        {% if blog.comments_enabled? %}
+
+          {% if number_of_comments > 0 %}
+            <hr class="hr--large">
+            <h2 class="h3 text-center">{{ 'blogs.comments.with_count' | t: count: number_of_comments }}</h2>
+            <hr class="hr--small hr--clear">
+          {% endif %}
+
+          {% paginate article.comments by 5 %}
+            {% comment %}
+              #comments is required, it is used as an anchor link by Shopify.
+            {% endcomment %}
+            <div id="comments">
+
+              {% if comment and comment.created_at %}
+                <p class="note form-success">
+                  {% if blog.moderated? %}
+                    {{ 'blogs.comments.success_moderated' | t }}
+                  {% else %}
+                    {{ 'blogs.comments.success' | t }}
+                  {% endif %}
+                </p>
+              {% endif %}
+
+              {% if number_of_comments > 0 %}
+                <ul class="no-bullets">
+                  {% comment %}
+                    If a comment was just submitted with no blank field, show it.
+                  {% endcomment %}
+                  {% if comment and comment.created_at %}
+                    <li id="{{ comment.id }}" class="comment first{% if article.comments_count == 0 %} last{% endif %}">
+                      {% include 'comment' %}
+                    </li>
+                  {% endif %}
+
+                  {% comment %}
+                    Showing the rest of the comments.
+                  {% endcomment %}
+                  {% for comment in article.comments %}
+                    <li id="{{ comment.id }}" class="comment{% unless number_of_comments > article.comments_count %}{% if forloop.first %} first{% endif %}{% endunless %}{% if forloop.last %} last {% endif %}">
+                      {% include 'comment' %}
+                    </li>
+
+                    {% unless forloop.last %}
+                      <li><hr class="hr--clear"></li>
+                    {% endunless %}
+                  {% endfor %}
+                </ul>
+
+                {% if paginate.pages > 1 %}
+                  {% include 'pagination' %}
+                {% endif %}
+
+              {% endif %}
+
+              <hr class="hr--large">
+
+              <h2 class="h3 text-center">{{ 'blogs.comments.title' | t }}</h2>
+              <hr class="hr--small hr--clear">
+
+              <div class="form-vertical">
+                {% form 'new_comment', article %}
+
+                  {{ form.errors | default_errors }}
+
+                  <div class="grid grid--small">
+                    <div class="grid__item medium-up--one-half">
+                      <label for="CommentAuthor" class="hidden-label">{{ 'blogs.comments.name' | t }}</label>
+                      <input class="input-full{% if form.errors contains 'author' %} error{% endif %}" type="text" name="comment[author]" placeholder="{{ 'blogs.comments.name' | t }}" id="CommentAuthor" value="{{ form.author }}" autocapitalize="words">
+                    </div>
+                    <div class="grid__item medium-up--one-half">
+                      <label for="CommentEmail" class="hidden-label">{{ 'blogs.comments.email' | t }}</label>
+                      <input class="input-full{% if form.errors contains 'email' %} error{% endif %}" type="email" name="comment[email]" placeholder="{{ 'blogs.comments.email' | t }}" id="CommentEmail" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
+                    </div>
+                  </div>
+
+                  <label for="CommentBody" class="hidden-label">{{ 'blogs.comments.message' | t }}</label>
+                  <textarea class="input-full{% if form.errors contains 'body' %} error{% endif %}" name="comment[body]" id="CommentBody" placeholder="{{ 'blogs.comments.message' | t }}">{{ form.body }}</textarea>
+
+                  <div class="text-center">
+                    {% if blog.moderated? %}
+                      <p>{{ 'blogs.comments.moderated' | t }}</p>
+                    {% endif %}
+
+                    <input type="submit" class="btn" value="{{ 'blogs.comments.post' | t }}">
+                  </div>
+
+                {% endform %}
+              </div>
+
+            </div>
+          {% endpaginate %}
+        {% endif %}
+        
+      </div>
+    {% comment %}
+      <div class="grid__item medium-up--one-quarter small-hide medium-hide">
+        <div id="navbar" class="sticky subscription-form">
+          
+          <h1 class="h2">{{ section.settings.social_label }}</h1>
+          
+            <div style="max-width:250px!important;" class="fb-like" data-href="https://www.facebook.com/nomzorganic/" data-layout="standard" data-action="like" data-size="large" data-show-faces="true" data-share="false"></div>         
+       
+             {% if section.settings.social_sharing_blog %}
+        <div class="article-social-sharing">
+          {% include 'social-sharing', type: 'block', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+        </div>
+        {% endif %}
+          
+        </div>
+        <div id="navbar2" class="subscription-form sticky">
+{% include 'subscription-form' %}
+</div>
+      </div>
+   {% endcomment %}
+    </div>
+
+    {% if section.settings.social_sharing_blog %}
+         	 <div class="article-social-sharing margin-verical-xlg text-center">{% include 'social-sharing' type: 'list'%}</div>
+           {% endif %}
+    
+  </article>
+
+
+  
+{% include 'related-articles' %}
+
+{% comment %}
+<script>
+  $(document).ready(function(){
+  $(document).scroll(function() {
+  myFunction();
+});
+
+var navbar = $("#navbar, #navbar2");
+var sticky = navbar.offset().top;
+var parentHeight = navbar.parents('article').offset().top +navbar.parents('article').outerHeight();
+function myFunction() {
+  console.log(sticky +'----'+$(document).scrollTop() + '----' + parentHeight)
+  if ($(document).scrollTop() > sticky - 30 ) {
+    if(parentHeight > $(document).scrollTop() +  navbar.outerHeight() ){
+    navbar.addClass("sticky").removeClass('absolute').css('top', 30);
+    }
+    else{
+     //navbar.addClass('absolute').removeClass('sticky').css('top', navbar.parents('article').outerHeight());
+    }
+  } else {
+    //navbar.removeClass("sticky").css('top', 0);
+  }
+}
+  })
+
+</script>
+{% endcomment %}
+
+{% schema %}
+  {
+    "name": "Article pages",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "social_sharing_blog",
+        "label": "Show social sharing buttons",
+        "default": true
+      },
+      {
+        "id": "social_label",
+        "type": "text",
+        "label": "Social media label",
+		"default":"Follow us on:"
+      },
+      {
+        "id": "related-articles-title",
+        "type": "text",
+        "label": "Related Articles Title"
+      },
+      {
+        "type": "select",
+        "id": "related-articles-title-layout",
+        "label": "Text alignment",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+          "type":      "range",
+          "id":        "related_articles",
+          "min":       2,
+          "max":       4,
+          "step":      1,
+          "unit":      "art",
+          "label":     "Number of related articles",
+          "default":   3
+      },
+      {
+        "id": "subscription-form",
+        "type": "html",
+        "label": "Subscription Form" 
+      },
+	  {
+        "type": "color",
+        "id": "related_background",
+        "label": "Related articles background color",
+        "default": "#f5f5f5"
+      }
+
+    ],
+    "blocks" : [
+      {
+        "type": "image",
+        "name": "Featured Image",
+        "settings": [
+           {
+             "id": "article_selected",
+             "type": "article",
+             "label": "Article"
+           },
+           {
+            "id": "featured-image",
+            "type": "image_picker",
+            "label": "Featured Image"
+           }
+         ]
+       }
+     ]
+}
+{% endschema %}

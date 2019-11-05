@@ -1,0 +1,262 @@
+<div class="page-width " data-section-id="{{ section.id }}" data-section-type="quotes">
+  <div class="grid">
+    {% if section.settings.show_cta %} 
+  <div class="grid__item medium-up--two-thirds">
+{% include 'heading-snippet', settings: 'text-left bold color-white' %}
+    </div>
+    {% else %}
+     <div class="grid__item medium-up--one-whole">
+{% include 'heading-snippet', settings: 'text-center bold color-white' %}
+    </div>
+    
+    {% endif %}
+    {% if section.settings.show_cta %}
+    <div class="grid__item medium-up--one-third">
+         {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+  <div class="medium-up--text-center btn-holder">
+        <a href="{{ section.settings.button_link }}" class="btn  margin-auto btn--long">
+          <span>{{ section.settings.button_label }}</span> {% include 'icon-arrow-right' %}
+        </a>
+  </div>
+      {% endif %}
+  </div>
+    {% endif %}
+  </div>
+  {% if section.blocks.size > 0 %}
+    <div class="quotes-wrapper margin-top-sm">
+      <div class="reviews-quotes-slider" id="Quotes-{{ section.id }}" data-count="{{ section.blocks.size }}">
+        {% for block in section.blocks %}<div>
+          <div class="quotes-slide text-left padding-md margin-sm" {{ block.shopify_attributes }}>
+            <div class="review-holder">
+            <div class="medium-up--two-thirds">
+              <div class="grid grid--no-gutters">
+               <div class="grid__item one-third"> 
+                <div class="round bubble no-overflow margin-bottom-sm">
+          {% if block.settings.image != blank %}
+          <img src="{{ block.settings.image |img_url: '65x65', crop:'center' }}"/>
+          {% endif %}
+        </div>
+                </div>
+                <div class="grid__item two-thirds">
+              {% if block.settings.author != blank %}
+                <h4 class="bold h4 margin-bottom-0">{{ block.settings.author | escape }}</h4>
+              {% endif %}
+              {% if block.settings.city != blank %}
+                <p class="product-quotes">{{ block.settings.city | escape }}</p>
+              {% endif %}
+              </div>
+              </div>
+            <div class="stars-holder text-left">{% assign stars = block.settings.reviews_rating |ceil |plus: 0 %}
+    <img src="{{ '5-stars.png' | asset_img_url: '400x'}}">
+       </div>
+            </div>
+            {% if block.settings.title != blank %}
+              <p class="margin-top-md margin-bottom-0 review-title">{{ block.settings.title | escape }}</p>
+              {% endif %}
+            <blockquote class="quotes-slider__text text-left no-padding">
+             {% if block.settings.quote != blank %}
+              {% assign quote = block.settings.quote %}
+              {% assign quoteLength = quote.size %}
+              {% if quoteLength > 120 %}
+              {% assign quote = block.settings.quote | truncatewords: 26, '...' |append: '<br><a href="javascript:void(0)" class="read-more " data-id="'| append:  block.id |append: '">'| append: section.settings.read_more |append: '</a>' %}
+              {% else %} 
+              {% assign quote = block.settings.quote %}
+              {% endif %}
+                {{ quote }}
+              {% endif %}
+              
+            </blockquote>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  
+  {% if section.blocks.size == 0 %}
+    {% include 'no-blocks' %}
+  {% endif %}
+  {% if section.settings.additional_link != blank and section.settings.additional_link_label != blank %}
+  <div class="text-center">
+        <a href="{{ section.settings.additional_link }}" class="btn margin-auto"> 
+          <span>{{ section.settings.additional_link_label }}</span>
+        </a>
+  </div>
+      {% endif %}
+</div>
+<div class="full-quotes-overlay" style="display: none">
+<div class="full-quotes-holder">
+  {% for block in section.blocks %}
+  <div class="full-block-holder text-left padding-lg  block-{{ block.id }}" style="display: none;">
+    <a href="javascript:void(0)"><div class="modal-close">&times;</div></a>
+  <div class="medium-up--two-thirds">
+              <div class="grid grid--no-gutters">
+               <div class="grid__item one-third"> 
+                <div class="round bubble no-overflow margin-bottom-sm">
+          {% if block.settings.image != blank %}
+          <img src="{{ block.settings.image |img_url: '65x65', crop:'center' }}"/>
+          {% endif %}
+        </div>
+                </div>
+                <div class="grid__item two-thirds">
+              {% if block.settings.author != blank %}
+                <h4 class="bold h4 margin-bottom-0">{{ block.settings.author | escape }}</h4>
+              {% endif %}
+              {% if block.settings.city != blank %}
+                <p class="product-quotes">{{ block.settings.city | escape }}</p>
+              {% endif %}
+              </div>
+              </div>
+            <div class="stars-holder text-left">{% assign stars = block.settings.reviews_rating |ceil |plus: 0 %}
+          <img src="{{ '5-stars.png' | asset_img_url: '400x'}}">
+       </div>
+            </div>
+    {% if block.settings.title != blank %}
+              <p class="margin-vertical-top-md margin-bottom-0 review-title">{{ block.settings.title | escape }}</p>
+              {% endif %}
+    
+    <blockquote class="quotes-slider__text text-left no-padding">
+             {% if block.settings.quote != blank %}
+              {{ block.settings.quote }}
+      {% endif %}
+    </blockquote>
+  </div>  
+  {% endfor %}
+</div>
+</div>
+<script>
+
+  $(document).ready(function(){
+    $('.read-more').click(function(){
+      console.log('read more clicked');
+    var id = $(this).data('id');
+      if($('.full-quotes-holder .block-'+id).length == 1){
+        $('.full-quotes-holder .full-block-holder').hide();
+        $('.full-quotes-holder .block-'+id).show();
+        hideScroll();
+        fadeEffects('', $('.full-quotes-overlay'));
+
+      }
+    })
+    
+    $('.full-quotes-holder .modal-close').click(function(){
+    fadeEffects($('.full-quotes-overlay'), '' );
+	showScroll();
+    })
+  })
+</script>
+{% include 'gradient-background' %}
+{% schema %}
+  {
+    "name": "Testimonials",
+    "class": "testimonials custom-testimonials padding-bottom-0 margin-bottom-0",
+    "max_blocks": 10,
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Testimonials"
+      },
+	  {
+		"type": "checkbox",
+		"id": "show_cta", 
+		"label": "Show Call to action/Button",
+		"default" : true
+	  },
+      {
+        "type": "text",
+        "id": "read_more",
+        "label": "Read more label",
+		"default": "read more"
+      },
+      {
+        "type": "text",
+        "id": "additional_link_label",
+        "label": "Additional link in testimonials label"
+      },
+      {
+        "type": "url",
+        "id": "additional_link",
+        "label": "Additional link in testimonials URL"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      },
+      {
+        "type": "color",
+        "id": "prim_color",
+        "label": "Left color",
+        "default": "#248fba"
+      },
+      {
+        "type": "color",
+        "id": "sec_color",
+        "label": "Right color",
+        "default": "#0f7ca8"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "quote",
+        "name": "Testimonial",
+        "settings": [
+          {
+            "type": "richtext",
+            "id": "quote",
+            "label": "Text",
+            "default": "<p>Add customer reviews and testimonials to showcase your store’s happy customers.</p>"
+          },
+          {
+            "type": "text",
+            "id": "author",
+            "label": "Author",
+            "default": "Author's name"
+          },
+          {
+            "type": "text",
+            "id": "city",
+            "label": "Author",
+            "default": "New York, NY"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Author",
+            "default": "New York, NY"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+	  {
+        "type":   "range",
+    	"id":     "reviews_rating",
+	    "min":       0,
+    	"max":       5,
+   		"step":      0.1,
+    	"unit":      "st",
+    	"label":     "Reviews rating",
+    	"default":   4.5
+	  }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Testimonials",
+        "category": "Text"
+      }
+    ]
+  }
+{% endschema %}

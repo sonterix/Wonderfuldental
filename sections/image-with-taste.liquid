@@ -1,0 +1,62 @@
+{% include 'blob2'%}
+<div class="grid page-width {% if section.settings.no-spacing %}margin-top--70{% endif %}">
+   <div class="feature-row__item medium-up--one-whole {% if section.settings.no-spacing %}margin-0{% endif %}">
+          {% if section.settings.heading %}
+     <h2 class="{% if section.settings.mega-big %}mega-big h1{% else %} larger {% endif %} text-center bold">{{ section.settings.heading }} </h2>
+     {% endif %}
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | img_url: '1920x' | img_tag: section.settings.image.alt, 'feature-row__image lazyload' }}
+      {% endif %}
+    </div>
+</div>
+<style>
+  {% if section.settings.no-spacing %} 
+  #shopify-section-{{section.id}} { 
+    margin: 0!important; 
+  } 
+  {% endif %}
+</style>
+
+{% schema %}
+  {
+    "name": "Big Image",
+	"class": "image-with-taste",
+    "settings": [
+   {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+	  {
+		"type": "checkbox", 
+		"id": "no-spacing",
+		"label": "No spacing?",
+		"default": false
+      },
+	  {
+        "type": "text",
+        "id": "heading",
+        "label": "Title"
+      },
+	  {
+		"type": "checkbox", 
+		"id": "mega-big",
+		"label": "Mega Big Title?",
+		"default": true
+	 }
+	  
+	],
+	"presets": [
+      {
+        "name": "Big Image",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
