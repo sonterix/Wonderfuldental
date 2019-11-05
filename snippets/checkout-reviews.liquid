@@ -1,0 +1,22 @@
+{% for line_item in checkout.line_items %}
+    {% assign titles = titles | append: line_item.product.title | append: ';' %}
+{% endfor %}
+
+<div class="page-width">
+    <div id="widget-modal"></div>
+</div>
+
+<script type="text/javascript">
+    productWidget("widget-modal", {
+        store: "wonderfuldentalco",
+        sku: "{{ titles }}",
+        primaryClr: "#f47e27",
+        neutralClr: "#EBEBEB",
+        buttonClr: "#EEE",
+        textClr: "#333",
+        tabClr: "#eee",
+        ratingStars: false,
+        showAvatars: true,
+        perPage: 3
+    })
+</script>

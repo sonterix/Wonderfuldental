@@ -1,0 +1,133 @@
+<div class="hero hero--{{ section.settings.hero_size }}{% if section.settings.title != blank or section.settings.text != blank or section.settings.button_label != blank %}{% endif %}"{% if section.settings.image %} style="background-image: url('{{ section.settings.image | img_url: '2048x' }}'); background-position: center {{ section.settings.alignment }};"{% endif %}>
+
+  <div class="hero__inner">
+    <div class="grid">
+    <div class="grid__item medium-up--one-half medium-up--push-one-quarter text-center">
+      {% if section.settings.title != blank %}
+      {% capture heart %}<img style="position: relative;top:10px" src="{{ 'heart.png' | asset_img_url: "70x" }}">{% endcapture %}
+        <h1 class="h1 large color-dark bold mega-title{% if section.settings.text_size == 'large' %} mega-title--large{% endif %} margin-bottom-sm">{{ section.settings.title | escape | replace: "/love/",heart }}</h1>
+      {% endif %}
+      {% if section.settings.text != blank %}
+        <div class="rte-setting big-font color-dark mega-subtitle{% if section.settings.text_size == 'large' %} mega-subtitle--large{% endif %}">{{ section.settings.text | replace: "<p>", "<h5 style='margin-bottom:0'>" | replace: "</p>", "</h5>" }}</div>
+      {% endif %}
+      {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <a href="{{ section.settings.button_link }}" class="btn hero__btn">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #shopify-section-reviews-header .hero__inner {
+	padding: 0;
+  }
+</style>
+
+
+{% schema %}
+  {
+    "name": "Reviews header",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "select",
+        "id": "alignment",
+        "label": "Image alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          },
+          {
+            "value": "center",
+            "label": "Middle"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Image with text overlay"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story.</p>"
+      },
+      {
+        "type": "select",
+        "id": "hero_size",
+        "label": "Section height",
+        "default": "medium",
+        "options": [
+          {
+            "label": "Extra Small",
+            "value": "x-small"
+          },
+          {
+            "label": "Small",
+            "value": "small"
+          },
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          },
+          {
+            "label": "Extra Large",
+            "value": "x-large"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "text_size",
+        "label": "Text size",
+        "default": "medium",
+        "options": [
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button label"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button link"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Image with text overlay",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}

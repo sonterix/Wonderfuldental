@@ -1,0 +1,543 @@
+{%- if shop.metafields.richsnippets_app.disabled == blank -%}
+	{%- assign object = '' -%}
+	{%- if template contains 'product' -%}
+		{%- assign object = product -%}
+	{%- elsif template contains 'article' -%}
+		{%- assign object = article -%}
+	{%- endif -%}
+    {%- if template contains 'product' or template contains 'article' -%}
+        {%- assign reviewCount = 0 -%}
+        {%- assign reviewRating = 0 -%}
+        {%- if object.metafields.ssw.count_rate != blank -%}
+            {%- assign reviewCount = object.metafields.ssw.count_rate | plus:0  -%}
+            {%- assign reviewRating = object.metafields.ssw.avg_rate -%}
+        {%- elsif object.metafields.orankl.review_count != blank -%}
+            {%- assign reviewCount = object.metafields.orankl.review_count | plus:0 -%}
+            {%- assign reviewRating = object.metafields.orankl.rating -%}
+        {%- elsif object.metafields.loox.num_reviews != blank -%}
+            {%- assign reviewCount = object.metafields.loox.num_reviews | plus:0 -%}
+            {%- assign reviewRating = object.metafields.loox.avg_rating -%}
+        {%- elsif object.metafields.yotpo.reviews_count != blank -%}
+            {%- assign reviewCount = object.metafields.yotpo.reviews_count | plus:0 -%}
+            {%- assign reviewRating = object.metafields.yotpo.reviews_average -%}
+        {%- elsif object.metafields.vnreviews.reviewCount != blank -%}
+            {%- assign reviewCount = object.metafields.vnreviews.reviewCount | plus:0 -%}
+            {%- assign reviewRating = object.metafields.vnreviews.ratingValue -%}
+        {%- elsif object.metafields.kudobuzz.reviews_count != blank -%}
+            {%- assign reviewCount = object.metafields.kudobuzz.reviews_count | plus:0 -%}
+            {%- assign reviewRating = object.metafields.kudobuzz.review_rating -%}
+        {%- elsif object.metafields.stamped.reviews_count != blank -%}
+            {%- assign reviewCount = object.metafields.stamped.reviews_count | plus:0 -%}
+            {%- assign reviewRating = object.metafields.stamped.reviews_average -%}
+        {%- elsif shop.metafields.judgeme.all_reviews_rating != blank -%}
+            {%- assign reviewCount = object.metafields.judgeme.badge | split: "data-number-of-reviews='" | last | split: "'" |first | plus: 0 -%}
+            {%- assign reviewRating = object.metafields.judgeme.badge | split: "data-average-rating='" | last | split: "'" |first | plus: 0  -%}
+        {%- elsif object.metafields.product_schema.th_ratingCount != blank -%}
+            {%- assign reviewCount = object.metafields.product_schema.th_ratingCount | plus:0 -%}
+            {%- assign reviewRating = object.metafields.product_schema.th_ratingValue -%}
+        {%- elsif object.metafields.spr.reviews != blank -%}
+            {%- assign reviewCount = object.metafields.spr.reviews | split: 'reviewCount" content="' | last | split: '"' |first | plus: 0 -%}
+            {%- assign reviewRating = object.metafields.spr.reviews | split: 'ratingValue" content="' | last | split: '"' |first | plus: 0  -%}
+            {%- if reviewCount == 0 and reviewRating == 0 -%}
+              {%- assign reviewCount = object.metafields.spr.reviews | split: 'votes" content="' | last | split: '"' |first | plus: 0 -%}
+              {%- assign reviewRating = object.metafields.spr.reviews | split: 'average" content="' | last | split: '"' |first | plus: 0  -%}
+            {%- endif -%}
+        {%- endif -%}
+		{%- if reviewCount < 1 -%}
+			{%- assign reviewEnabled = object.metafields.richsnippets_reviews.review_enabled | plus:0 -%}
+        	{%- if reviewEnabled == 1 -%}
+        		{%- assign reviewCount = object.metafields.richsnippets_reviews.review_count | plus:0 -%}
+        		{%- assign reviewRating = object.metafields.richsnippets_reviews.review_rating  -%}
+        	{%- endif -%}
+		{%- endif -%}
+	{%- endif -%}
+    {%- if shop.metafields.richsnippets_social.facebook != blank -%}
+    {%- assign socialprofile_facebook = shop.metafields.richsnippets_social.facebook | prepend: ',"' | append: '"' -%}
+    {%- endif -%}
+    {%- if shop.metafields.richsnippets_social.twitter != blank -%}
+    {%- assign socialprofile_twitter = shop.metafields.richsnippets_social.twitter | prepend: ',"' | append: '"' -%}
+    {%- endif -%}
+    {%- if shop.metafields.richsnippets_social.youtube != blank -%}
+    {%- assign socialprofile_youtube = shop.metafields.richsnippets_social.youtube | prepend: ',"' | append: '"' -%}
+    {%- endif -%}
+    {%- if shop.metafields.richsnippets_social.linkedin != blank -%}
+    {%- assign socialprofile_linkedin = shop.metafields.richsnippets_social.linkedin | prepend: ',"' | append: '"' -%}
+    {%- endif -%}
+    {%- if shop.metafields.richsnippets_social.google != blank -%}
+    {%- assign socialprofile_google = shop.metafields.richsnippets_social.google | prepend: ',"' | append: '"' -%}
+    {%- endif -%}
+    {%- if shop.metafields.richsnippets_social.pinterest != blank -%}
+    {%- assign socialprofile_pinterest = shop.metafields.richsnippets_social.pinterest | prepend: ',"' | append: '"' -%}
+    {%- endif -%}
+    {%- if shop.metafields.richsnippets_social.instagram != blank -%}
+    {%- assign socialprofile_instagram = shop.metafields.richsnippets_social.instagram | prepend: ',"' | append: '"' -%}
+    {%- endif -%}
+
+    {%- assign sameAs = socialprofile_facebook | append: socialprofile_twitter | append: socialprofile_youtube | append: socialprofile_linkedin | append: socialprofile_google | append: socialprofile_pinterest | append: socialprofile_instagram -%}
+    {%- if template contains 'index' -%}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "{{ shop.url }}",
+        "name": {{ shop.name | json }},
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ shop.url }}/search?q={query}",
+            "query-input": "required name=query"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": {{ shop.name | json }},
+        "url": "{{ shop.url }}",
+        "description": {{ shop.description | json }},
+        "telephone": "{{ shop.phone }}",
+        "sameAs": [{{ sameAs | remove_first: "," }}]
+        {%- if shop.metafields.richsnippets_app.hideaddress == blank -%}
+        ,"address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ shop.address.street }}",
+            "addressLocality": "{{ shop.address.city }}",
+            "addressRegion": "{{ shop.address.province }}",
+            "postalCode": "{{ shop.address.zip }}",
+            "addressCountry": "{{ shop.address.country }}"
+        }
+        {%- endif -%}
+        {%- if shop.metafields.richsnippets_logo != blank -%}
+        ,"logo": "{{ shop.metafields.richsnippets_logo.logo }}"
+        {%- endif -%}
+    }
+    </script>
+    {%- endif -%}
+
+    {%- if template.name == 'collection' -%}
+    <script type="application/ld+json">
+        {
+          "@graph": [
+            {
+              "@context": "https://schema.org/",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": "1",
+                  "item": {
+                    "@id": {{ shop.url | json }},
+                    "name": "Home",
+                    "url": {{ shop.url | json }}
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": "2",
+                  "item": {
+                    "@id": {{ canonical_url | json }},
+                    "name": {{ collection.title | json }},
+                    "url": {{ canonical_url | json }}
+                  }
+                }
+              ]
+            }
+          ]
+        }
+    </script>
+    {%- endif -%}
+
+    {%- if template contains 'product' -%}
+    {% if product.metafields.richsnippets_recipes.enabled != 1 %}
+        <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@id": {{ canonical_url | append: '#product' | json }},
+              "@type": "Product",
+              "brand": {
+                "@type": "Brand",
+                "name": {{ product.vendor | json }}
+              },
+              "sku": {{ product.selected_or_first_available_variant.sku | json }},
+              "mpn": {{ product.selected_or_first_available_variant.barcode | json }},
+              "description": {{ product.description | strip_html | json }},
+              "url": {{ canonical_url | json }},
+              "name": {{ product.title | json }},
+              {%- if product.featured_image -%}
+              "image": "https:{{ product.featured_image | img_url: 'grande' }}",
+              {%- else -%}
+              "image": "https://cdn.shopify.com/s/images/admin/no-image-grande.gif",
+              {%- endif -%}
+              "itemCondition": "http://schema.org/NewCondition",
+                "offers" : [
+                {% for variant in product.variants -%}{
+                    "@type" : "Offer" ,
+                    "priceCurrency" : "{{ shop.currency }}" ,
+                    "price" : "{{ variant.price | money_without_currency | replace: ",", "." }}" ,
+                    "priceValidUntil": {{ "today" | date: '%s' | plus: 7776000 | date: "%Y-%m-%d" | json }},
+                    "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+                    "itemCondition": "http://schema.org/NewCondition",
+                {%- if variant.sku != blank %}
+                    "sku": "{{ variant.sku }}" ,
+                {%- endif %}
+                {%- if variant.title != "Default Title" %}
+                    "name": "{{ variant.title | strip_newlines | strip_html | escape_once | replace: '\', '\\\\' }}" ,
+                {%- endif -%}
+                    "url" : "{{ shop.url | append: variant.url }}" ,
+                    "seller" : {
+                        "@type" : "Organization" ,
+                        "name" : "{{ shop.name | strip_newlines | strip_html | escape_once | replace: '\', '\\\\' }}"
+                    }
+                }{% unless forloop.last %},
+                {% endunless %}{% endfor %}
+                ]
+                {%- if product.selected_or_first_available_variant.barcode.size == 12 -%}
+                    ,"gtin12": "{{ product.selected_or_first_available_variant.barcode }}"
+                {%- endif -%}
+                {%- if product.selected_or_first_available_variant.barcode.size == 13 -%}
+                    ,"gtin13": "{{ product.selected_or_first_available_variant.barcode }}"
+                {%- endif -%}
+                {%- if product.selected_or_first_available_variant.barcode.size == 14 -%}
+                    ,"gtin14": "{{ product.selected_or_first_available_variant.barcode }}"
+                {%- endif -%}
+                {%- if reviewCount > 0 -%}
+                    ,"aggregateRating": {
+                        "@type": "AggregateRating",
+                        "ratingValue": "{{ reviewRating }}",
+                        "ratingCount ": "{{ reviewCount }}"
+                    },
+                    "review": {
+                      "@type": "Review",
+                      "reviewRating": {
+                        "@type": "Rating",
+                        "ratingValue": "{{ reviewRating }}",
+                        "bestRating": "{{ reviewRating }}"
+                      },
+                      "author": {
+                        "@type": "Organization",
+                        "name": "{{ shop.name }}"
+                      }
+                    }
+               {%- endif -%}
+            }
+        </script>
+    {%- else  -%}
+        <script type="application/ld+json">
+            {
+              "@context": "https://schema.org"
+              ,"@type": "Recipe"
+              ,"name": {{ product.title | json }}
+              ,"description": {{ product.metafields.richsnippets_recipes.description | strip_html | json }}
+              ,"author": {{ product.metafields.richsnippets_recipes.author | json }}
+              {%- if product.featured_image -%}
+              ,"image": "https:{{ product.featured_image | img_url: 'grande' }}"
+              {%- else -%}
+              ,"image": "https://cdn.shopify.com/s/images/admin/no-image-grande.gif"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.prepTime != blank -%}
+              ,"prepTime": "PT{{ product.metafields.richsnippets_recipes.prepTime }}M"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.cookTime != blank -%}
+              ,"cookTime": "PT{{ product.metafields.richsnippets_recipes.cookTime }}M"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.prepTime != blank and product.metafields.richsnippets_recipes.cookTime != blank -%}
+              ,"totalTime": "PT{{ product.metafields.richsnippets_recipes.prepTime | plus: product.metafields.richsnippets_recipes.cookTime }}M"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.keywords != blank -%}
+              ,"keywords": "{{ product.metafields.richsnippets_recipes.keywords }}"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.recipeYield != blank -%}
+              ,"recipeYield": "{{ product.metafields.richsnippets_recipes.recipeYield }}"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.recipeCategory != blank -%}
+              ,"recipeCategory": "{{ product.metafields.richsnippets_recipes.recipeCategory }}"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.recipeCuisine != blank -%}
+              ,"recipeCuisine": "{{ product.metafields.richsnippets_recipes.recipeCuisine }}"
+              {%- endif -%}
+              {%- if product.metafields.richsnippets_recipes.suitableForDiet != blank -%}
+              ,"suitableForDiet": "{{ product.metafields.richsnippets_recipes.suitableForDiet }}"
+              {%- endif -%}
+            {%- if product.metafields.richsnippets_recipes.nutritionCalories != blank -%}
+              ,"nutrition": [
+                {
+                    "@type": "NutritionInformation",
+                    "calories": "{{ product.metafields.richsnippets_recipes.nutritionCalories }}"
+                }
+              ]
+            {%- endif -%}
+            {%- if product.metafields.richsnippets_recipes.recipeIngredient != blank -%}
+                {%- assign recipeIngredients = product.metafields.richsnippets_recipes.recipeIngredient | strip | strip_newlines | split: "*##*" -%}
+                {%- assign recipeLast = recipeIngredients | last -%}
+                ,"recipeIngredient": [
+                {%- for recipeIngredient in recipeIngredients -%}
+                    "{{ recipeIngredient }}"{%- if recipeIngredient != recipeLast -%},{%- endif -%}
+                {%- endfor -%}
+                ]
+            {%- endif -%}
+            {%- if product.metafields.richsnippets_recipes.recipeIngredient != blank -%}
+                {%- assign recipeInstructions = product.metafields.richsnippets_recipes.recipeInstructions | strip | strip_newlines | split: "*##*" -%}
+                {%- assign instructionLast = recipeInstructions | last -%}
+                ,"recipeInstructions": [
+                {%- for recipeInstruction in recipeInstructions -%}
+                    {
+                        "@type": "HowToStep",
+                        "text": "{{ recipeInstruction }}"
+                    }{%- if recipeInstruction != instructionLast -%},{%- endif -%}
+                {%- endfor -%}
+                ]
+            {%- endif -%}
+            {%- if reviewCount > 0 -%}
+                ,"aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "{{ reviewRating }}",
+                    "ratingCount ": "{{ reviewCount }}"
+                },
+                "review": {
+                  "@type": "Review",
+                  "reviewRating": {
+                    "@type": "Rating",
+                    "ratingValue": "{{ reviewRating }}",
+                    "bestRating": "{{ reviewRating }}"
+                  },
+                  "author": {
+                    "@type": "Organization",
+                    "name": "{{ shop.name }}"
+                  }
+                }
+           {%- endif -%}
+            }
+        </script>
+    {%- endif -%}
+        <script type="application/ld+json">
+              {
+              "@context": "https://schema.org/",
+              "@graph": [
+                {
+                  "@context": "https://schema.org/",
+                  "@type": "BreadcrumbList",
+                  "itemListElement": [
+                    {
+                      "@type": "ListItem",
+                      "position": "1",
+                      "item": {
+                        "name": "Home",
+                        "@id": {{ shop.url | json }}
+                      }
+                    },
+                    {% if collection %}
+                        {
+                          "@type": "ListItem",
+                          "position": "2",
+                          "item": {
+                            "@id": {{ collection.url | prepend: shop.url | json }},
+                            "name": {{ collection.title | json }},
+                            "url": {{ collection.url | prepend: shop.url | json }}
+                          }
+                        },
+                        {
+                          "@type": "ListItem",
+                          "position": "3",
+                          "item": {
+                            "@id": {{ product.url | prepend: shop.url | json }},
+                            "name": {{ product.title | json }},
+                            "url": {{ product.url | prepend: shop.url | json }}
+                          }
+                        }
+                    {% else %}
+                       {
+                          "@type": "ListItem",
+                          "position": "2",
+                          "item": {
+                            "@id": {{ product.url | prepend: shop.url | json }},
+                            "name": {{ product.title | json }},
+                            "url": {{ product.url | prepend: shop.url | json }}
+                          }
+                        }
+                    {% endif %}
+                  ]
+                }
+             ]
+            }
+            </script>
+    {%- elsif template contains 'article' -%}
+        {%- assign wordCount = article.content | strip_html | strip_newlines | downcase | split:' ' -%}
+        <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "BlogPosting",
+          "url": {{ canonical_url | json }},
+          "mainEntityOfPage": {{ canonical_url | json }},
+          "name": {{ article.title | json }},
+          "headline": {{ article.title | json }},
+          {%- if article.image.src -%}
+          "image": "https:{{ article.image.src | img_url: 'grande' }}",
+          {%- endif -%}
+          "keywords": "{{ article.tags | join: "," }}",
+          "wordcount": {{ wordCount | size }},
+          "datePublished": "{{ article.published_at | date: "%Y-%m-%d" }}",
+          "dateCreated": "{{ article.created_at | date: "%Y-%m-%d" }}",
+          "dateModified": "{{ article.created_at | date: "%Y-%m-%d" }}",
+          "description": {{ article.excerpt_or_content | strip_html | json }},
+          "articleBody": {{ article.content | strip_html | json }},
+          "commentCount": {{ article.comments_count }},
+          "publisher": {
+            "@type": "Organization",
+            "@id": "{{ shop.url }}#organization",
+            "name": {{ shop.name | json }}
+            {%- if shop.metafields.richsnippets_logo != blank -%}
+            ,"logo": {
+              "@type": "ImageObject",
+              "url": "{{ shop.metafields.richsnippets_logo.logo }}"
+            }
+            {%- endif -%}
+          },
+          "author": {
+            "@type": "Person",
+            "name": {{ article.author | json }}
+          }
+            {%- if reviewCount > 0 -%}
+                ,"aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "{{ reviewRating }}",
+                    "ratingCount ": "{{ reviewCount }}"
+                },
+                "review": {
+                  "@type": "Review",
+                  "reviewRating": {
+                    "@type": "Rating",
+                    "ratingValue": "{{ reviewRating }}",
+                    "bestRating": "{{ reviewRating }}"
+                  },
+                  "author": {
+                    "@type": "Organization",
+                    "name": "{{ shop.name }}"
+                  }
+                }
+           {%- endif -%}
+        }
+        </script>
+
+        {%- if article.metafields.richsnippets_recipes.enabled == 1 -%}
+        <script type="application/ld+json">
+            {
+              "@context": "https://schema.org"
+              ,"@type": "Recipe"
+              ,"name": {{ article.title | json }}
+              ,"description": {{ article.metafields.richsnippets_recipes.description | strip_html | json }}
+              ,"author": {{ article.metafields.richsnippets_recipes.author | json }}
+              {%- if article.image.src -%}
+              ,"image": "https:{{ article.image.src | img_url: 'grande' }}"
+              {%- else -%}
+              ,"image": "https://cdn.shopify.com/s/images/admin/no-image-grande.gif"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.prepTime != blank -%}
+              ,"prepTime": "PT{{ article.metafields.richsnippets_recipes.prepTime }}M"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.cookTime != blank -%}
+              ,"cookTime": "PT{{ article.metafields.richsnippets_recipes.cookTime }}M"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.prepTime != blank and article.metafields.richsnippets_recipes.cookTime != blank -%}
+              ,"totalTime": "PT{{ article.metafields.richsnippets_recipes.prepTime | plus: article.metafields.richsnippets_recipes.cookTime }}M"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.keywords != blank -%}
+              ,"keywords": "{{ article.metafields.richsnippets_recipes.keywords }}"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.recipeYield != blank -%}
+              ,"recipeYield": "{{ article.metafields.richsnippets_recipes.recipeYield }}"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.recipeCategory != blank -%}
+              ,"recipeCategory": "{{ article.metafields.richsnippets_recipes.recipeCategory }}"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.recipeCuisine != blank -%}
+              ,"recipeCuisine": "{{ article.metafields.richsnippets_recipes.recipeCuisine }}"
+              {%- endif -%}
+              {%- if article.metafields.richsnippets_recipes.suitableForDiet != blank -%}
+              ,"suitableForDiet": "{{ article.metafields.richsnippets_recipes.suitableForDiet }}"
+              {%- endif -%}
+            {%- if article.metafields.richsnippets_recipes.nutritionCalories != blank -%}
+              ,"nutrition": [
+                {
+                    "@type": "NutritionInformation",
+                    "calories": "{{ article.metafields.richsnippets_recipes.nutritionCalories }}"
+                }
+              ]
+            {%- endif -%}
+            {%- if article.metafields.richsnippets_recipes.recipeIngredient != blank -%}
+                {%- assign recipeIngredients = article.metafields.richsnippets_recipes.recipeIngredient | strip | strip_newlines | split: "*##*" -%}
+                {%- assign recipeLast = recipeIngredients | last -%}
+                ,"recipeIngredient": [
+                {%- for recipeIngredient in recipeIngredients -%}
+                    "{{ recipeIngredient }}"{%- if recipeIngredient != recipeLast -%},{%- endif -%}
+                {%- endfor -%}
+                ]
+            {%- endif -%}
+            {%- if article.metafields.richsnippets_recipes.recipeIngredient != blank -%}
+                {%- assign recipeInstructions = article.metafields.richsnippets_recipes.recipeInstructions | strip | strip_newlines | split: "*##*" -%}
+                {%- assign instructionLast = recipeInstructions | last -%}
+                ,"recipeInstructions": [
+                {%- for recipeInstruction in recipeInstructions -%}
+                    {
+                        "@type": "HowToStep",
+                        "text": "{{ recipeInstruction }}"
+                    }{%- if recipeInstruction != instructionLast -%},{%- endif -%}
+                {%- endfor -%}
+                ]
+            {%- endif -%}
+            {%- if reviewCount > 0 -%}
+                ,"aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "{{ reviewRating }}",
+                    "ratingCount ": "{{ reviewCount }}"
+                },
+                "review": {
+                  "@type": "Review",
+                  "reviewRating": {
+                    "@type": "Rating",
+                    "ratingValue": "{{ reviewRating }}",
+                    "bestRating": "{{ reviewRating }}"
+                  },
+                  "author": {
+                    "@type": "Organization",
+                    "name": "{{ shop.name }}"
+                  }
+                }
+           {%- endif -%}
+            }
+        </script>
+        {%- endif -%}
+    {%- endif -%}
+    {%- if template contains 'blog' or template contains 'article' -%}
+        <script type="application/ld+json">
+            {
+              "@graph": [
+                {
+                  "@context": "https://schema.org/",
+                  "@type": "BreadcrumbList",
+                  "itemListElement": [
+                    {
+                      "@type": "ListItem",
+                      "position": 1,
+                      "item": {
+                        "@id": "{{ shop.url }}{{ blog.url }}",
+                        "name": {{ blog.title | json }}
+                      }
+                    }
+                    {% if template contains 'article' %}
+                      ,
+                      {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "item": {
+                          "@id": "{{ shop.url }}{{ article.url }}",
+                          "name": {{ article.title | json }}
+                        }
+                      }
+                    {%- endif -%}
+                  ]
+                }
+              ]
+            }
+        </script>
+    {%- endif -%}
+{%- endif -%}

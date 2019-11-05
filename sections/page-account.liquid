@@ -1,0 +1,79 @@
+{% if customer %}
+  <div class="page-account__wrapper">
+    <div class="small-width">
+      <div class="page-account__herder">
+        <p class="page-account__header-page">
+          <a href="/account?view=order-history">{{ 'layout.customer.dashboard' | t }}</a>: <span data-name>{{ 'layout.customer.dashboard' | t }}</span>
+        </p>
+        <h2 class="page-account__header-title margin-bottom-lg">{{ 'layout.customer.dashboard' | t }}</h2>
+      </div>
+      <div class="page-account__content">
+        {% for block in section.blocks %}
+          <a href="{% if block.settings.url != blank %}{{ block.settings.url }}{% else %}#{% endif %}" class="page-account__content-item padding-md">
+            <div class="item-image">
+              {% if block.settings.image_svg != blank %}
+              	{{ block.settings.image_svg }}
+              {% elsif block.settings.image != blank %}
+                {{ block.settings.image | img_url: '65x65' | img_tag }}
+              {% endif %}
+            </div>
+            <div class="item-text">
+              {% if block.settings.heading != blank %}
+                <h3 class="item-text__heading">{{ block.settings.heading }}</h3>
+              {% endif %}
+              {% if block.settings.description != blank %}
+                <p class="item-text__description margin-bottom-0">{{ block.settings.description }}</p>
+              {% endif %}
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% else %}
+  <script>
+    window.location.href = '/account/login';
+  </script>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Account page",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "quote",
+        "name": "Item",
+        "settings": [
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Link"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "textarea",
+            "id": "image_svg",
+            "label": "Image SVG"
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "default": "Welcome to my shop!",
+            "label": "Heading"
+          },
+          {
+            "type": "textarea",
+            "id": "description",
+            "default": "Welcome to my shop!",
+            "label": "Description"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,21 @@
+{% case section.blocks.size %}
+    {% when 2 %}
+      {%- assign grid_item_width = 'small--one-quarter medium-up--one-half' -%}
+    {% when 3 %}
+      {%- assign grid_item_width = 'small--one-quarter medium-up--one-third' -%}
+    {% when 4 %}
+      {%- assign grid_item_width = 'small--one-quarter medium-up--one-quarter' -%}
+    {% when 5 %}
+      {%- assign grid_item_width = 'small--one-quarter medium-up--one-fifth' -%}
+  {% endcase %}
+
+<div class="grid grid--no-gutters">
+  {% for block in section.blocks %}
+  <div class="grid__item text-center {{ grid_item_width }}">
+      <img src="{{ block.settings.image |img_url: '300x300' }}" class="medium-up--three-quarters margin-left-auto" />
+    <div class="h5 bold padding-top-sm ">
+      {{ block.settings.title }}
+    </div>
+  </div>
+  {% endfor %}
+</div>

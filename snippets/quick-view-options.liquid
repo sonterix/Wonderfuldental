@@ -1,0 +1,131 @@
+{% assign optionNames = '' %}
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<div class="product-all-options" data-id="{{ product.id }}">
+<div class="grid grid--md-gutter overflow-unset">
+  <div class="grid__item one-whole">
+    <div class="options__wrapper width-100" >
+      {% unless product.has_only_default_variant %}
+      <div class="product__options-holder">
+        {% for option in product.options_with_values reversed %}
+
+        {% if forloop.last %}
+          {% assign checkForLast = '1' %}
+        {% endif %}
+
+        <div class="option-holder medium-up--margin-bottom-{% if forloop.last %}sm{% else %}md{% endif %}" data-name="{{ option.name |downcase }}">
+          {% if option.name == 'Color' %}
+            {% capture optionNames %}{{ optionNames }},{{ option.name |downcase }}{% endcapture %}
+            <label class="option__name uppercase h6 no-margin padding-bottom-sm" for="SingleOptionSelector-{{ forloop.index0 }}">
+              {{ option.name }}
+            </label>
+            <div class="options-holder color__options-holder width-100" data-name="{{ option.name |downcase }}">
+              {% for value in option.values %}
+                {% assign optionTag = option.name | append: '_' |append: value |append: ':' %}
+
+                {% for tag in product.tags %}
+                  {% if tag contains optionTag %}
+                    <div data-value="{{ value | escape }}" class="option color__option margin-right-sm margin-bottom-sm round " style="background: {{ tag |remove: optionTag }}" >
+                      {% include 'icon-cross' %}
+                    </div>
+                  {% endif %}
+
+                {% endfor %}
+              {% endfor %}
+            </div>
+
+          {% elsif option.name == 'Size' %}
+          {% capture optionNames %}{{ optionNames }},{{ option.name |downcase }}{% endcapture %}
+
+          <div class="options-holder other__options-holder  size-option size-option-holder width-100" data-name="size">
+            <label class="option__name  h6 small-font wide margin-bottom-0 margin-top-sm padding-bottom-sm" for="SingleOptionSelector-{{ forloop.index0 }}">
+              <p class="no-margin option-label-name uppercase h6 wide">{{ option.name }}</p>
+              <p class="selected__option bold margin-top-sm">
+                <span data-value="{{ product.selected_or_first_available_variant.option2 }}" class="selected__option-name "> {% if product.title contains "Card" %} {{ product.selected_or_first_available_variant.title }} {% else %}  Select a Size {% endif %}</span>
+                <i class="fa fa-chevron-down float-right " aria-hidden="true"></i>
+              </p>
+            </label>
+            <div class="options__slide uppercase" style="display: none;">
+              {% for value in option.values %}
+                <div data-value="{{ value | escape }}" class="option size__option padding-horizontal-md margin-bottom-0" style="background: {{ tag |remove: optionTag }}" >
+                  {{ value | escape }}
+                </div> 
+              {% endfor %}
+            </div>
+          </div>
+
+          {% else %}
+          {% capture optionNames %}{{ optionNames }},{{ option.name |downcase }}{% endcapture %}
+          <div class="options-holder other__options-holder  size-option size-option-holder width-100" data-name="{{ option.name |downcase }}">
+            <label class="option__name  h6 small-font wide margin-bottom-0 margin-top-lg padding-bottom-sm" for="SingleOptionSelector-{{ forloop.index0 }}">
+              <p class="no-margin option-label-name uppercase h6 wide">{{ option.name }}</p>
+              <p class="selected__option bold margin-top-sm">
+                <span data-value="{{ product.selected_or_first_available_variant.option2 }}" class="selected__option-name "> {% if product.title contains "Card" %} {{ product.selected_or_first_available_variant.title }} {% else %}  Select a Size {% endif %} </span>
+                <i class="fa fa-chevron-down float-right " aria-hidden="true"></i>
+              </p>
+            </label>
+            <div class="options__slide uppercase" style="display: none;">
+              {% for value in option.values %}
+              <div data-value="{{ value | escape }}" class="option size__option padding-horizontal-md margin-bottom-0 {% if option.selected_value == value %} selected{% endif %}" style="background: {{ tag |remove: optionTag }}" >
+                {{ value | escape }}
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endunless %}
+    </div>
+  </div>
+</div>
+  <div class="grid grid--md-gutter overflow-unset">
+
+  <div class="grid__item medium-up--one-half">
+
+ <div class="input__number-holder">
+                <div class="qty minus">-</div>
+                <input type="number" class="no-spin" name="test" value="1" min="0">
+                <div class="qty plus">+</div>
+                </div> 
+  </div>
+  <div class="text-left grid__item medium-up--one-half">
+
+  <button type="button" name="add" id="AddToCart-{{ section.id }}" {% unless product.options_with_values.size < 2 %}disabled="disabled"{% endunless %} class="btn bold text-center no-underline padding-vertical-md {% unless product.options_with_values.size < 2 %} disabled {% endunless %}btn--small width-100 product-form__cart-submit{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %} small--margin-top-md QVaddToCart">
+    <span id="AddToCartText-{{ section.id }}">
+      {% unless current_variant.available %}
+        {{ 'products.product.sold_out' | t }}
+      {% else %}
+        {{ 'products.product.add_to_cart' | t }}
+      {% endunless %}
+    </span>
+  </button>
+  
+ </div>
+
+</div>
+  {% comment %}
+   <a href="{{ product.url |within: prodColl }}" class="underlined padding-top-sm inline-block">{{ 'products.product.preview' |t }}</a>
+{% endcomment %}
+  
+{% unless shown == 1 %}
+  <div class="hide variants-holder" data-id="{{ product.id }}" data-options="{{ optionNames }}" >
+    <select name="id" id="ProductSelect-{{ section.id }}">
+      {% for variant in product.variants %}
+        <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} {% unless variant.available %} disabled="disabled" {% endunless %} value="{{ variant.id }}" data-sku="{{ variant.sku }}">{{ variant.title }} - {% if variant.available %}{{ variant.price | money_with_currency }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</option>
+      {% endfor %}
+    </select>
+    {% for variant in product.variants %}
+      <div class="product-variant{%  if variant.id == current_variant.id %} selected{% endif %}" data-id="{{ variant.id }}"
+           {% if variant.option1 %}data-{{ product.options[0] }}="{{ variant.option1 }}"{% endif %}
+           {% if variant.option2 %}data-{{ product.options[1] }}="{{ variant.option2 }}"{% endif %}
+           {% if variant.option3 %}data-{{ product.options[2] }}="{{ variant.option3 }}"{% endif %}
+           {% if variant.available %}data-available="true"{% else %} data-available="false" {% endif %} data-title={{ variant.title }}>
+        {{ variant.title }}
+      </div>
+    {% endfor %}
+  </div>
+{% endunless %}
+</div>

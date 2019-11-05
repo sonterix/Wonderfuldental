@@ -1,0 +1,9 @@
+<!-- /snippets/tags-article.liquid -->
+{% if article.tags.size > 0 %}
+  <li>
+    <span class="tags__title">{{ 'blogs.article.topics' | t }}:</span>
+    {% for tag in article.tags %}
+      {% unless forloop.index == 1 %}, {% endunless %}<a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="text-link">{{ tag |strip}}</a>
+    {% endfor %}
+  </li>
+{% endif %}

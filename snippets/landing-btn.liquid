@@ -1,0 +1,25 @@
+<div class="text-center" style="background-color: {{ section.settings.background_color }};">
+  <div class="wrappercontent custom-btn padding-vertical-xlg"> 
+    {% if section.settings.order %}
+      <div class="custom-o-s-form text-center">
+        <h2 class="h2 bold margin-bottom-lg margin-bottom-xlg">Start saving thousands ordering direct </h2>
+        <div class="form-wrapper margin-top-xlg">
+          <a href="/cart">
+            <button class="btn btn-new">Order Now </button>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+    
+    {% if section.settings.sample %}
+      <div class="custom-o-s-form text-center">
+        <h2 class="h2 bold margin-bottom-lg margin-bottom-xlg">Start saving thousands ordering direct </h2>
+        <div class="form-wrapper margin-top-xlg">
+          <a href="/pages/final">
+            <button class="btn btn-new">Request Samples </button>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>

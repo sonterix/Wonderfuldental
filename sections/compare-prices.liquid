@@ -1,0 +1,308 @@
+<div class="page-width">
+  
+  
+  <div class="grid grid--table small--break-table grid--no-gutters">
+    <div class="grid__item medium-up--one-third banner-holder left-banner-holder text-center small--hide">
+      <img src="{{ section.settings.left_image |img_url: '400x', crop: 'center' }}"/>
+      <h3 class="h4 text-center delius"> {{ section.settings.left_text }} </h3>
+    </div>
+    <div class="grid__item medium-up--one-third" >
+      <div class="ranges-wrapper color-white">
+                {% include 'heading-snippet', settings: 'bold color-white h4' %}
+     <div class="one-whole range-holder text-center">
+         <p class="no-margin h4 color-dark">{{ section.settings.recalls_per_day_label }}</p>
+       
+       <input type="text" class="margin-bottom-sm h4 no-spin text-center color-grey" step="any" value="$249.99"  max="{{ section.settings.max_price_per_dose }}" id="PricePerDose">
+      
+         <p class="no-margin h4 color-dark">{{ section.settings.price_per_paste_label }}</p>
+       
+       <input type="number" class="margin-bottom-sm h4 no-spin text-center color-grey" step="any" value="100"  max="{{ section.settings.max_price_per_paste }}" id="pricePerPaste">
+      
+         <p class="no-margin h4 color-dark">{{ section.settings.price_per_dose_label }}</p>
+       
+       <input type="number" class="margin-bottom-sm h4 no-spin text-center color-grey" value="30"  id="recalls" step="any" >
+      </div>
+       {% unless section.settings.dynamic_change %}
+      {% if section.settings.calculate_button_label != blank%}
+        <a href="javascript:void(0)" id="calculate" class="btn edgy">
+          {{ section.settings.calculate_button_label }}
+        </a>
+      {% endif %}
+        {% endunless %}
+ 
+      </div>
+    </div>
+    <div class="grid__item medium-up--one-third banner-holder right-banner-holder text-center small--hide">
+      <img src="{{ section.settings.right_image |img_url: '400x', crop: 'center' }}"/>
+           <h3 class="text-center bold">  {{ section.settings.right_text }} </h3>
+    </div>
+  </div>
+          <div class="lower-content">
+    <div class="result-wrapper">
+    <div class="result-holder margin-top--lg" style="">
+     
+    
+  <div id="result" class="padding-sm boxed inline-center margin-top--xlg" data-dose="{{ section.settings.shop_price_per_dose }}" data-paste="{{ section.settings.shop_price_per_paste }}">
+    {{ section.settings.result_label | replace: '/money/', '<span class="money-holder">$20,256 </span>'|replace: '<p>', '<h2 class="h3 margin-bottom-0 color-dark text-center">'}}    
+   
+        </div>
+      </div>
+    </div>
+  </div>
+
+ </div>
+<script>
+
+  
+  $(document).ready(function(){
+
+    function calculateSavings(){
+        
+    var recalls = $('#recalls').val();
+    var dosesPack = textToNumber($('#pricePerPaste').val());
+    var pricePerDose = parseFloat($('#PricePerDose').val().replace('$', ''));
+    
+    var shopDosesPack = Number($('#result').data('paste'));
+    var shopDose =   $('#result').data('dose');
+    var pricePerCostCalcd = pricePerDose/dosesPack; 
+    var q = (dosesPack/shopDosesPack);
+    var shopComparedPrice = shopDose * q;
+      console.log( parseFloat(pricePerCostCalcd) - parseFloat(shopDose));
+      console.log(pricePerCostCalcd);
+      console.log(shopDose);
+    var totalDifference = parseInt((pricePerCostCalcd -  shopComparedPrice)*recalls*{{ section.settings.period }});
+                                        
+                                        
+      $('#result .money-holder').text("$" + (totalDifference).formatMoney(0));
+      $('.result-holder').slideDown();
+      console.log('Total: ' + totalDifference + '; shopDose: ' + shopDose +' pricePerDose: '+ pricePerDose);
+    }
+    
+     $('.range-holder input').each(function(){
+    $(this).prev('.range-description').find('.range-value').text($(this).val());
+    });
+    
+    {% if section.settings.dynamic_change %}
+    $('.range-holder input').bind('input', function(){
+    {% else %}
+    $('#calculate').click(function(){
+      {% endif %}
+	  calculateSavings();
+  });
+
+    $('.range-holder input').on('change mousemove', function(){
+    $(this).prev('.range-description').find('.range-value').text($(this).val());
+    });
+
+            $(document).on('keydown', function (e) {
+        if ($('#PricePerDose').is(":focus")){
+          
+          //keycode 8 = backspace
+          if(e.keyCode == 8){
+          
+            if( $('#PricePerDose').val().length < 2) {
+      e.preventDefault();
+        }
+          }
+          // keycode 38 = arrow up
+          else if(e.keyCode == 38){
+			$('#PricePerDose').val('$' + (textToNumber($('#PricePerDose').val()) + 0.01) );
+			calculateSavings();
+            
+          }
+          //keycode 40 = arrow down 
+          else if(e.keyCode == 40 && textToNumber($('#PricePerDose').val()) > 1){
+		$('#PricePerDose').val('$' + (textToNumber($('#PricePerDose').val()) - 0.01) );
+		calculateSavings();
+          }
+        /*  setTimeout(function(){
+            $('#PricePerDose').val('$' + $('#PricePerDose').val());
+          console.log('text to number: ' + textToNumber($('#PricePerDose').val()));
+          }, 100); */
+       
+  }
+});
+      
+  })
+</script>
+{% include 'glob3' %}
+{% include 'glob2' %}
+{% schema %}
+  {
+    "name": "Compare prices",
+	"class": "index-section compare-prices",
+    "settings": [
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Calculate your yearly savings"
+      },
+	  {
+        "type": "text",
+        "id": "text",
+        "label": "Text"
+      },
+	  {
+        "type": "image_picker",
+        "id": "left_image",
+        "label": "Left image"
+      },
+	  {
+		 "type": "text", 
+		"id": "left_text", 
+		"label" : "Left Text",
+		"default": "Supply house brands"
+	  },
+	  {
+        "type": "image_picker",
+        "id": "right_image",
+        "label": "Right image"
+      },
+	  {
+		 "type": "text", 
+		"id": "right_text", 
+		"label" : "Right Text",
+		"default": "wonderful"
+	  },
+	  {
+        "type": "number",
+        "id": "period",
+        "label": "Period in days",
+		"default": 365
+      },
+	  {
+        "type": "checkbox",
+        "id": "dynamic_change",
+        "label": "Dynamic change",
+		"default": true
+      },
+      {
+        "type": "text",
+        "id": "calculate_button_label",
+        "label": "Calculate button label"
+      },		
+	  {
+        "type": "richtext",
+        "id": "bottom_text",
+        "label": "Bottom Text"
+      },
+      {
+        "type": "text",
+        "id": "button_label",
+        "label": "bottom button label"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Bottom button link"
+      },
+	  {
+        "type": "richtext",
+        "id": "result_label",
+        "label": "Difference label",
+"default": "<p>You save /money/ annually using wonderful varnish!</p>"
+      },
+	  {
+        "type": "text",
+        "id": "shop_price_per_dose",
+        "label": "Shop price per dose"
+      },
+	  {
+        "type": "text",
+        "id": "shop_price_per_paste",
+        "label": "Doses in pack"
+      },
+	  {
+        "type": "text",
+        "id": "recalls_per_day_label",
+        "label": "Recalls per day label",
+		"default": "Recalls per day"
+      },
+	  {
+        "type":   "range",
+    	"id":     "min_recalls_per_day",
+	    "min":       0,
+    	"max":       10,
+   		"step":      1,
+    	"unit":      "cpd",
+    	"label":     "Minimum recalls per day",
+    	"default":   1
+	  },
+	  {
+        "type":   "range",
+    	"id":     "max_recalls_per_day",
+	    "min":       1,
+    	"max":       30,
+   		"step":      1,
+    	"unit":      "cpd",
+    	"label":     "Maximum recalls per day",
+    	"default":   20
+	  },
+	  {
+        "type": "text",
+        "id": "price_per_paste_label",
+        "label": "Price per paste label",
+		"default": "Price per paste"
+      },
+	  {
+        "type":   "range",
+    	"id":     "min_price_per_paste",
+	    "min":       2,
+    	"max":       200,
+   		"step":      2,
+    	"unit":      "ppp",
+    	"label":     "Minimum price per paste",
+    	"default":   2
+	  },
+	  {
+        "type":   "range",
+    	"id":     "max_price_per_paste",
+	    "min":       2,
+    	"max":       200,
+   		"step":      2,
+    	"unit":      "ppp",
+    	"label":     "Maximum price per paste",
+    	"default":   2
+	  },
+	  {
+        "type": "text",
+        "id": "price_per_dose_label",
+        "label": "Price per dose label",
+		"default": "Price per dose"
+      },
+	  {
+        "type":   "range",
+    	"id":     "min_price_per_dose",
+	    "min":       2,
+    	"max":       200,
+   		"step":      2,
+    	"unit":      "ppd",
+    	"label":     "Minimum price per dose",
+    	"default":   2
+	  },
+	  {
+        "type":   "range",
+    	"id":     "max_price_per_dose",
+	    "min":       2,
+    	"max":       200,
+   		"step":      2,
+    	"unit":      "ppd",
+    	"label":     "Maximum price per dose",
+    	"default":   2
+	  }
+	],
+    "presets": [
+      {
+        "name": "Image with text overlay",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

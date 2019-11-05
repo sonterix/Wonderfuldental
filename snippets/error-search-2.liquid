@@ -1,0 +1,302 @@
+  <div class="grid__item medium-up--three-fifths">
+    <div class="product-sliders-holder medium-up--margin-right-xlg3">
+      <div class="product-slider-holder" data-id="{{ collProduct.id }}" data-color="{{ swatch_color }}">
+   <div class="grid">
+    {% capture singleSlider %}
+     <div class="grid__item five-sixths">
+      <div class="productSlider" data-id="{{ collProduct.id }}">
+      {% for product in collection.products %}
+    {% assign images = product.metafields.image %}
+{% for image in images %}
+        <div class="image-holder slickLoading">
+        <img src="{{ image |last |split: '#' |first}}" data-id="{{ image |last |split: '#' |last }}" />
+          {% capture thumbnails %}
+          {{ thumbnails }}
+          <div class="image-holder slickLoading">
+        <img src="{{ image |last |split: '#' |first}}" data-id="{{ image |last |split: '#' |last }}" />
+          </div>
+          {% endcapture %}
+      </div>
+      {% endfor %}
+        {% endfor %}
+    </div>
+     </div>
+     {% endcapture %}
+     <div class="grid__item one-sixth">
+      <div class="thumbnails-slider" data-id="{{ collProduct.id }}">
+        {{ thumbnails }}
+      </div>
+     </div>
+     {{ singleSlider }}
+     </div>
+        <script>
+  var sizes = '{{ sizes |join: ','}}';
+  console.log(sizes);
+  function imageResizer(elem){
+  var url = elem.data('src');
+    elem.attr('src', url);
+  }
+  
+  function sliderData(type){
+    
+    if(type == 'singleSlider'){
+     return {
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+  waitForAnimate: false,
+       dots: false,
+       adaptiveHeight: true,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        infinite: true,
+        dots: true
+      }
+    }
+  ]
+};
+    }
+    else{
+      return {
+  slidesToShow: 6,
+  slidesToScroll: 6,
+  waitForAnimate: false,
+  dots: false,
+  vertical: true,
+  verticalSwiping: true
+}
+    }
+  }
+  
+  function disableEmptyOptions(){
+    
+    $('.size-option').each(function(){
+      
+      if($('#parentCollection .collection-product.active .product-variant[data-size="'+$(this).data('size')+'"]').length == 0){
+        console.log('variant doesnt exist:' + $(this).data('size'));
+        $(this).addClass('disabled');
+        $(this).removeClass('active');
+      }
+      else{
+         $(this).removeClass('disabled');
+        console.log('variant existс: ' + $(this).data('size')); 
+      }
+    })
+    
+  }
+  
+  function updatePrice(){
+    var price = $('.product-variant.selected').data('price');
+          console.log('new price: ' + price);
+           $('.priceToChange').text(price);
+          
+          
+          if(checkForAttr($('.product-variant.selected').data('compare-price')) == 1){
+             var comparePrice = Number($('.product-variant.selected').data('compare-price'));
+          
+            $('.comparePrice').text(comparePrice);
+            $('.comparePrice').show();
+            $('.priceToChange').addClass('discounted');
+             }
+             else{
+             $('.comparePrice').hide();
+            $('.priceToChange').removeClass('discounted');
+             }
+  }
+  
+  function pickVariant(elem){
+    
+    $('#parentCollection .collection-product .product-variant').removeClass('selected');
+      
+    if(elem.length == 1){
+      //if option size is changed
+      var optionValue = elem.data('size');
+      var productId = $('#parentCollection .collection-product.active').data('id');
+      elem.siblings().removeClass('active');
+      
+      if($('#parentCollection .collection-product.active .product-variant[data-size="'+ optionValue +'"]').length == 1){
+        $('#parentCollection .collection-product.active .product-variant[data-size="'+ optionValue +'"]').addClass('selected');
+    $('#addToCart').removeClass('disabled');
+        elem.addClass('active');
+        
+        updatePrice();
+          
+      }
+      else{
+        elem.addClass('disabled');
+        $('#addToCart').addClass('disabled');
+      }
+    }
+    else{
+      
+      //event is product change. checking if variant with the selected option exists
+        if($('.size-option.active').length == 1){
+          
+          var optionValue = $('.size-option.active').data('size');
+
+          if($('#parentCollection .collection-product.active .product-variant[data-size="'+optionValue+'"]').length == 1){
+            
+            $('#parentCollection .collection-product.active .product-variant[data-size="'+optionValue+'"]').addClass('selected');
+            
+          updatePrice();
+          }
+          else{
+           $('#addToCart').addClass('disabled'); 
+            $('.size-option').removeClass('active');
+          }
+        }
+     
+      disableEmptyOptions();
+    }
+  }
+  
+  $(document).ready(function(){
+    
+    var id = '{{ product.id }}';
+      pickVariant($('.size-option'));
+    
+    //images resize on ready
+    $('.smallImg').each(function(){
+    imageResizer($(this));
+    });
+    
+    //creating the sliders for product page
+    $('.product-slider-holder .productSlider').each(function(){
+    var id = $(this).data('id');
+      
+       $(this).slick(sliderData('singleSlider'));
+$('.thumbnails-slider[data-id="'+id+'"]').slick(sliderData('thumbnails', id));
+    })
+    
+    //function on color switching
+    $('#changeProduct').change(function(){
+    var id = $(this).val();
+      
+      var slickId = $('.productSlider img[data-id="'+id+'"]').parents('.slick-slide').data('slick-index');
+      
+       $('.productSlider').slick('slickGoTo', slickId);
+      
+      //changing the selected product in structure tree
+      if($('#parentCollection .collection-product[data-id="'+ id +'"] .product-variant').length > 1){
+        $('.product-options').removeClass('hide');
+      }
+      else{
+        $('.product-options').addClass('hide');
+      }
+      
+      $('#parentCollection .collection-product').removeClass('active');
+      $('#parentCollection .collection-product[data-id="'+ id +'"]').addClass('active');
+      
+      //changing the selected color
+      
+      //showing product content by [data-id] unless same product is selected
+      
+      if($('.product-slider-holder:visible').val() != id){
+        
+       /*  //showing product slider
+      fadeEffects($('.product-slider-holder:visible'), $('.product-slider-holder[data-id="'+id+'"]'));
+       
+        setTimeout(function(){
+        $('.product-slider-holder[data-id="'+id+'"] .productSlider').slick('unslick').slick(sliderData('singleSlider', id));
+        $('.product-slider-holder[data-id="'+id+'"] .thumbnails-slider').slick('unslick').slick(sliderData('thumbnails', id));
+        }, 301)
+        */
+        //showing product title
+         fadeEffects($('.product-title:visible'), $('.product-title[data-id="'+id+'"]'));
+      
+        //showing product description
+      //fadeEffects($('.product-description .description:visible'), $('.product-description .description[data-id="'+id+'"]'));
+      
+        //now changing the url
+        window.history.pushState("", "", '/collections/' + $('#parentCollection').data('handle')+'/products/'+$('.collection-product[data-id="'+ id +'"]').data('handle'));
+      }
+      
+      pickVariant($('.size-option'));
+                  })
+    
+    $('.size-option').click(function(){
+      if(!$(this).hasClass('disabled')){
+      pickVariant($(this));
+      }
+    })
+    
+    $('#addToCart').click(function(){
+      console.log('add to cart clicked');
+      if($('#parentCollection .collection-product.active .product-variant.selected').length == 1){
+       var variantId =  $('#parentCollection .collection-product.active .product-variant.selected').data('id');
+       var productTitle = $('#parentCollection .collection-product.active .product-variant.selected').data('title');
+       var variantTitle = $('#parentCollection .collection-product.active .product-variant.selected').data('name');
+       var variantPrice = $('#parentCollection .collection-product.active .product-variant.selected').data('price').replace('$', '');
+        var collectionTitle = $('#parentCollection').data('title');
+        console.log('variant found: ' + variantId + '; ' + productTitle + '; ' + variantTitle + '; ' + variantPrice + '; ' + collectionTitle);
+        
+        if($('.product-swatches .input__number-holder input').val().length > 0 && $('.product-swatches .input__number-holder input').val() > 0){
+          var qty = $('.product-swatches .input__number-holder input').val();
+        }
+        else{
+          var qty = 1;
+        }
+        
+    push_to_queue(variantId, qty);
+        
+        Shopify.moveAlong();
+                
+dataLayer.push({
+  'event': 'addToCart',
+  'ecommerce': {
+    'currencyCode': 'USD',
+    'add': {                                // 'add' actionFieldObject measures.
+      'products': [{                        //  adding a product to a shopping cart.
+        'name': productTitle,
+        'id': variantId,
+        'price': variantPrice,
+        'brand': 'Google',
+        'category': collectionTitle,
+        'variant': variantTitle,
+        'quantity': qty
+       }]
+    }
+  }
+});
+    
+        if(Shopify.queue.length == 0){
+             $('.addToCartHolder').prepend('<div class="cart-success width-100 margin-vertical-md"><i class="fa fa-check"></i> ' + productTitle + ' {{ 'products.product.added' | t }}</div>'); 
+          $('.addToCartHolder').append('<a href="/checkout" class="btn width-100 margin-top-md border-radius-0 bold uppercase padding-vertical-md"> {{ 'products.product.checkout' | t }} </a>'); 
+                                   }
+      }
+      else{
+       console.log('variant not found'); 
+      }
+    })
+    
+    $(document).on('mouseenter','.thumbnails-slider:visible .slick-slide', function (e) {
+	var $currTarget = $(e.currentTarget), 
+    	index = $currTarget.data('slick-index');
+      $('.productSlider:visible').slick('slickGoTo', index);
+      $currTarget.siblings().find('img').removeClass('hovered');
+    $currTarget.find('img').addClass('hovered');
+      console.log('entered slick: ' + index);
+});
+  
+    $(document).on('swipe','.productSlider:visible', function(event, slick, direction){
+      var slickId = $('.productSlider:visible .slick-slide.slick-active').attr('data-slick-index');
+      console.log('Slick changed; active slick index: ' + slickId);
+      $('.thumbnails-slider:visible .slick-slide').find('img').removeClass('hovered');
+      $('.thumbnails-slider:visible .slick-slide[data-slick-index="'+ slickId +'"]').find('img').addClass('hovered');
+        $('.thumbnails-slider:visible').slick('slickGoTo', slickId);
+      
+    });
+  
+  })
+  
+  
+</script>
+
+    </div>
+    
+    </div>
+  </div>

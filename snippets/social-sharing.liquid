@@ -1,0 +1,83 @@
+{% if type == 'list' %}<!-- /snippets/social-sharing.liquid -->
+<div class="social-sharing">
+   <a class="btn--small btn--share share-linkedin" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{ shop.url}}/{{ blog.handle }}/{{ article.handle}}&title={{ article.title }}
+                            &summary={{ article.excerpt }} "> 
+  {% include 'icon-linkedin' %} </a>
+  {% if settings.share_facebook %}
+    <a target="_blank" href="//www.facebook.com/sharer.php?u={{ shop.url | append: share_permalink }}" class=" btn--small btn--share share-facebook" title="{{ 'general.social.alt_text.share_on_facebook' | t }}">
+      {% include 'icon-facebook' %}
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_facebook' | t }}</span>
+    </a>
+  {% endif %}
+
+  {% if settings.share_twitter %}
+    <a target="_blank" href="//twitter.com/share?text={{ share_title | url_param_escape }}&amp;url={{ shop.url | append: share_permalink }}" class="btn--small btn--share share-twitter" title="{{ 'general.social.alt_text.share_on_twitter' | t }}">
+      {% include 'icon-twitter' %}
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_twitter' | t }}</span>
+    </a>
+  {% endif %}
+
+  
+</div>
+{% elsif type == 'block' %}
+
+<!-- /snippets/social-sharing.liquid -->
+<div class="social-sharing">
+
+  {% if settings.share_facebook %}
+    <a target="_blank" href="//www.facebook.com/sharer.php?u={{ shop.url | append: share_permalink }}" class="btn--small display-block btn--share share-facebook" title="{{ 'general.social.alt_text.share_on_facebook' | t }}">
+      {% include 'icon-facebook' %}
+      <span class="share-title h3 margin-bottom-0 " aria-hidden="true">{{ 'general.social.share_on_facebook' | t }}</span>
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_facebook' | t }}</span>
+    </a>
+  {% endif %}
+
+  {% if settings.share_twitter %}
+    <a target="_blank" href="//twitter.com/share?text={{ share_title | url_param_escape }}&amp;url={{ shop.url | append: share_permalink }}" class=" btn--small display-block btn--share share-twitter" title="{{ 'general.social.alt_text.share_on_twitter' | t }}">
+      {% include 'icon-twitter' %}
+      <span class="share-title h3 margin-bottom-0 " aria-hidden="true">{{ 'general.social.share_on_twitter' | t }}</span>
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_twitter' | t }}</span>
+    </a>
+  {% endif %}
+
+  {% if settings.share_pinterest %}
+    <a target="_blank" href="//pinterest.com/pin/create/button/?url={{ shop.url | append: share_permalink }}&amp;media={{ share_image | img_url: '1024x1024' }}&amp;description={{ share_title | url_param_escape }}" class=" btn--small display-block btn--share share-pinterest" title="{{ 'general.social.alt_text.share_on_pinterest' | t }}">
+      {% include 'icon-pinterest' %}
+      <span class="h3 margin-bottom-0 share-title" aria-hidden="true">{{ 'general.social.share_on_pinterest' | t }}</span>
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_pinterest' | t }}</span>
+    </a>
+  {% endif %}
+
+</div>
+
+{% else %}
+
+<!-- /snippets/social-sharing.liquid -->
+<div class="social-sharing">
+
+  {% if settings.share_facebook %}
+    <a target="_blank" href="//www.facebook.com/sharer.php?u={{ shop.url | append: share_permalink }}" class="btn btn--small btn--secondary btn--share share-facebook" title="{{ 'general.social.alt_text.share_on_facebook' | t }}">
+      {% include 'icon-facebook' %}
+      <span class="share-title" aria-hidden="true">{{ 'general.social.share_on_facebook' | t }}</span>
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_facebook' | t }}</span>
+    </a>
+  {% endif %}
+
+  {% if settings.share_twitter %}
+    <a target="_blank" href="//twitter.com/share?text={{ share_title | url_param_escape }}&amp;url={{ shop.url | append: share_permalink }}" class="btn btn--small btn--secondary btn--share share-twitter" title="{{ 'general.social.alt_text.share_on_twitter' | t }}">
+      {% include 'icon-twitter' %}
+      <span class="share-title" aria-hidden="true">{{ 'general.social.share_on_twitter' | t }}</span>
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_twitter' | t }}</span>
+    </a>
+  {% endif %}
+
+  {% if settings.share_pinterest %}
+    <a target="_blank" href="//pinterest.com/pin/create/button/?url={{ shop.url | append: share_permalink }}&amp;media={{ share_image | img_url: '1024x1024' }}&amp;description={{ share_title | url_param_escape }}" class="btn btn--small btn--secondary btn--share share-pinterest" title="{{ 'general.social.alt_text.share_on_pinterest' | t }}">
+      {% include 'icon-pinterest' %}
+      <span class="share-title" aria-hidden="true">{{ 'general.social.share_on_pinterest' | t }}</span>
+      <span class="visually-hidden">{{ 'general.social.alt_text.share_on_pinterest' | t }}</span>
+    </a>
+  {% endif %}
+
+</div>
+{% endif %}

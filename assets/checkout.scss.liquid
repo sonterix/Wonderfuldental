@@ -1,0 +1,746 @@
+{% comment %}
+
+THEME CLASSES START HERE
+
+{
+  {% endcomment %}
+
+/*================ #Mixins ================*/
+@mixin clearfix() {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  // sass-lint:disable no-misspelled-properties
+  *zoom: 1;
+}
+
+
+/*================ VARIABLES ================*/
+/*============================================================================
+  Grid Breakpoints and Class Names
+    - Do not change the variable names
+==============================================================================*/
+  
+$sm: 479.5px;
+$md: 767.5px;
+$lg: 1023.5px;
+
+$md-up: 'min-width: #{$md}';
+$md-down: 'max-width: #{$md}';
+$lg-up: 'min-width: #{$lg}';
+$lg-down: 'max-width: #{$lg}';
+
+$trans: 0.3s ease all; 
+
+$small-width: 1250px;
+$wrapper-width: 1500px;
+$big-width: 1920px;
+
+/* Gutters */
+$gutter-0: 0px;
+$gutter-sm2: 5px;
+$gutter-sm: 10px;
+$gutter-md: 20px;
+$gutter-lg: 30px;
+$gutter-xlg: 40px;
+$gutter-xlg15: 60px;
+$gutter-xlg2: 80px;
+$gutter-xlg3: 120px;
+
+$border-radius: 5px;
+
+$grid-medium: 768px;
+$grid-large: 1024p;
+$grid-widescreen: 1400px;
+$grid-gutter: $gutter-lg;
+$grid-gutter-mobile: 22px;
+
+$small: 'small';
+$medium: 'medium';
+$medium-down: 'medium-down';
+$medium-up: 'medium-up';
+$large: 'large';
+$large-down: 'large-down';
+$large-up: 'large-up';
+$widescreen: 'widescreen';
+
+/*============================================================================
+  Generate breakpoint-specific column widths and push classes
+    - Default column widths: $grid-breakpoint-has-widths: ($small, $medium-up);
+    - Default is no push classes
+==============================================================================*/
+$grid-breakpoint-has-widths: ($small, $medium-up);
+$grid-breakpoint-has-push: ($small, $medium-up);
+
+/*============================================================================
+  #Grid
+==============================================================================*/
+
+// The `$grid-breakpoints` list is used to build our media queries.
+// You can use these in the media-query mixin.
+$grid-breakpoints: (
+  $small '(max-width: #{$grid-medium - 1})',
+  $medium '(min-width: #{$grid-medium}) and (max-width: #{$grid-large - 1})',
+  $medium-down '(max-width: #{$grid-large - 1})',
+  $medium-up '(min-width: #{$grid-medium})',
+  $large '(min-width: #{$grid-large}) and (max-width: #{$grid-widescreen - 1})',
+  $large-down '(max-width: #{$grid-widescreen - 1})',
+  $large-up '(min-width: #{$grid-large})',
+  $widescreen '(min-width: #{$grid-widescreen})'
+);
+
+/*================ Media Query Mixin ================*/
+@mixin media-query($media-query) {
+  $breakpoint-found: false;
+
+  @each $breakpoint in $grid-breakpoints {
+    $name: nth($breakpoint, 1);
+    $declaration: nth($breakpoint, 2);
+
+    @if $media-query == $name and $declaration {
+      $breakpoint-found: true;
+
+      @media only screen and #{$declaration} {
+        @content;
+      }
+    }
+  }
+
+  @if $breakpoint-found == false {
+    @warn 'Breakpoint "#{$media-query}" does not exist';
+  }
+}
+
+/*================ Responsive Show/Hide Helper ================*/
+@mixin responsive-display-helper($grid-breakpoint-type: '') {
+  // sass-lint:disable no-important
+  .#{$grid-breakpoint-type}show {
+    display: block !important;
+  }
+
+  .#{$grid-breakpoint-type}hide {
+    display: none !important;
+  }
+}
+
+
+/*================ Responsive Text Alignment Helper ================*/
+@mixin responsive-text-align-helper($grid-breakpoint-type: '') {
+  // sass-lint:disable no-important
+  .#{$grid-breakpoint-type}text-left {
+    text-align: left !important;
+  }
+
+  .#{$grid-breakpoint-type}text-right {
+    text-align: right !important;
+  }
+
+  .#{$grid-breakpoint-type}text-center {
+    text-align: center !important;
+  }
+}
+
+
+/*============================================================================
+  Grid Setup
+    1. Allow the grid system to be used on lists.
+    2. Remove any margins and paddings that might affect the grid system.
+    3. Apply a negative `margin-left` to negate the columns' gutters.
+==============================================================================*/
+.grid {
+  @include clearfix();
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-left: -$grid-gutter;
+
+  @include media-query($small) {
+    margin-left: -$grid-gutter-mobile;
+  }
+}
+
+.grid__item {
+  float: left;
+  padding-left: $grid-gutter;
+  width: 100%;
+
+  @include media-query($small) {
+    padding-left: $grid-gutter-mobile;
+  }
+
+  &[class*="--push"] {
+    position: relative;
+  }
+}
+
+/*============================================================================
+  Reversed grids allow you to structure your source in the opposite
+  order to how your rendered layout will appear.
+==============================================================================*/
+.grid--rev {
+  direction: rtl;
+  text-align: left;
+
+  > .grid__item {
+    direction: ltr;
+    text-align: left;
+    float: right;
+  }
+}
+
+/*============================================================================
+  Grid Columns
+    - Create width classes, prepended by the breakpoint name.
+==============================================================================*/
+// sass-lint:disable brace-style empty-line-between-blocks
+@mixin grid-column-generator($grid-breakpoint-type: '') {
+  /* Whole */
+  .#{$grid-breakpoint-type}one-whole { width: 100%; }
+
+  /* Halves */
+  .#{$grid-breakpoint-type}one-half { width: percentage(1 / 2); }
+
+  /* Thirds */
+  .#{$grid-breakpoint-type}one-third { width: percentage(1 / 3); }
+  .#{$grid-breakpoint-type}two-thirds { width: percentage(2 / 3); }
+
+  /* Quarters */
+  .#{$grid-breakpoint-type}one-quarter { width: percentage(1 / 4); }
+  .#{$grid-breakpoint-type}two-quarters { width: percentage(2 / 4); }
+  .#{$grid-breakpoint-type}three-quarters { width: percentage(3 / 4); }
+
+  /* Fifths */
+  .#{$grid-breakpoint-type}one-fifth { width: percentage(1 / 5); }
+  .#{$grid-breakpoint-type}two-fifths { width: percentage(2 / 5); }
+  .#{$grid-breakpoint-type}three-fifths { width: percentage(3 / 5); }
+  .#{$grid-breakpoint-type}four-fifths { width: percentage(4 / 5); }
+
+  /* Sixths */
+  .#{$grid-breakpoint-type}one-sixth { width: percentage(1 / 6); }
+  .#{$grid-breakpoint-type}two-sixths { width: percentage(2 / 6); }
+  .#{$grid-breakpoint-type}three-sixths { width: percentage(3 / 6); }
+  .#{$grid-breakpoint-type}four-sixths { width: percentage(4 / 6); }
+  .#{$grid-breakpoint-type}five-sixths { width: percentage(5 / 6); }
+
+  /* Eighths */
+  .#{$grid-breakpoint-type}one-eighth { width: percentage(1 / 8); }
+  .#{$grid-breakpoint-type}two-eighths { width: percentage(2 / 8); }
+  .#{$grid-breakpoint-type}three-eighths { width: percentage(3 / 8); }
+  .#{$grid-breakpoint-type}four-eighths { width: percentage(4 / 8); }
+  .#{$grid-breakpoint-type}five-eighths { width: percentage(5 / 8); }
+  .#{$grid-breakpoint-type}six-eighths { width: percentage(6 / 8); }
+  .#{$grid-breakpoint-type}seven-eighths { width: percentage(7 / 8); }
+  
+/* Ninths */
+  .#{$grid-breakpoint-type}one-ninth { width: percentage(1 / 9); }
+  .#{$grid-breakpoint-type}two-ninths { width: percentage(2 / 9); }
+  .#{$grid-breakpoint-type}three-ninths { width: percentage(3 / 9); }
+  .#{$grid-breakpoint-type}four-ninths { width: percentage(4 / 9); }
+  .#{$grid-breakpoint-type}five-ninths { width: percentage(5 / 9); }
+  .#{$grid-breakpoint-type}six-ninths { width: percentage(6 / 9); }
+  .#{$grid-breakpoint-type}seven-ninths { width: percentage(7 / 9); }
+  .#{$grid-breakpoint-type}seven-ninths { width: percentage(8 / 9); }
+
+  /* Tenths */
+  .#{$grid-breakpoint-type}one-tenth { width: percentage(1 / 10); }
+  .#{$grid-breakpoint-type}two-tenths { width: percentage(2 / 10); }
+  .#{$grid-breakpoint-type}three-tenths { width: percentage(3 / 10); }
+  .#{$grid-breakpoint-type}four-tenths { width: percentage(4 / 10); }
+  .#{$grid-breakpoint-type}five-tenths { width: percentage(5 / 10); }
+  .#{$grid-breakpoint-type}six-tenths { width: percentage(6 / 10); }
+  .#{$grid-breakpoint-type}seven-tenths { width: percentage(7 / 10); }
+  .#{$grid-breakpoint-type}eight-tenths { width: percentage(8 / 10); }
+  .#{$grid-breakpoint-type}nine-tenths { width: percentage(9 / 10); }
+
+  /* Twelfths */
+  .#{$grid-breakpoint-type}one-twelfth { width: percentage(1 / 12); }
+  .#{$grid-breakpoint-type}two-twelfths { width: percentage(2 / 12); }
+  .#{$grid-breakpoint-type}three-twelfths { width: percentage(3 / 12); }
+  .#{$grid-breakpoint-type}four-twelfths { width: percentage(4 / 12); }
+  .#{$grid-breakpoint-type}five-twelfths { width: percentage(5 / 12); }
+  .#{$grid-breakpoint-type}six-twelfths { width: percentage(6 / 12); }
+  .#{$grid-breakpoint-type}seven-twelfths { width: percentage(7 / 12); }
+  .#{$grid-breakpoint-type}eight-twelfths { width: percentage(8 / 12); }
+  .#{$grid-breakpoint-type}nine-twelfths { width: percentage(9 / 12); }
+  .#{$grid-breakpoint-type}ten-twelfths { width: percentage(10 / 12); }
+  .#{$grid-breakpoint-type}eleven-twelfths { width: percentage(11 / 12); }
+}
+
+/*================ Grid push classes ================*/
+@mixin grid-push-generator($grid-breakpoint-type: '') {
+  /* Halves */
+  .#{$grid-breakpoint-type}push-one-half { left: percentage(1 / 2); }
+
+  /* Thirds */
+  .#{$grid-breakpoint-type}push-one-third { left: percentage(1 / 3); }
+  .#{$grid-breakpoint-type}push-two-thirds { left: percentage(2 / 3); }
+
+  /* Quarters */
+  .#{$grid-breakpoint-type}push-one-quarter { left: percentage(1 / 4); }
+  .#{$grid-breakpoint-type}push-two-quarters { left: percentage(2 / 4); }
+  .#{$grid-breakpoint-type}push-three-quarters { left: percentage(3 / 4); }
+
+  /* Fifths */
+  .#{$grid-breakpoint-type}push-one-fifth { left: percentage(1 / 5); }
+  .#{$grid-breakpoint-type}push-two-fifths { left: percentage(2 / 5); }
+  .#{$grid-breakpoint-type}push-three-fifths { left: percentage(3 / 5); }
+  .#{$grid-breakpoint-type}push-four-fifths { left: percentage(4 / 5); }
+
+  /* Sixths */
+  .#{$grid-breakpoint-type}push-one-sixth { left: percentage(1 / 6); }
+  .#{$grid-breakpoint-type}push-two-sixths { left: percentage(2 / 6); }
+  .#{$grid-breakpoint-type}push-three-sixths { left: percentage(3 / 6); }
+  .#{$grid-breakpoint-type}push-four-sixths { left: percentage(4 / 6); }
+  .#{$grid-breakpoint-type}push-five-sixths { left: percentage(5 / 6); }
+
+  /* Eighths */
+  .#{$grid-breakpoint-type}push-one-eighth { left: percentage(1 / 8); }
+  .#{$grid-breakpoint-type}push-two-eighths { left: percentage(2 / 8); }
+  .#{$grid-breakpoint-type}push-three-eighths { left: percentage(3 / 8); }
+  .#{$grid-breakpoint-type}push-four-eighths { left: percentage(4 / 8); }
+  .#{$grid-breakpoint-type}push-five-eighths { left: percentage(5 / 8); }
+  .#{$grid-breakpoint-type}push-six-eighths { left: percentage(6 / 8); }
+  .#{$grid-breakpoint-type}push-seven-eighths { left: percentage(7 / 8); }
+
+  /* Tenths */
+  .#{$grid-breakpoint-type}push-one-tenth { left: percentage(1 / 10); }
+  .#{$grid-breakpoint-type}push-two-tenths { left: percentage(2 / 10); }
+  .#{$grid-breakpoint-type}push-three-tenths { left: percentage(3 / 10); }
+  .#{$grid-breakpoint-type}push-four-tenths { left: percentage(4 / 10); }
+  .#{$grid-breakpoint-type}push-five-tenths { left: percentage(5 / 10); }
+  .#{$grid-breakpoint-type}push-six-tenths { left: percentage(6 / 10); }
+  .#{$grid-breakpoint-type}push-seven-tenths { left: percentage(7 / 10); }
+  .#{$grid-breakpoint-type}push-eight-tenths { left: percentage(8 / 10); }
+  .#{$grid-breakpoint-type}push-nine-tenths { left: percentage(9 / 10); }
+
+  /* Twelfths */
+  .#{$grid-breakpoint-type}push-one-twelfth { left: percentage(1 / 12); }
+  .#{$grid-breakpoint-type}push-two-twelfths { left: percentage(2 / 12); }
+  .#{$grid-breakpoint-type}push-three-twelfths { left: percentage(3 / 12); }
+  .#{$grid-breakpoint-type}push-four-twelfths { left: percentage(4 / 12); }
+  .#{$grid-breakpoint-type}push-five-twelfths { left: percentage(5 / 12); }
+  .#{$grid-breakpoint-type}push-six-twelfths { left: percentage(6 / 12); }
+  .#{$grid-breakpoint-type}push-seven-twelfths { left: percentage(7 / 12); }
+  .#{$grid-breakpoint-type}push-eight-twelfths { left: percentage(8 / 12); }
+  .#{$grid-breakpoint-type}push-nine-twelfths { left: percentage(9 / 12); }
+  .#{$grid-breakpoint-type}push-ten-twelfths { left: percentage(10 / 12); }
+  .#{$grid-breakpoint-type}push-eleven-twelfths { left: percentage(11 / 12); }
+}
+
+/*================ Clearfix helper on uniform grids ================*/
+@mixin grid-uniform-clearfix($grid-breakpoint-type: '') {
+  .grid--uniform {
+    .#{$grid-breakpoint-type}one-half:nth-child(2n+1),
+    .#{$grid-breakpoint-type}one-third:nth-child(3n+1),
+    .#{$grid-breakpoint-type}one-quarter:nth-child(4n+1),
+    .#{$grid-breakpoint-type}one-fifth:nth-child(5n+1),
+    .#{$grid-breakpoint-type}one-sixth:nth-child(6n+1),
+    .#{$grid-breakpoint-type}two-sixths:nth-child(3n+1),
+    .#{$grid-breakpoint-type}three-sixths:nth-child(2n+1),
+    .#{$grid-breakpoint-type}one-eighth:nth-child(8n+1),
+    .#{$grid-breakpoint-type}two-eighths:nth-child(4n+1),
+    .#{$grid-breakpoint-type}four-eighths:nth-child(2n+1),
+    .#{$grid-breakpoint-type}five-tenths:nth-child(2n+1),
+    .#{$grid-breakpoint-type}one-twelfth:nth-child(12n+1),
+    .#{$grid-breakpoint-type}two-twelfths:nth-child(6n+1),
+    .#{$grid-breakpoint-type}three-twelfths:nth-child(4n+1),
+    .#{$grid-breakpoint-type}four-twelfths:nth-child(3n+1),
+    .#{$grid-breakpoint-type}six-twelfths:nth-child(2n+1) { clear: both; }
+  }
+}
+
+// sass-lint:enable brace-style empty-line-between-blocks
+
+/*================ Build Base Grid Classes ================*/
+@include grid-column-generator();
+@include responsive-display-helper();
+@include responsive-text-align-helper();
+
+/*================ Build Responsive Grid Classes ================*/
+@each $breakpoint in $grid-breakpoint-has-widths {
+  @include media-query($breakpoint) {
+    @include grid-column-generator('#{$breakpoint}--');
+    @include grid-uniform-clearfix('#{$breakpoint}--');
+    @include responsive-display-helper('#{$breakpoint}--');
+    @include responsive-text-align-helper('#{$breakpoint}--');
+  }
+}
+
+/*================ Build Grid Push Classes ================*/
+@each $breakpoint in $grid-breakpoint-has-push {
+  @include media-query($breakpoint) {
+    @include grid-push-generator('#{$breakpoint}--');
+  }
+}
+
+.grid--table {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+
+  > .grid__item {
+    float: none;
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+      &.small--break-table{
+      
+      @media($md-down){
+        display: block;
+        width: auto;
+        
+        >.grid__item{
+          float: left;
+         display: block;
+        }
+      }
+    }
+
+}
+
+.grid--no-gutters {
+  margin-left: 0;
+
+  .grid__item {
+    padding-left: 0;
+  }
+}
+
+.grid--half-gutters {
+  margin-left: -($grid-gutter / 2);
+
+  > .grid__item {
+    padding-left: $grid-gutter / 2;
+  }
+}
+
+.grid--double-gutters {
+  margin-left: -($grid-gutter * 2);
+
+  > .grid__item {
+    padding-left: $grid-gutter * 2;
+  }
+}
+
+
+ {% assign sizes = '0,sm2,sm,md,lg,xlg,xlg15,xlg2,xlg3,-sm2,-sm,-md,-lg,-xlg,-xlg15,-xlg2,-xlg3' |split: ',' %}
+  {% assign positions = 'vertical,horizontal,top,left,bottom,right' |split: ','%}
+  {% for size in sizes %}
+  {% for position in positions %}
+
+  .padding-{{ position }}-{{ size }}{
+    {% if position == 'horizontal' %}
+    {% if size contains '-'%}
+    padding-left:  $gutter-{{ size |remove: '-' }} !important;
+    padding-right:  $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    padding-left: $gutter-{{ size }} !important;
+    padding-right: $gutter-{{ size }} !important;
+    {% endif %}
+    {% elsif position == 'vertical' %}
+    {% if size contains '-'%}
+    padding-top: $gutter-{{ size |remove: '-' }} !important;
+    padding-bottom: $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    padding-top: $gutter-{{ size }} !important;
+    padding-bottom: $gutter-{{ size }} !important;
+    {% endif %}
+    {% else %}
+    {% if size contains '-'%}
+    padding-{{ position }}:  $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    padding-{{ position }}: $gutter-{{ size  }} !important;
+    {% endif %}
+    {% endif %}
+  }
+  .margin-{{ position }}-{{ size }}{ 
+    {% if position == 'horizontal' %}
+    {% if size contains '-'%}
+    margin-left: - $gutter-{{ size |remove: '-' }} !important;
+    margin-right: - $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    margin-left: $gutter-{{ size }} !important;
+    margin-right: $gutter-{{ size }} !important;
+    {% endif %}
+
+    {% elsif position == 'vertical' %}
+    {% if size contains '-'%}
+    margin-top: - $gutter-{{ size |remove: '-' }} !important;
+    margin-bottom: - $gutter-{{ size |remove: '-'}} !important;
+    {% else %}
+    margin-top: $gutter-{{ size }} !important;
+    margin-bottom: $gutter-{{ size }} !important;
+    {% endif %}
+    {% else %}
+    {% if size contains '-'%}
+    margin-{{ position }}: - $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    margin-{{ position }}: $gutter-{{ size  }} !important;
+    {% endif %}
+    {% endif %}
+  }
+  {% endfor %}
+
+  {% unless size contains '-' %}
+  .padding-{{ size }}{
+    padding: $gutter-{{ size }};
+  }
+  {% endunless %}
+
+  .margin-{{ size }}{
+    margin: {% if size contains '-'%}-{% endif %}$gutter-{{ size |remove: '-'}};
+  }
+  {% endfor %}
+ 
+  
+  
+  {% assign resolutions = 'lg-up:medium-up,lg-down:small' | split: ',' %}
+  
+  {% for resolution in resolutions %}
+  {% assign resolName = resolution |split: ':' |first %}
+  {% assign resolClass = resolution |split: ':' |last %}
+  @media(${{ resolName }}){
+  {% assign sizes = '0,sm,sm2,md,lg,xlg,xlg15,xlg2,xlg3,-sm,-md,-lg,-xlg,-xlg15,-xlg2,-xlg3' |split: ',' %}
+  {% assign positions = 'vertical,horizontal,top,left,bottom,right' |split: ','%}
+  {% for size in sizes %}
+  {% for position in positions %}
+
+  .{{ resolClass }}--padding-{{ position }}-{{ size }}{
+    {% if position == 'horizontal' %}
+    {% if size contains '-'%}
+    padding-left:  $gutter-{{ size |remove: '-' }} !important;
+    padding-right:  $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    padding-left: $gutter-{{ size }} !important;
+    padding-right: $gutter-{{ size }} !important;
+    {% endif %}
+    {% elsif position == 'vertical' %}
+    {% if size contains '-'%}
+    padding-top: $gutter-{{ size |remove: '-' }} !important;
+    padding-bottom: $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    padding-top: $gutter-{{ size }} !important;
+    padding-bottom: $gutter-{{ size }} !important;
+    {% endif %}
+    {% else %}
+    {% if size contains '-'%}
+    padding-{{ position }}:  $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    padding-{{ position }}: $gutter-{{ size  }} !important;
+    {% endif %}
+    {% endif %}
+  }
+  .{{ resolClass }}--margin-{{ position }}-{{ size }}{ 
+    {% if position == 'horizontal' %}
+    {% if size contains '-'%}
+    margin-left: - $gutter-{{ size |remove: '-' }} !important;
+    margin-right: - $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    margin-left: $gutter-{{ size }} !important;
+    margin-right: $gutter-{{ size }} !important;
+    {% endif %}
+
+    {% elsif position == 'vertical' %}
+    {% if size contains '-'%}
+    margin-top: - $gutter-{{ size |remove: '-' }} !important;
+    margin-bottom: - $gutter-{{ size |remove: '-'}} !important;
+    {% else %}
+    margin-top: $gutter-{{ size }} !important;
+    margin-bottom: $gutter-{{ size }} !important;
+    {% endif %}
+    {% else %}
+    {% if size contains '-'%}
+    margin-{{ position }}: - $gutter-{{ size |remove: '-' }} !important;
+    {% else %}
+    margin-{{ position }}: $gutter-{{ size  }} !important;
+    {% endif %}
+    {% endif %}
+  }
+  {% endfor %}
+
+  {% unless size contains '-' %}
+  .{{ resolClass }}--padding-{{ size }}{
+    padding: $gutter-{{ size }};
+  }
+  {% endunless %}
+
+  .{{ resolClass }}--margin-{{ size }}{
+    margin: {% if size contains '-'%}-{% endif %}$gutter-{{ size |remove: '-'}};
+  }
+  {% endfor %}
+  }
+  {% endfor %}
+  
+
+  
+  .no-margin{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .no-padding{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  
+
+{% comment %}
+
+}
+THEME CLASSES END HERE
+
+  {% endcomment %}
+
+
+
+/*
+
+
+CUSTOM CSS STARTS HERE
+
+
+*/
+
+
+$sidebar-background: #fafafa;
+
+.order-summary__sections{
+  height: auto !important;
+  
+  .order-summary__section{
+   
+    &:last-child{
+     padding-bottom: 0; 
+    }
+  }
+}
+
+.order-summary__section.cta-block{
+  
+  .title-holder{
+    z-index: 2;
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+    
+      &:after{
+        z-index: -1;
+     content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      width: 100%;
+      background-color: rgba(175,175,175,0.34);
+      transform: translateY(-50%);
+    }
+
+    .section__title{
+      text-align: center;
+      background: $sidebar-background;
+	  display: inline-block;
+      padding: 0 10px;
+      margin: 0;
+      z-index: 1;
+    }
+  }
+}
+
+ .upsell-item {
+	border-top: 1px solid #e9e9e9;
+	border-bottom: 1px solid #e9e9e9;
+
+   .grid__item{
+     vertical-align: top;
+   }
+}
+
+.upsell_add {
+  padding: 10px 20px;
+}
+
+.upsell-product-title {
+ 	    font-size: 16px;
+  
+  @media($lg-down){
+    display: inline-block;
+  }
+}
+
+.upsell-img{
+ width: 70%; 
+}
+
+.upsell-id {
+  	max-width: 100%;
+    padding-right: 20px !important;
+    width: auto;
+ 	border: 1px solid #dcdcdc;
+  	padding: 5px;
+      -webkit-appearance: menulist;
+  
+  @media($lg-down){
+  	margin-top: 2px;
+  }
+}
+
+.qty {
+ 	border: 1px solid #dcdcdc;
+  	width: 70%;
+  	padding: 7px;
+  
+  @media($lg-down){
+  	padding: 6px;
+  }
+}
+ 
+.upsell-id:after{
+	content: " ";
+	height: 0;
+	width: 0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 5px solid #F15922;
+	position: absolute;
+	right: 6px;
+	top: 8px;
+  
+
+}
+
+.normal{
+ font-weight: normal; 
+}
+
+.checkout-success{
+      border: 1px solid #b0ffca;
+    padding: 20px;
+    font-weight: normal;
+    background: #ceffec;
+  
+  * {
+    display: inline-block;
+        font-size: 16px;
+    margin-top: 0!important;
+}
+}
+
+.main__header {
+    padding-bottom: $gutter-lg !important;
+}
+
+.images-holder * {
+    max-width: 30px;
+    vertical-align: top;
+    padding: 0 20px;
+}
