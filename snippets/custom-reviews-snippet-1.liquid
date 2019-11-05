@@ -7,152 +7,413 @@
 {% unless filter != blank %}
 {% assign filter = '' %}
 {% endunless %}
-<script>
-  console.log('filter value: {{ filter }}; enable grid: {{ enable_grid }}; grid size: {{ grid_size }}');
-</script>
 
 {% assign totalreviews = 0 %}
 
 {% for product in collections['all'].products %}
 
-{% capture productsArray %}{{ productsArray }},{{ product.handle }}:{{ product.id }}{% endcapture %}
+    {% capture productsArray %}{{ productsArray }},{{ product.handle }}:{{ product.id }}{% endcapture %}
 {% endfor %}
 {% assign productsArray = productsArray |remove_first: ',' |split: ',' %}
 <div class="page-width">
-  {% assign reviews = shop.metafields.reviews |sort: 'key'%}
+    {% assign reviews = shop.metafields.reviews |sort: 'key' %}
 
-  {% assign reviews = reviews |split: '", "'%}
+    {% assign reviews = reviews |split: '", "' %}
 
-  {% assign review = reviews[0] %}
+    {% assign review = reviews[0] %}
 
-  {% assign reviewsSize = reviews.size |minus: 1%}
-  {% for i in (0..reviewsSize) limit: '100' %}
+    {% assign reviewsSize = reviews.size |minus: 1 %}
+    {% for i in (0..reviewsSize) limit: '100' %}
 
-  {% assign review = reviews[i] |split: '"=>"' |last %}
+        {% assign review = reviews[i] |split: '"=>"' |last %}
 
-  {% assign totalreviews = totalreviews |plus: 1 %}
-  {% assign review = review | split: '|' %}
-  {% assign stars = review[0] |plus: 0 %}
-
-
-
-  {% assign writer = review[2] %}
-  {% assign text = review[3] %}
-
-  {% assign textCheck = text |remove: '"' |strip  %}
-
-  {% assign date = review[5] |split: 'T' |first |split: '-' |reverse |join: '/' |remove: ' ' %}
-  {% assign dates = date | split: '/' %}
-  {% capture newDate %}{{ dates[1] }}/{{ dates[0] }}/{{ dates[2] }}{% endcapture %}
-  {% assign productId = review |last |strip %}
-  {% assign productHandle = 'empty' %}
-  {% for productObj in productsArray %}
-  {% if productObj contains productId %}
-  {% assign productHandle = productObj |split: ':' |first %}
-  {% assign product = all_products[productHandle] %}
-  {% break %}
-  {% endif %}
-  {% endfor %}
-  {% unless productHandle == 'empty' %}
-  {% if textCheck != '' and product.title contains filter%}
-  {% assign totalReviewsCounter = totalReviewsCounter |plus: 1 %}
+        {% assign totalreviews = totalreviews |plus: 1 %}
+        {% assign review = review | split: '|' %}
+        {% assign stars = review[0] |plus: 0 %}
 
 
-  {% if stars == 0 %}
-  {% assign star0 = star0 |plus: 1 %}
-  {% elsif stars == 1 %}
-  {% assign star1 = star1 |plus: 1 %}
-  {% elsif stars == 2 %}
-  {% assign star2 = star2 |plus: 1 %}
-  {% elsif stars == 3 %}
-  {% assign star3 = star3 |plus: 1 %}
-  {% elsif stars == 4 %}
-  {% assign star4 = star4 |plus: 1 %}
-  {% elsif stars == 5 %}
-  {% assign star5 = star5 |plus: 1 %}
-  {% endif %}
 
-  {% capture html %}{{ html }}
-  {% if enable_grid != blank and grid_size != blank %}
-  <div class="grid__item {{ grid_size }}">
-    {% endif %}
-    <div class="stamped-ratings-wrapper stamped-review-card" data-id="{{ reviews[i] |split: '"=>"' |first }}">
-      <div class="stamped-reviews-image">
-        <a href="{{ product.url }}"><img loading="lazy" src="{{ product.featured_image  |img_url: 'medium' }}" style="max-height: 100%; max-width: 100%; width: auto; height: auto; top: 0; bottom: 0; left: 0; right: 0; margin: auto;" onerror="this.style.display=&quot;none&quot;" alt="{{ product.title }} Product Image">
-        </a></div><div class="stamped-reviews-date"> {{ newDate }}</div><div class="stamped-reviews-rating stamped-style-color-star"> {% if stars > 0 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 1 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 2 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 3 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 4 %}<i class="stamped-fa stamped-fa-star"></i>{% endif %}</div><div class="stamped-reviews-title"><a href="https://stamped.io/go/d3xXaWRnZXRGdWxsUGFnZXw0NDIyMXxyfDk2NzMxMDE1" class="stamped-review-title stamped-style-color-link">{{ product.title }}</a></div><div class="stamped-reviews-message stamped-style-color-text">{{ text }}</div><div class="stamped-reviews-author stamped-style-color-text">{{ writer }} <span class="stamped-verified-label stamped-style-color-verified" data-verified-type="2"></span></div><div class="stamped-reviews-location" style="display:none;"></div><div class="stamped-products-reviews-title"><a href="https://stamped.io/go/d3xXaWRnZXRGdWxsUGFnZXw0NDIyMXxyfDk2NzMxMDE1" class="stamped-review-product style-color-link">{{ product.title }}</a></div></div>
+        {% assign writer = review[2] %}
+        {% assign text = review[3] %}
 
-    {% if enable_grid != blank and grid_size != blank %}
-  </div>
-  {% endif %}
-  {% endcapture %}
-  {% endif %}
-  {% endunless %}
-  {% endfor %}
+        {% assign textCheck = text |remove: '"' |strip %}
 
-  <div class="stamped-reviews-widget no-overflow" data-widget-type="full-page">
-    {% for product in collections.all.products %}
-      {% assign titles = titles | append: ';' | append: product.title %}
+        {% assign date = review[5] |split: 'T' |first |split: '-' |reverse |join: '/' |remove: ' ' %}
+        {% assign dates = date | split: '/' %}
+        {% capture newDate %}{{ dates[1] }}/{{ dates[0] }}/{{ dates[2] }}{% endcapture %}
+        {% assign productId = review |last |strip %}
+        {% assign productHandle = 'empty' %}
+        {% for productObj in productsArray %}
+            {% if productObj contains productId %}
+                {% assign productHandle = productObj |split: ':' |first %}
+                {% assign product = all_products[productHandle] %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+        {% unless productHandle == 'empty' %}
+            {% if textCheck != '' and product.title contains filter %}
+                {% assign totalReviewsCounter = totalReviewsCounter |plus: 1 %}
+
+
+                {% if stars == 0 %}
+                    {% assign star0 = star0 |plus: 1 %}
+                    {% elsif stars == 1 %}
+                    {% assign star1 = star1 |plus: 1 %}
+                    {% elsif stars == 2 %}
+                    {% assign star2 = star2 |plus: 1 %}
+                    {% elsif stars == 3 %}
+                    {% assign star3 = star3 |plus: 1 %}
+                    {% elsif stars == 4 %}
+                    {% assign star4 = star4 |plus: 1 %}
+                    {% elsif stars == 5 %}
+                    {% assign star5 = star5 |plus: 1 %}
+                {% endif %}
+
+                {% capture html %}{{ html }}
+                    {% if enable_grid != blank and grid_size != blank %}
+                        <div class="grid__item {{ grid_size }}">
+                    {% endif %}
+                    <div class="stamped-ratings-wrapper stamped-review-card"
+                         data-id="{{ reviews[i] |split: '"=>"' |first }}">
+                        <div class="stamped-reviews-image">
+                            <a href="{{ product.url }}"><img loading="lazy"
+                                                             src="{{ product.featured_image  |img_url: 'medium' }}"
+                                                             style="max-height: 100%; max-width: 100%; width: auto; height: auto; top: 0; bottom: 0; left: 0; right: 0; margin: auto;"
+                                                             onerror="this.style.display=&quot;none&quot;"
+                                                             alt="{{ product.title }} Product Image">
+                            </a></div>
+                        <div class="stamped-reviews-date"> {{ newDate }}</div>
+                        <div class="stamped-reviews-rating stamped-style-color-star"> {% if stars > 0 %}<i
+                                    class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 1 %}<i
+                                    class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 2 %}<i
+                                    class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 3 %}<i
+                                    class="stamped-fa stamped-fa-star"></i>{% endif %}{% if stars > 4 %}<i
+                                    class="stamped-fa stamped-fa-star"></i>{% endif %}</div>
+                        <div class="stamped-reviews-title"><a
+                                    href="https://stamped.io/go/d3xXaWRnZXRGdWxsUGFnZXw0NDIyMXxyfDk2NzMxMDE1"
+                                    class="stamped-review-title stamped-style-color-link">{{ product.title }}</a></div>
+                        <div class="stamped-reviews-message stamped-style-color-text">{{ text }}</div>
+                        <div class="stamped-reviews-author stamped-style-color-text">{{ writer }} <span
+                                    class="stamped-verified-label stamped-style-color-verified"
+                                    data-verified-type="2"></span></div>
+                        <div class="stamped-reviews-location" style="display:none;"></div>
+                        <div class="stamped-products-reviews-title"><a
+                                    href="https://stamped.io/go/d3xXaWRnZXRGdWxsUGFnZXw0NDIyMXxyfDk2NzMxMDE1"
+                                    class="stamped-review-product style-color-link">{{ product.title }}</a></div>
+                    </div>
+
+                    {% if enable_grid != blank and grid_size != blank %}
+                        </div>
+                    {% endif %}
+                {% endcapture %}
+            {% endif %}
+        {% endunless %}
     {% endfor %}
 
-    <script src="https://widget.reviews.io/product/dist.js"></script>
 
-    <div class="page-width">
-      <div id="widget-modal"></div>
+    <div class="stamped-reviews-widget no-overflow" data-widget-type="full-page">
+        <div class="stamped-widget-title">
+  <span class="stamped-widget-stars stamped-style-color-star">
+    <i class="stamped-fa stamped-fa-star"></i>
+    <i class="stamped-fa stamped-fa-star"></i>
+    <i class="stamped-fa stamped-fa-star"></i>
+    <i class="stamped-fa stamped-fa-star"></i>
+    <i class="stamped-fa stamped-fa-star"></i>
+  </span>
+            <span class="stamped-widget-text">454 </span>
+        </div>
+
+        {% if enable_rating == 'true' %}
+            {% include 'rating-snippet' %}
+        {% endif %}
+
+        {% if enable_grid != blank and grid_size != blank %}
+        <div class="grid">
+            {% endif %}
+            {{ html }}
+
+            {% if enable_grid != blank and grid_size != blank %}
+        </div>
+        {% endif %}
+        <style>
+            .stamped-reviews-widget[data-widget-type="full-page"] a {
+                text-decoration: none;
+                border: none;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-widget-title {
+                margin-bottom: 20px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-widget-text {
+                margin-left: 10px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-author {
+                color: grey;
+                font-weight: normal;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"]:not([data-label-subtitle]) .stamped-widget-text:before {
+                content: "Based on "
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"]:not([data-label-subtitle]) .stamped-widget-text:after {
+                content: " Reviews"
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-verified-label {
+                color: #1cc286;
+                font-weight: normal;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-verified-label[data-verified-type="2"]:after {
+                content: ' \e904  Verified Buyer';
+                font-family: 'stamped-font', 'FontAwesome', 'Open Sans';
+                word-spacing: -5px;
+                font-weight: normal;
+            }
+
+            .stamped-fa-star, .stamped-fa-star-o, .stamped-fa-star-half-o {
+                color: gold;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-title {
+                font-weight: bold;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-title a:visited {
+                color: #4e387e;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] a.stamped-review-product {
+                font-size: 12px;
+                font-weight: normal;
+                color: #777;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-ratings-wrapper:nth-child(odd) {
+                clear: both;
+                display: inline-block;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-ratings-wrapper:nth-child(even) {
+                margin-right: 0px !important;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-ratings-wrapper {
+                width: 100% !important;
+                margin-right: 4% !important;
+                text-align: center !important;
+                vertical-align: top !important;
+                text-align: left !important;
+                padding-top: 15px !important;
+                margin-bottom: 35px !important;
+                padding-bottom: 0px !important;
+                float: left;
+                border-top: 1px solid #f0f0f0;
+                padding-top: 10px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-ratings-wrapper:nth-child(n+5) {
+                display: none;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-message {
+                font-weight: normal;
+                margin: 10px 0px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-message:before {
+                content: '" ';
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-message:after {
+                content: ' \201D';
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-message:before,
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-message:after {
+                font-family: cursive;
+                font-size: 20px;
+                line-height: 10px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-image {
+                height: 145px;
+                width: 100px;
+                float: left;
+                margin-right: 20px;
+                display: inline-block;
+                vertical-align: top;
+                text-align: center;
+                position: relative;
+                padding-left: 0 !important;
+                z-index: 0;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-message-image-block img {
+                height: 80px;
+                margin: 10px 0px;
+                border-radius: 3px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] img {
+                margin-left: 0 !important;
+                margin-right: 10px !important;
+
+                padding: 3px;
+                border-radius: 5px;
+                text-align: center;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-products-reviews-title {
+                font-style: italic;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-date {
+                float: right;
+                font-size: 12px;
+                color: #999;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-ratings-wrapper > div {
+                position: relative;
+                padding-left: 120px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-date {
+                padding-left: 0 !important;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-products-reviews-reply {
+                background: none;
+                padding: 15px;
+                margin-top: 15px;
+                border-top: 3px solid #eee;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-options ul {
+                margin: 0px;
+                padding: 0px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"] .stamped-reviews-options ul li {
+                list-style: disc;
+                margin: 5px 30px;
+                padding: 0px;
+                font-size: 12px;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"][data-product-image="false"] .stamped-ratings-wrapper > div {
+                padding: 0px !important;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"][data-product-image="false"] .stamped-reviews-image {
+                display: none;
+            }
+
+            .stamped-reviews-widget[data-widget-type="full-page"][data-show-avatar="False"] .stamped-ratings-wrapper > div {
+                padding-left: 0px !important;
+            }
+
+            @media only screen and (max-width: 650px), only screen and (max-device-width: 650px) {
+                .stamped-reviews-widget[data-widget-type="full-page"] .stamped-ratings-wrapper > div {
+                    text-align: left;
+                }
+
+                .stamped-reviews-widget[data-widget-type="full-page"] .stamped-ratings-wrapper {
+                    width: 100% !important;
+                    margin-right: 0 !important;
+                    margin-bottom: 20px !important;
+                    text-align: center !important;
+                }
+            }
+
+
+            .stamped-widget-buttons {
+                margin-bottom: 20px;
+                display: none;
+            }
+
+            .btn-product-reviews, .btn-site-reviews {
+                cursor: pointer;
+            }
+
+            .btn-product-reviews:before {
+                content: 'Product Reviews';
+            }
+
+            .btn-site-reviews:before {
+                content: 'Site Reviews';
+            }
+
+            .stamped-full-page-tabs ul {
+                margin: 0px;
+                padding: 0px;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .stamped-full-page-tabs ul li.active {
+                font-weight: bold;
+                background: #fafafa;
+                box-shadow: 0px 1px 2px #ccc;
+            }
+
+            .stamped-full-page-tabs ul li {
+                display: inline-block;
+                margin-right: 15px;
+                font-size: 15px;
+                border: 1px solid #777;
+                padding: 10px 20px;
+            }
+
+            .stamped-full-page-tabs ul li a {
+                color: black;
+            }
+        </style>
     </div>
-
-    <script type="text/javascript">
-      productWidget("widget-modal",{
-        store: "wonderfuldentalco",
-        sku: "{{ titles }}",
-        primaryClr: "#f47e27",
-        neutralClr: "#EBEBEB",
-        buttonClr: "#EEE",
-        textClr: "#333",
-        tabClr: "#eee",
-        ratingStars: false,
-        showAvatars: true,
-        perPage: 40
-      })
-    </script>
-
-  </div>
 </div>
-
 <div class="page-width">
-  <div class="reviews">
-    {% include 'site-reviews' %}
-  </div>
-  <div id="stamped-reviews-widget hide" data-widget-type="full-page"></div>
+
+    <div class="reviews">
+        {% include 'site-reviews' %}
+    </div>
+    <div id="stamped-reviews-widget hide" data-widget-type="full-page"></div>
 </div>
 
 <script>
-  $(document).ready(function(){
-    var shown = 5;
-    var step = shown + 1;
-    var topOffset = $('.stamped-reviews-widget').offset().top;
-    var height = $('.stamped-reviews-widget').height();
-    var totalOffset = topOffset + height - $(window).height()*2;
+    $(document).ready(function () {
+        var shown = 5;
+        var step = shown + 1;
+        var topOffset = $('.stamped-reviews-widget').offset().top;
+        var height = $('.stamped-reviews-widget').height();
+        var totalOffset = topOffset + height - $(window).height() * 2;
 
-    var css = '<style>.stamped-reviews-widget>div:nth-child(n+'+step+')){display: none}</style>';
+        var css = '<style>.stamped-reviews-widget>div:nth-child(n+' + step + ')){display: none}</style>';
 
-    {% unless no_scroll != blank %}
-    $(window).scroll(function(){
-      // var top = $(window).scrollTop();
+        {% unless no_scroll != blank %}
+          $(window).scroll(function () {
+              // var top = $(window).scrollTop();
 
+              console.log('compare: ' + top + '---' + totalOffset + 'shown: ' + shown + '-- total:' + $('.stamped-reviews-widget>div').length);
 
-      if(top > totalOffset && $('.stamped-reviews-widget>div').length > shown ){
+              if (top > totalOffset && $('.stamped-reviews-widget>div').length > shown) {
 
-        $('.stamped-reviews-widget>div:hidden:not(:nth-child(n+'+( shown + step )+'))').slideDown(300);
-        shown = shown + step;
-      }
+                  console.log('new reviews showing: ' + $('.stamped-reviews-widget>div:hidden:not(:nth-child(n+' + (shown + step) + '))').length);
+                  $('.stamped-reviews-widget>div:hidden:not(:nth-child(n+' + (shown + step) + '))').slideDown(300);
+                  shown = shown + step;
+              }
 
-      height = $('.stamped-reviews-widget').height();
-      totalOffset = topOffset + height - $(window).height();
+              height = $('.stamped-reviews-widget').height();
+              totalOffset = topOffset + height - $(window).height();
+          });
+
+          $('.expand-reviews').click(function () {
+              $('.reviews #review-holder').css('display', 'block');
+          });
+        {% endunless %}
     })
-    $('.expand-reviews').click(function(){
-      $('.reviews #review-holder').css('display','block');
-    })
-    {% endunless %}
-  })
 </script>
 
