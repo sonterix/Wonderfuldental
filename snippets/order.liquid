@@ -25,16 +25,27 @@
         <div class="order__number">
             <a href="{{ order.customer_url }}">
                 {{- 'customer.order.title' | t: name: order.name  -}}
+              {% if order.cancelled %}
+              <span>{{- 'customer.order.cancelled_word' | t -}}</span>
+              {% endif %}
             </a>
         </div>
 
-        <div class="order__fulfilment_status">
-            {{- 'customer.order.status' | t -}}:
+      <div class="order__fulfilment_status">
+        {{- 'customer.order.status' | t -}}:
 
-            <span>
-                {{- order.fulfillment_status_label -}}
-            </span>
-        </div>
+        <span>
+          {{- order.fulfillment_status_label -}}
+        </span>
+      </div>
+
+      <div class="order__fulfilment_status">
+        {{- 'customer.order.payment_status' | t -}}:
+
+        <span >
+          {{- order.financial_status_label -}}
+        </span>
+      </div>
 
         <div class="order__tracking">
             {% if order.fulfillment_status == 'fulfilled' %}

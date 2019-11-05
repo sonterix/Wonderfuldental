@@ -8437,7 +8437,7 @@ input.btn.btn--alt, button.btn--alt, a.btn--alt{
 }
 
 .feature-row__item ul li {
-  list-style-image: url("//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/checkmark_50x.png?38858");
+  list-style-image: url("//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/checkmark_50x.png?39684");
     }
 
 small, small a  {
@@ -10116,7 +10116,7 @@ html{
   #shopify-section-bubblegum-hero {
     #herotohide{
 
-      background: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/backgroundd-bubblegum.jpg?38858);
+      background: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/backgroundd-bubblegum.jpg?39684);
       background-size: cover;
       background-repeat: no-repeat;
       padding-top: 75.58%;
@@ -10127,7 +10127,7 @@ html{
   }
 
   .spacebg {
-    background: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/Stars.png?38858);
+    background: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/Stars.png?39684);
     background-size: cover;
     background-repeat: no-repeat;
     padding-top: 55.58%;
@@ -12004,19 +12004,24 @@ Account Link / Drawer
 
             &.disabled {
               position: relative;
+              background: #1bea1b !important;
               cursor: not-allowed;
-
+              
               &:before {
-                content: '';
                 display: inline-block;
-                margin-right: 3px;
-                width: 10px;
-                height: 10px;
-                background-image: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/check-symbol.png?38858);
-                background-position: center;
-                background-size: contain;
-                background-repeat: no-repeat;
               }
+            }
+
+            &:before {
+              content: '';
+              display: none;
+              margin-right: 3px;
+              width: 10px;
+              height: 10px;
+              background-image: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/check-symbol.png?39684);
+              background-position: center;
+              background-size: contain;
+              background-repeat: no-repeat;
             }
 
             &:hover {
@@ -13058,22 +13063,27 @@ $color-account-red: #ce213d;
       border: 1px solid $color-black;
       letter-spacing: 0 !important;
       transition: $trans;
-
+      
       &.disabled {
         position: relative;
+        background: #1bea1b !important;
         cursor: not-allowed;
 
         &:before {
-          content: '';
           display: inline-block;
-          margin-right: 3px;
-          width: 10px;
-          height: 10px;
-          background-image: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/check-symbol.png?38858);
-          background-position: center;
-          background-size: contain;
-          background-repeat: no-repeat;
         }
+      }
+
+      &:before {
+        content: '';
+        display: none;
+        margin-right: 3px;
+        width: 10px;
+        height: 10px;
+        background-image: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/check-symbol.png?39684);
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
       }
 
       &:hover {
@@ -13197,22 +13207,27 @@ $color-account-red: #ce213d;
     border: 1px solid $color-black;
     letter-spacing: 0 !important;
     transition: $trans;
-
+    
     &.disabled {
       position: relative;
+      background: #1bea1b !important;
       cursor: not-allowed;
 
       &:before {
-        content: '';
         display: inline-block;
-        margin-right: 3px;
-        width: 10px;
-        height: 10px;
-        background-image: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/check-symbol.png?38858);
-        background-position: center;
-        background-size: contain;
-        background-repeat: no-repeat;
       }
+    }
+
+    &:before {
+      content: '';
+      display: none;
+      margin-right: 3px;
+      width: 10px;
+      height: 10px;
+      background-image: url(//cdn.shopify.com/s/files/1/1715/6045/t/103/assets/check-symbol.png?39684);
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
     }
 
     &:hover {
@@ -13265,4 +13280,12 @@ $color-account-red: #ce213d;
     height: 1px;
     background-color: $color-btn;
   }
+}
+
+.customr-container .customr-container-item {
+  padding: 0;
+}
+
+.order--cancelled_status * {
+  font-size: 15px;
 }

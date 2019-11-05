@@ -24,16 +24,23 @@
                     </button>
                     <div class="navigation11 nav-closed padding-vertical-lg">
                         <ul class="mobile-nav small-width">
-                            <li class="mobile-nav__item mobile-nav__account">
-                                <a href="/pages/your-account" class="mobile-nav__link h2 bold">
-                                    {% if customer %}
-                                        <span>{{- 'layout.customer.greeting' | t: name: customer.first_name -}}</span>
-                                        {{- 'layout.customer.account' | t -}}
-                                    {% else %}
-                                        {{- 'layout.customer.account_login' | t -}}
-                                    {% endif %}
-                                </a>
-                            </li>
+                          <li class="mobile-nav__item mobile-nav__account">
+                            {% if customer %}
+                              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link h2 bold" data-target="account-dropdown" data-level="1">
+                                {{- 'layout.customer.account' | t -}}
+                                <div class="mobile-nav__icon">{% include 'icon-triangle' %}</div>
+                              </button>
+                            
+                              <ul class="padding-left-md mobile-nav__dropdown" data-parent="account-dropdown" data-level="2">
+                                <li class="mobile-nav__item"><a href="/pages/your-account"  class="mobile-nav__sublist-link h3 bold">{{- 'layout.customer.dashboard' | t -}}</a></li>
+                                <li class="mobile-nav__item"><a href="/account?view=order-history"  class="mobile-nav__sublist-link h3 bold">{{- 'layout.customer.orders' | t -}}</a></li>
+                                <li class="mobile-nav__item"><a href="/account/addresses"  class="mobile-nav__sublist-link h3 bold">{{- 'layout.customer.addresses' | t -}}</a></li>
+                                <li class="mobile-nav__item"><a href="/account/logout"  class="mobile-nav__sublist-link h3 bold">{{- 'layout.customer.log_out' | t -}}</a></li>
+                              </ul>
+                            {% else %}
+                              <a href="/pages/your-account" class="mobile-nav__link h2 bold">{{- 'layout.customer.account_login' | t -}}</a>
+                            {% endif %}
+                          </li>
 
                             {% for link in linklists[section.settings.main_linklist].links %}
                                 {%- assign child_list_handle = link.title | handleize -%}

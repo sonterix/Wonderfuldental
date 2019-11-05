@@ -9,7 +9,7 @@
 
         <div class="customers-order__header">
             <p class="customers-order__header-page">
-              <a href="/account">{{ 'layout.customer.dashboard' | t }}</a>: <span data-name>{{ 'layout.customer.order_details' | t }}</span>
+              <a href="/pages/your-account">{{ 'layout.customer.dashboard' | t }}</a>: <span data-name>{{ 'layout.customer.order_details' | t }}</span>
             </p>
             <h2 class="customers-order__header-title margin-bottom-lg">{{ 'customer.order.title' | t: name: order.name }}</h2>
         </div>
@@ -23,6 +23,12 @@
                     <div class="order--cancelled">
                         {%- assign cancelled_at = order.cancelled_at | date: "%B %d, %Y %I:%M%p" -%}
                         <p class="margin-bottom-0">{{ 'customer.order.cancelled' | t: date: cancelled_at }}</p>
+                        <div class="order--cancelled_status">
+                          {{- 'customer.order.status' | t -}}: <span>{{- order.fulfillment_status_label -}}</span>
+                        </div>
+                        <div class="order--cancelled_status">
+                          {{- 'customer.order.payment_status' | t -}}: <span>{{- order.financial_status_label -}}</span>
+                        </div>
                         <p class="reason margin-bottom-0">{{ 'customer.order.cancelled_reason_html' | t: reason: order.cancel_reason }}</p>
                     </div>
                 {% endif %}
